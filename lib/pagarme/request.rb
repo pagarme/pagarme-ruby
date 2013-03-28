@@ -1,4 +1,5 @@
 require 'uri'
+require File.join(File.dirname(__FILE__), '.', 'utils')
 
 module PagarMe
 	class Request
@@ -12,12 +13,7 @@ module PagarMe
 		end
 
 		def run
-		end
-
-		private
-		
-		def join_parameters_in_payload
-			URI.escape(self.parameters.collect{ |key, value| "#{key}=#{value}" }.join('&'))
+			puts self.parameters.to_params.inspect
 		end
 	end
 end
