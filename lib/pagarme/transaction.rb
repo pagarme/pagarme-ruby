@@ -11,9 +11,9 @@ module PagarMe
 
 	def initialize(server_response = nil)
 	  @statuses_codes = { :local => 0, :approved => 1, :processing => 2, :refused => 3, :chargebacked => 4 }
-	  @status = 0
 	  @date_created = nil
 	  @id = nil
+	  self.status = :local
 
 	  self.amount = 1000
 	  self.card_number = self.card_holder_name = self.card_expiracy_month = self.card_expiracy_year = self.card_cvv = ""
@@ -48,6 +48,7 @@ module PagarMe
 	def charge
 	  validation_error = error_in_card_data
 	  raise validation_error if validation_error
+	  raise "Transaction already charged!" if self.status != :local
 
 	  request = PagarMe::Request.new('/transactions', 'POST')
 	  request.parameters = {
@@ -59,7 +60,13 @@ module PagarMe
 	  update_fields_from_response(response)
 	end
 
+
 	private
+
+
+	def status=(status)
+	  @status = @statuses_codes[status]
+	end
 
 	def update_fields_from_response(response)
 	  @status = @statuses_codes[response['status'].to_sym]
