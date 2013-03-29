@@ -1,5 +1,6 @@
 require 'uri'
 require 'rest_client'
+require 'multi_json'
 require File.join(File.dirname(__FILE__), '.', 'utils')
 
 module PagarMe
@@ -22,6 +23,8 @@ module PagarMe
 		:api_key => PagarMe.api_key
 	  })
 
+	  error = nil
+
 	  begin
 		response = RestClient::Request.execute({
 		  :method => self.method,
@@ -33,32 +36,43 @@ module PagarMe
 		  :verify_ssl => false # TODO: change to verify SSL
 		})
 	  rescue SocketError => e
-		puts "error socket #{e}"
-		# self.handle_restclient_error(e)
+		error = "Error connecting to server (#{e.message})."
 	  rescue NoMethodError => e
-		# Work around RestClient bug
 		if e.message =~ /\WRequestFailed\W/
-		  # e = APIConnectionError.new('Unexpected HTTP response code')
-		  # self.handle_restclient_error(e)
-		  puts "Error NoMethodError #{e}"
+		  error = "Unexpected response code (#{e.inspect})."
 		else
 		  raise
 		end
 	  rescue RestClient::ExceptionWithResponse => e
-		if rcode = e.http_code and rbody = e.http_body
-		  puts "rcode #{rcode} - rbody: #{rbody}"
-		  # self.handle_api_error(rcode, rbody)
+		if e.http_code and e.http_body
+		  parsed_error = parse_json_response(e.http_body)
+		  if parsed_error['error']
+			error = "Response error (#{e.http_code}): #{parsed_error['error']}"
+		  else
+			error = "Invalid response code (#{e.http_code})."
+		  end
 		else
-		  puts "nothing to show error e: #{e}"
-		  # self.handle_restclient_error(e)
+		  error = "Unexpected response code (#{e.message} - #{e.http_code})"
 		end
 	  rescue RestClient::Exception, Errno::ECONNREFUSED => e
 		puts "conn refused error #{e}"
 		# self.handle_restclient_error(e)
+		error = "Error connecting to server: connection refused"
 	  end
 
+	  raise error if error
 
-	  puts response.inspect
+	  parse_json_response(response.body)
+	end
+
+	private
+
+	def parse_json_response(response)
+	  begin
+		MultiJson.load(response)
+	  rescue MultiJson::LoadError => e
+		raise "Error: #{e.message} - Invalid response from server: #{response}"
+	  end
 	end
   end
 end

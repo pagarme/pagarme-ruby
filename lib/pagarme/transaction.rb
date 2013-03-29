@@ -5,30 +5,44 @@ require File.join(File.dirname(__FILE__), '.', 'utils')
 
 module PagarMe
   class Transaction
-	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv
+	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live
 
-	def initialize
+	# class methods
+
+	def initialize(server_response = nil)
 	  @statuses_codes = { :local => 0, :approved => 1, :processing => 2, :refused => 3, :chargebacked => 4 }
-	  @environments_codes = { :production => 1, :development => 2 }
 	  @status = 0
-	  @environment = @environments_codes[:production]
+	  @date_created = nil
+	  @id = nil
 
 	  self.amount = 1000
 	  self.card_number = self.card_holder_name = self.card_expiracy_month = self.card_expiracy_year = self.card_cvv = ""
+
+	  update_fields_from_response(server_response) if server_response
 	end
+
+	def self.find_by_id(id)
+	  request = PagarMe::Request.new("/transactions/#{id}", 'GET')
+	  response = request.run
+	  PagarMe::Transaction.new(response)
+	end
+
+	# getters
 
 	def status
 	  @statuses_codes.key(@status)
 	end
 
-	def live_mode=(is_live)
-	  @environment = is_live ? @environments_codes[:production] : @environments_codes[:development]
+	def date_created
+	  @date_created
 	end
 
-	def live_mode
-	  @environment == @environments_codes[:production]
+	def id
+	  @id
 	end
 
+	# instance methods
+	
 	# server requests methods
 
 	def charge
@@ -41,10 +55,19 @@ module PagarMe
 		:card_hash => generate_card_hash
 	  }
 
-	  request.run
+	  response = request.run
+	  update_fields_from_response(response)
 	end
 
 	private
+
+	def update_fields_from_response(response)
+	  @status = @statuses_codes[response['status'].to_sym]
+	  @date_created = response['date_created']
+	  self.amount = response['amount']
+	  self.live = response['live']
+	  @id = response['id']
+	end
 
 	def error_in_card_data
 	  if self.card_number.length < 16 || self.card_number.length > 20

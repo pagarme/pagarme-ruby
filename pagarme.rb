@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '.', 'lib/pagarme')
 
-PagarMe.api_key = "Jy1V5bJcGf8q4gHepttt "
+PagarMe.api_key = "Jy1V5bJcGf8q4gHepttt"
 
 transaction = PagarMe::Transaction.new
 
@@ -9,5 +9,10 @@ transaction.card_holder_name = "Test User"
 transaction.card_expiracy_month = "12"
 transaction.card_expiracy_year = "15"
 transaction.card_cvv = "314"
+transaction.live = false
 
 transaction.charge
+
+puts transaction.status
+puts transaction.live
+puts transaction.id
