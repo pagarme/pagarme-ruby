@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), '.', 'pagarme/request')
 module PagarMe
 
 	@@api_key = nil
-	@@api_endpoint = 'http://0.0.0.0:3000/'
+	@@api_endpoint = 'http://0.0.0.0:3000'
 	@@api_version = '0.1'
 	@@api_card_encryption_public_key = File.join(File.dirname(__FILE__), '..', 'certs/public_key.pem')
 
@@ -20,7 +20,7 @@ module PagarMe
 		@@api_card_encryption_public_key
 	end
 
-	def self.full_api_url=(relative_path)
+	def self.full_api_url(relative_path)
 		# TODO: @@api_endpoint + @@api_version + '/' + relative_path
 		@@api_endpoint + relative_path
 	end
