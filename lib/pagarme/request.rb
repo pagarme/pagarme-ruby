@@ -55,8 +55,6 @@ module PagarMe
 		  error = "Unexpected response code (#{e.message} - #{e.http_code})"
 		end
 	  rescue RestClient::Exception, Errno::ECONNREFUSED => e
-		puts "conn refused error #{e}"
-		# self.handle_restclient_error(e)
 		error = "Error connecting to server: connection refused"
 	  end
 
