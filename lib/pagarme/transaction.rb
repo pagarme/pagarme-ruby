@@ -7,7 +7,7 @@ module PagarMe
   class Transaction
 	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live
 
-	# class methods
+	# initializers
 
 	def initialize(server_response = nil)
 	  @statuses_codes = { :local => 0, :approved => 1, :processing => 2, :refused => 3, :chargebacked => 4 }
@@ -41,8 +41,6 @@ module PagarMe
 	  @id
 	end
 
-	# instance methods
-	
 	# server requests methods
 
 	def charge
