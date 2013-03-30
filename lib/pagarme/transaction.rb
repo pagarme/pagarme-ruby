@@ -58,6 +58,15 @@ module PagarMe
 	  update_fields_from_response(response)
 	end
 
+	def chargeback
+	  raise "Transaction already chargebacked!" if self.status == :chargebacked
+	  raise "Transaction needs to be approved to be chargebacked" if self.status != :approved
+
+	  request = PagarMe::Request.new("/transactions/#{self.id}/chargeback/", 'POST')
+	  response = request.run
+	  update_fields_from_response(response)
+	end
+
 
 	private
 

@@ -13,6 +13,8 @@ transaction.live = false
 
 transaction.charge
 
+transaction.chargeback
+
 puts transaction.status
 puts transaction.live
 puts transaction.id
