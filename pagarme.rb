@@ -15,6 +15,7 @@ transaction.charge
 
 transaction.chargeback
 
-puts transaction.status
-puts transaction.live
-puts transaction.id
+chargebacked_transaction = PagarMe::Transaction.find_by_id(transaction.id)
+
+puts chargebacked_transaction.id == transaction.id
+puts chargebacked_transaction.status == transaction.status
