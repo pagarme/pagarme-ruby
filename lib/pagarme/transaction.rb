@@ -14,6 +14,7 @@ module PagarMe
 	  @date_created = nil
 	  @id = nil
 	  self.status = :local
+	  self.live = PagarMe.live
 
 	  self.amount = 1000
 	  self.card_number = self.card_holder_name = self.card_expiracy_month = self.card_expiracy_year = self.card_cvv = ""
@@ -48,7 +49,7 @@ module PagarMe
 	  raise validation_error if validation_error
 	  raise "Transaction already charged!" if self.status != :local
 
-	  request = PagarMe::Request.new('/transactions', 'POST')
+	  request = PagarMe::Request.new('/transactions', 'POST', self.live)
 	  request.parameters = {
 		:amount => self.amount.to_s,
 		:card_hash => generate_card_hash
@@ -62,7 +63,7 @@ module PagarMe
 	  raise "Transaction already chargebacked!" if self.status == :chargebacked
 	  raise "Transaction needs to be approved to be chargebacked" if self.status != :approved
 
-	  request = PagarMe::Request.new("/transactions/#{self.id}/chargeback/", 'POST')
+	  request = PagarMe::Request.new("/transactions/#{self.id}/chargeback/", 'POST', self.live)
 	  response = request.run
 	  update_fields_from_response(response)
 	end

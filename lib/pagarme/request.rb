@@ -5,11 +5,12 @@ require File.join(File.dirname(__FILE__), '.', 'utils')
 
 module PagarMe
   class Request
-	attr_accessor :path, :method, :parameters, :headers
+	attr_accessor :path, :method, :parameters, :headers, :live
 
-	def initialize(path, method)
+	def initialize(path, method, live=PagarMe.live)
 	  self.path = path
 	  self.method = method
+	  self.live = live
 	  self.parameters = {}
 	  self.headers = {}
 	end
@@ -20,7 +21,8 @@ module PagarMe
 	  end
 
 	  parameters = self.parameters.merge({
-		:api_key => PagarMe.api_key
+		:api_key => PagarMe.api_key,
+		:live => (self.live ? "1" : "0")
 	  })
 
 	  error = nil
