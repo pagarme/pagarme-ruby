@@ -82,6 +82,7 @@ module PagarMe
 	  @date_created = response['date_created']
 	  self.amount = response['amount']
 	  self.live = response['live']
+	  self.card_holder_name = response['costumer_name']
 	  @id = response['id']
 	end
 
