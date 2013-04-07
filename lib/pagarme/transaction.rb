@@ -6,18 +6,18 @@ require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
   class Transaction
-	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live
+	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live, :card_hash
 
 	# initializers
 
-	def initialize(server_response = nil)
+	def initialize(card_hash = nil, server_response = nil)
 	  @statuses_codes = { :local => 0, :approved => 1, :processing => 2, :refused => 3, :chargebacked => 4 }
 	  @date_created = nil
 	  @id = nil
 	  self.status = :local
 	  self.live = PagarMe.live
+	  self.card_hash = card_hash
 
-	  self.amount = 1000
 	  self.card_number = self.card_holder_name = self.card_expiracy_month = self.card_expiracy_year = self.card_cvv = ""
 
 	  update_fields_from_response(server_response) if server_response
@@ -26,7 +26,7 @@ module PagarMe
 	def self.find_by_id(id)
 	  request = PagarMe::Request.new("/transactions/#{id}", 'GET')
 	  response = request.run
-	  PagarMe::Transaction.new(response)
+	  PagarMe::Transaction.new(nil, response)
 	end
 
 	# getters
@@ -46,14 +46,14 @@ module PagarMe
 	# server requests methods
 
 	def charge
-	  validation_error = error_in_card_data
+	  validation_error = self.card_hash ? nil : error_in_transaction
 	  raise TransactionError.new(validation_error) if validation_error
 	  raise TransactionError.new("Transaction already charged!") if self.status != :local
 
 	  request = PagarMe::Request.new('/transactions', 'POST', self.live)
 	  request.parameters = {
 		:amount => self.amount.to_s,
-		:card_hash => generate_card_hash
+		:card_hash => (self.card_hash ? self.card_hash : generate_card_hash)
 	  }
 
 	  response = request.run
@@ -85,7 +85,7 @@ module PagarMe
 	  @id = response['id']
 	end
 
-	def error_in_card_data
+	def error_in_transaction
 	  if self.card_number.length < 16 || self.card_number.length > 20
 		"Invalid card number."
 	  elsif self.card_holder_name.length == 0
@@ -96,6 +96,8 @@ module PagarMe
 		"Invalid expiracy date year."
 	  elsif self.card_cvv.length < 3 || self.card_cvv.length > 4
 		"Invalid card security code."
+	  elsif self.amount <= 0
+		"Invalid amount."
 	  else
 		nil
 	  end
