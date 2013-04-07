@@ -42,7 +42,7 @@ module PagarMe
 		error = "Error connecting to server (#{e.message})."
 	  rescue NoMethodError => e
 		if e.message =~ /\WRequestFailed\W/
-		  error = "Unexpected response code (#{e.inspect})."
+		  raise ResponseError.new("Unexpected response code (#{e.inspect}).")
 		else
 		  raise
 		end
@@ -50,13 +50,14 @@ module PagarMe
 		if e.http_code and e.http_body
 		  parsed_error = parse_json_response(e.http_body)
 		  if parsed_error['error']
-			error = "Response error (#{e.http_code}): #{parsed_error['error']}"
+			error = "HTTP error #{e.http_code}: #{parsed_error['error']}"
 		  else
 			error = "Invalid response code (#{e.http_code})."
 		  end
 		else
 		  error = "Unexpected response code (#{e.message} - #{e.http_code})"
 		end
+		raise ResponseError.new(error)
 	  rescue RestClient::Exception, Errno::ECONNREFUSED => e
 		error = "Error connecting to server: connection refused"
 	  end
