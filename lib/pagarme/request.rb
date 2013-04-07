@@ -2,6 +2,7 @@ require 'uri'
 require 'rest_client'
 require 'multi_json'
 require File.join(File.dirname(__FILE__), '.', 'utils')
+require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
   class Request
@@ -17,7 +18,7 @@ module PagarMe
 
 	def run
 	  unless PagarMe.api_key
-		raise "You need to configure a API key before performing requests."
+		raise PagarMeError.new("You need to configure a API key before performing requests.")
 	  end
 
 	  parameters = self.parameters.merge({
@@ -60,7 +61,7 @@ module PagarMe
 		error = "Error connecting to server: connection refused"
 	  end
 
-	  raise error if error
+	  raise ConnectionError.new(error) if error
 
 	  parse_json_response(response.body)
 	end
@@ -71,7 +72,7 @@ module PagarMe
 	  begin
 		MultiJson.load(response)
 	  rescue MultiJson::LoadError => e
-		raise "Error: #{e.message} - Invalid response from server: #{response}"
+		raise ResponseError.new("Server response is not a valid JSON.")
 	  end
 	end
   end

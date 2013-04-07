@@ -3,6 +3,8 @@ require File.join(File.dirname(__FILE__), '.', 'lib/pagarme')
 PagarMe.api_key = "Jy1V5bJcGf8q4gHepttt"
 PagarMe.live = true
 
+begin
+
 transaction = PagarMe::Transaction.new
 
 transaction.card_number = "0000000000000000"
@@ -21,3 +23,7 @@ puts chargebacked_transaction.id == transaction.id
 puts chargebacked_transaction.status == transaction.status
 
 puts chargebacked_transaction.inspect
+
+rescue PagarMe::PagarMeError => e
+  puts "Error: #{e}"
+end

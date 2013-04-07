@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), '.', 'pagarme/transaction')
 require File.join(File.dirname(__FILE__), '.', 'pagarme/request')
+require File.join(File.dirname(__FILE__), '.', 'pagarme/errors')
 
 module PagarMe
 

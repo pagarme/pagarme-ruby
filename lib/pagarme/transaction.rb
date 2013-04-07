@@ -2,6 +2,7 @@ require 'openssl'
 require 'base64'
 require File.join(File.dirname(__FILE__), '..', 'pagarme')
 require File.join(File.dirname(__FILE__), '.', 'utils')
+require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
   class Transaction
@@ -46,8 +47,8 @@ module PagarMe
 
 	def charge
 	  validation_error = error_in_card_data
-	  raise validation_error if validation_error
-	  raise "Transaction already charged!" if self.status != :local
+	  raise TransactionError.new(validation_error) if validation_error
+	  raise TransactionError.new("Transaction already charged!") if self.status != :local
 
 	  request = PagarMe::Request.new('/transactions', 'POST', self.live)
 	  request.parameters = {
@@ -60,8 +61,8 @@ module PagarMe
 	end
 
 	def chargeback
-	  raise "Transaction already chargebacked!" if self.status == :chargebacked
-	  raise "Transaction needs to be approved to be chargebacked" if self.status != :approved
+	  raise TransactionError.new("Transaction already chargebacked!") if self.status == :chargebacked
+	  raise TransactionError.new("Transaction needs to be approved to be chargebacked") if self.status != :approved
 
 	  request = PagarMe::Request.new("/transactions/#{self.id}/chargeback/", 'POST', self.live)
 	  response = request.run
