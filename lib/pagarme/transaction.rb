@@ -10,15 +10,29 @@ module PagarMe
 
 	# initializers
 
-	def initialize(card_hash = nil, server_response = nil)
+	def initialize(first_parameter = nil, server_response = nil)
 	  @statuses_codes = { :local => 0, :approved => 1, :processing => 2, :refused => 3, :chargebacked => 4 }
 	  @date_created = nil
 	  @id = nil
 	  self.status = :local
 	  self.live = PagarMe.live
-	  self.card_hash = card_hash
 
 	  self.card_number = self.card_holder_name = self.card_expiracy_month = self.card_expiracy_year = self.card_cvv = ""
+
+	  # First parameter can be a hash with transaction parameters
+	  # or a encrypted card_hash that came from client.
+	  if first_parameter.class == String
+		self.card_hash = first_parameter
+	  elsif first_parameter.class == Hash
+		self.amount = first_parameter[:amount]
+		self.card_number = first_parameter[:card_number]
+		self.card_holder_name = first_parameter[:card_holder_name]
+		self.card_expiracy_month = first_parameter[:card_expiracy_month]
+		self.card_expiracy_year = first_parameter[:card_expiracy_year]
+		self.card_cvv = first_parameter[:card_cvv]
+		self.live = first_parameter[:live]
+		self.live = PagarMe.live unless self.live
+	  end
 
 	  update_fields_from_response(server_response) if server_response
 	end
@@ -32,7 +46,7 @@ module PagarMe
 	def self.all(page = 1, count = 10)
 	  raise TransactionError.new("Invalid page count") if page < 1 or count < 1
 
-	  request = PagarMe::Request.new('/transactions', 'GET', PagarMe.live)
+	  request = PagarMe::Request.new('/transactions', 'GET')
 	  request.parameters = {
 		:page => page,
 		:count => count
