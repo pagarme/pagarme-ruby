@@ -30,6 +30,9 @@ begin
   hash_transaction.charge
 
   puts hash_transaction.inspect
+  
+  transactions = PagarMe::Transaction.all
+  puts transactions.inspect
 rescue PagarMe::PagarMeError => e
   puts "Error: #{e}"
 end

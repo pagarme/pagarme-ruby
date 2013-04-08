@@ -29,6 +29,19 @@ module PagarMe
 	  PagarMe::Transaction.new(nil, response)
 	end
 
+	def self.all(page = 1, count = 10)
+	  raise TransactionError.new("Invalid page count") if page < 1 or count < 1
+
+	  request = PagarMe::Request.new('/transactions', 'GET', PagarMe.live)
+	  request.parameters = {
+		:page => page,
+		:count => count
+	  }
+
+	  response = request.run
+	  response.map { |transaction_response| PagarMe::Transaction.new(nil, transaction_response) }
+	end
+
 	# getters
 
 	def status
