@@ -141,8 +141,11 @@ module PagarMe
 	end
 
 	def generate_card_hash
-	  public_key = OpenSSL::PKey::RSA.new(File.read(PagarMe.api_card_encryption_public_key))
-	  Base64.strict_encode64(public_key.public_encrypt(card_data_parameters.to_params))
+	  request = PagarMe::Request.new("/transactions/card_hash", 'GET', self.live)
+	  response = request.run
+
+	  public_key = OpenSSL::PKey::RSA.new(response['public_key'])
+	  "#{response['id']}_#{Base64.strict_encode64(public_key.public_encrypt(card_data_parameters.to_params))}"
 	end
   end
 end
