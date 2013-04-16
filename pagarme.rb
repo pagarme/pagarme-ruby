@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '.', 'lib/pagarme')
 
-PagarMe.api_key = "Jy1V5bJcGf8q4gHepttt"
+PagarMe.api_key = "4f0907cdfaf855b83a5d4a83a247772f"
 PagarMe.live = true
 
 begin
@@ -27,7 +27,8 @@ begin
 	:card_expiracy_month => "12",
 	:card_expiracy_year => "13",
 	:card_cvv => "314",
-	:amount => 1000
+	:amount => 10000,
+	:installments => 5
   })
   hash_transaction.charge
   puts hash_transaction.inspect

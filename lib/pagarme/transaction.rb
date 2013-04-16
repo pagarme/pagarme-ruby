@@ -6,7 +6,7 @@ require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
   class Transaction
-	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live, :card_hash
+	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live, :card_hash, :installments
 
 	# initializers
 
@@ -16,6 +16,7 @@ module PagarMe
 	  @id = nil
 	  self.status = :local
 	  self.live = PagarMe.live
+	  self.installments = 1
 
 	  self.card_number = self.card_holder_name = self.card_expiracy_month = self.card_expiracy_year = self.card_cvv = ""
 
@@ -30,6 +31,7 @@ module PagarMe
 		self.card_expiracy_month = first_parameter[:card_expiracy_month]
 		self.card_expiracy_year = first_parameter[:card_expiracy_year]
 		self.card_cvv = first_parameter[:card_cvv]
+		self.installments = first_parameter[:installments]
 		self.live = first_parameter[:live]
 		self.live = PagarMe.live unless self.live
 	  end
@@ -80,6 +82,7 @@ module PagarMe
 	  request = PagarMe::Request.new('/transactions', 'POST', self.live)
 	  request.parameters = {
 		:amount => self.amount.to_s,
+		:installments => self.installments.to_i,
 		:card_hash => (self.card_hash ? self.card_hash : generate_card_hash)
 	  }
 
@@ -110,6 +113,7 @@ module PagarMe
 	  self.amount = response['amount']
 	  self.live = response['live']
 	  self.card_holder_name = response['costumer_name']
+	  self.installments = (!response['installments'] ? 1 : response['installments'].to_i)
 	  @id = response['id']
 	end
 
