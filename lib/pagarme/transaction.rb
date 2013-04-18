@@ -19,6 +19,7 @@ module PagarMe
 	  self.installments = 1
 
 	  self.card_number = self.card_holder_name = self.card_expiracy_month = self.card_expiracy_year = self.card_cvv = ""
+	  self.amount = 0
 
 	  # First parameter can be a hash with transaction parameters
 	  # or a encrypted card_hash that came from client.
