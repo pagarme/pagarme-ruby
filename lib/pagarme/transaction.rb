@@ -129,7 +129,7 @@ module PagarMe
 		"Invalid expiracy date year."
 	  elsif self.card_cvv.length < 3 || self.card_cvv.length > 4
 		"Invalid card security code."
-	  elsif self.amount <= 0
+	  elsif self.amount.to_i <= 0
 		"Invalid amount."
 	  else
 		nil
