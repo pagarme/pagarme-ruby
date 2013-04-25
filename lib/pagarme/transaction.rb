@@ -32,7 +32,7 @@ module PagarMe
 		self.card_expiracy_month = first_parameter[:card_expiracy_month]
 		self.card_expiracy_year = first_parameter[:card_expiracy_year]
 		self.card_cvv = first_parameter[:card_cvv]
-		self.installments = first_parameter[:installments]
+		self.installments = first_parameter[:installments] if first_parameter[:installments]
 		self.live = first_parameter[:live]
 		self.live = PagarMe.live unless self.live
 	  end

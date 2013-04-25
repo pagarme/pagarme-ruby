@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "pagarme"
-  spec.version       = 0.12
+  spec.version       = 0.13
   spec.authors       = ["Pedro Franceschi"]
   spec.email         = ["pedrohfranceschi@gmail.com"]
   spec.description   = %q{Gem do pagar.me para Ruby}
