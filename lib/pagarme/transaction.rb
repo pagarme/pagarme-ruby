@@ -95,7 +95,7 @@ module PagarMe
 	  raise TransactionError.new("Transaction already chargebacked!") if self.status == :chargebacked
 	  raise TransactionError.new("Transaction needs to be approved to be chargebacked") if self.status != :approved
 
-	  request = PagarMe::Request.new("/transactions/#{self.id}/chargeback/", 'POST', self.live)
+	  request = PagarMe::Request.new("/transactions/#{self.id}", 'DELETE', self.live)
 	  response = request.run
 	  update_fields_from_response(response)
 	end
