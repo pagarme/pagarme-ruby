@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'openssl'
 require 'base64'
 require File.join(File.dirname(__FILE__), '..', 'pagarme')
@@ -118,19 +119,31 @@ module PagarMe
 	  @id = response['id']
 	end
 
+	def is_valid_credit_card(card)
+	  s1 = s2 = 0
+	  card.to_s.reverse.chars.each_slice(2) do |odd, even| 
+		s1 += odd.to_i
+
+		double = even.to_i * 2
+		double -= 9 if double >= 10
+		s2 += double
+	  end
+	  (s1 + s2) % 10 == 0
+	end
+
 	def error_in_transaction
-	  if self.card_number.length < 16 || self.card_number.length > 20
-		"Invalid card number."
+	  if self.card_number.length < 16 || self.card_number.length > 20 || !is_valid_credit_card(self.card_number)
+		"Número do cartão inválido."
 	  elsif self.card_holder_name.length == 0
-		"Invalid card holder name."
+		"Nome do portador inválido."
 	  elsif self.card_expiracy_month.to_i <= 0 || self.card_expiracy_month.to_i > 12
-		"Invalid expiracy date month."
+		"Mês de expiração inválido."
 	  elsif self.card_expiracy_year.to_i <= 0
-		"Invalid expiracy date year."
+		"Ano de expiração inválido."
 	  elsif self.card_cvv.length < 3 || self.card_cvv.length > 4
-		"Invalid card security code."
+		"Código de segurança inválido."
 	  elsif self.amount.to_i <= 0
-		"Invalid amount."
+		"Valor inválido."
 	  else
 		nil
 	  end
