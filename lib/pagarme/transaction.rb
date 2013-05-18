@@ -7,7 +7,7 @@ require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
   class Transaction
-	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live, :card_hash, :installments
+	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live, :card_hash, :installments, :card_last_digits
 
 	# initializers
 
@@ -116,6 +116,7 @@ module PagarMe
 	  self.live = response['live']
 	  self.card_holder_name = response['costumer_name']
 	  self.installments = (!response['installments'] ? 1 : response['installments'].to_i)
+	  self.card_last_digits = response['card_last_digits']
 	  @id = response['id']
 	end
 
