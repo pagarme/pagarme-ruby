@@ -7,7 +7,7 @@ require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
   class Transaction
-	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live, :card_hash, :installments, :card_last_digits
+	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live, :card_hash, :installments, :card_last_digits, :postback_url
 
 	# initializers
 
@@ -21,6 +21,7 @@ module PagarMe
 
 	  self.card_number = self.card_holder_name = self.card_expiracy_month = self.card_expiracy_year = self.card_cvv = ""
 	  self.amount = 0
+	  self.postback_url = nil
 
 	  # First parameter can be a hash with transaction parameters
 	  # or a encrypted card_hash that came from client.
@@ -36,6 +37,7 @@ module PagarMe
 		self.installments = first_parameter[:installments] if first_parameter[:installments]
 		self.live = first_parameter[:live]
 		self.live = PagarMe.live unless self.live
+		self.postback_url = first_parameter[:postback_url]
 	  end
 
 	  update_fields_from_response(server_response) if server_response
@@ -85,7 +87,8 @@ module PagarMe
 	  request.parameters = {
 		:amount => self.amount.to_s,
 		:installments => self.installments.to_i,
-		:card_hash => (self.card_hash ? self.card_hash : generate_card_hash)
+		:card_hash => (self.card_hash ? self.card_hash : generate_card_hash),
+		:postback_url => self.postback_url
 	  }
 
 	  response = request.run
