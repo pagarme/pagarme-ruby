@@ -27,12 +27,12 @@ module PagarMe
 	  if first_parameter.class == String
 		self.card_hash = first_parameter
 	  elsif first_parameter.class == Hash
-		self.amount = first_parameter[:amount]
-		self.card_number = first_parameter[:card_number]
-		self.card_holder_name = first_parameter[:card_holder_name]
-		self.card_expiracy_month = first_parameter[:card_expiracy_month]
-		self.card_expiracy_year = first_parameter[:card_expiracy_year]
-		self.card_cvv = first_parameter[:card_cvv]
+		self.amount = first_parameter[:amount] || ''
+		self.card_number = first_parameter[:card_number] || ''
+		self.card_holder_name = first_parameter[:card_holder_name] || ''
+		self.card_expiracy_month = first_parameter[:card_expiracy_month] || ''
+		self.card_expiracy_year = first_parameter[:card_expiracy_year] || ''
+		self.card_cvv = first_parameter[:card_cvv] || ''
 		self.installments = first_parameter[:installments] if first_parameter[:installments]
 		self.postback_url = first_parameter[:postback_url]
 		self.payment_method = first_parameter[:payment_method] || 'credit_card'
