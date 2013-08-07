@@ -5,6 +5,7 @@ PagarMe.live = true
 
 begin
   transaction = PagarMe::Transaction.new
+  transaction.payment_method = 'boleto'
   transaction.card_number = "0000000000000000"
   transaction.card_holder_name = "Test User"
   transaction.card_expiracy_month = "12"
@@ -12,32 +13,36 @@ begin
   transaction.card_cvv = "314"
   transaction.amount = 1000
   transaction.charge
-  transaction.chargeback
+  puts transaction
+  puts transaction.payment_method
+  puts transaction.status
 
-  chargebacked_transaction = PagarMe::Transaction.find_by_id(transaction.id)
-  puts chargebacked_transaction.id == transaction.id
-  puts chargebacked_transaction.status == transaction.status
-  puts chargebacked_transaction.inspect
+  # transaction.chargeback
 
-  puts "\n\n"
+  # chargebacked_transaction = PagarMe::Transaction.find_by_id(transaction.id)
+  # puts chargebacked_transaction.id == transaction.id
+  # puts chargebacked_transaction.status == transaction.status
+  # puts chargebacked_transaction.inspect
 
-  hash_transaction = PagarMe::Transaction.new({
-	:card_number => "0000000000000000",
-	:card_holder_name => "Test User",
-	:card_expiracy_month => "12",
-	:card_expiracy_year => "13",
-	:card_cvv => "314",
-	:amount => 10000,
-	:installments => 5
-  })
-  hash_transaction.charge
-  puts hash_transaction.inspect
-  puts hash_transaction.status
+  # puts "\n\n"
 
-  puts "\n\n"
-  
-  transactions = PagarMe::Transaction.all
-  puts transactions.inspect
+  # hash_transaction = PagarMe::Transaction.new({
+	# :card_number => "0000000000000000",
+	# :card_holder_name => "Test User",
+	# :card_expiracy_month => "12",
+	# :card_expiracy_year => "13",
+	# :card_cvv => "314",
+	# :amount => 10000,
+	# :installments => 5
+  # })
+  # hash_transaction.charge
+  # puts hash_transaction.inspect
+  # puts hash_transaction.status
+
+  # puts "\n\n"
+  # 
+  # transactions = PagarMe::Transaction.all
+  # puts transactions.inspect
 rescue PagarMe::PagarMeError => e
   puts "Error: #{e}"
 end

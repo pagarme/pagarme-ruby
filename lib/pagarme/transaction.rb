@@ -7,21 +7,20 @@ require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
   class Transaction
-	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :live, :card_hash, :installments, :card_last_digits, :postback_url
+	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :card_hash, :installments, :card_last_digits, :postback_url, :payment_method
 
 	# initializers
 
 	def initialize(first_parameter = nil, server_response = nil)
-	  @statuses_codes = { :local => 0, :approved => 1, :processing => 2, :refused => 3, :chargebacked => 4 }
 	  @date_created = nil
 	  @id = nil
-	  self.status = :local
-	  self.live = PagarMe.live
+	  @status = 'local'
 	  self.installments = 1
 
 	  self.card_number = self.card_holder_name = self.card_expiracy_month = self.card_expiracy_year = self.card_cvv = ""
 	  self.amount = 0
 	  self.postback_url = nil
+	  self.payment_method = 'credit_card'
 
 	  # First parameter can be a hash with transaction parameters
 	  # or a encrypted card_hash that came from client.
@@ -35,9 +34,8 @@ module PagarMe
 		self.card_expiracy_year = first_parameter[:card_expiracy_year]
 		self.card_cvv = first_parameter[:card_cvv]
 		self.installments = first_parameter[:installments] if first_parameter[:installments]
-		self.live = first_parameter[:live]
-		self.live = PagarMe.live unless self.live
 		self.postback_url = first_parameter[:postback_url]
+		self.payment_method = first_parameter[:payment_method] || 'credit_card'
 	  end
 
 	  update_fields_from_response(server_response) if server_response
@@ -65,7 +63,7 @@ module PagarMe
 	# getters
 
 	def status
-	  @statuses_codes.key(@status)
+	  @status
 	end
 
 	def date_created
@@ -81,13 +79,14 @@ module PagarMe
 	def charge
 	  validation_error = self.card_hash ? nil : error_in_transaction
 	  raise TransactionError.new(validation_error) if validation_error
-	  raise TransactionError.new("Transaction already charged!") if self.status != :local
+	  raise TransactionError.new("Transaction already charged!") if @status != 'local'
 
-	  request = PagarMe::Request.new('/transactions', 'POST', self.live)
+	  request = PagarMe::Request.new('/transactions', 'POST')
 	  request.parameters = {
 		:amount => self.amount.to_s,
+		:payment_method => self.payment_method,
 		:installments => self.installments.to_i,
-		:card_hash => (self.card_hash ? self.card_hash : generate_card_hash),
+		:card_hash => self.payment_method == 'credit_card' ? (self.card_hash ? self.card_hash : generate_card_hash) : nil,
 		:postback_url => self.postback_url
 	  }
 
@@ -96,10 +95,11 @@ module PagarMe
 	end
 
 	def chargeback
-	  raise TransactionError.new("Transaction already chargebacked!") if self.status == :chargebacked
-	  raise TransactionError.new("Transaction needs to be approved to be chargebacked") if self.status != :approved
+	  raise TransactionError.new("Transaction already chargebacked!") if @status == 'chargebacked'
+	  raise TransactionError.new("Transaction needs to be paid to be chargebacked") if @status != 'paid'
+	  raise TransactionError.new("Boletos não podem ser cancelados") if self.payment_method != 'credit_card'
 
-	  request = PagarMe::Request.new("/transactions/#{self.id}", 'DELETE', self.live)
+	  request = PagarMe::Request.new("/transactions/#{self.id}", 'DELETE')
 	  response = request.run
 	  update_fields_from_response(response)
 	end
@@ -107,19 +107,14 @@ module PagarMe
 
 	private
 
-
-	def status=(status)
-	  @status = @statuses_codes[status]
-	end
-
 	def update_fields_from_response(response)
-	  @status = @statuses_codes[response['status'].to_sym]
+	  @status = response['status']
 	  @date_created = response['date_created']
 	  self.amount = response['amount']
-	  self.live = response['live']
 	  self.card_holder_name = response['costumer_name']
 	  self.installments = (!response['installments'] ? 1 : response['installments'].to_i)
 	  self.card_last_digits = response['card_last_digits']
+	  self.payment_method = response['payment_method']
 	  @id = response['id']
 	end
 
@@ -136,20 +131,24 @@ module PagarMe
 	end
 
 	def error_in_transaction
-	  if self.card_number.length < 16 || self.card_number.length > 20 || !is_valid_credit_card(self.card_number)
-		"Número do cartão inválido."
-	  elsif self.card_holder_name.length == 0
-		"Nome do portador inválido."
-	  elsif self.card_expiracy_month.to_i <= 0 || self.card_expiracy_month.to_i > 12
-		"Mês de expiração inválido."
-	  elsif self.card_expiracy_year.to_i <= 0
-		"Ano de expiração inválido."
-	  elsif self.card_cvv.length < 3 || self.card_cvv.length > 4
-		"Código de segurança inválido."
-	  elsif self.amount.to_i <= 0
+	  if self.amount.to_i <= 0
 		"Valor inválido."
-	  else
-		nil
+	  end
+
+	  if self.payment_method == 'credit_card'
+		if self.card_number.length < 16 || self.card_number.length > 20 || !is_valid_credit_card(self.card_number)
+		  "Número do cartão inválido."
+		elsif self.card_holder_name.length == 0
+		  "Nome do portador inválido."
+		elsif self.card_expiracy_month.to_i <= 0 || self.card_expiracy_month.to_i > 12
+		  "Mês de expiração inválido."
+		elsif self.card_expiracy_year.to_i <= 0
+		  "Ano de expiração inválido."
+		elsif self.card_cvv.length < 3 || self.card_cvv.length > 4
+		  "Código de segurança inválido."
+		else
+		  nil
+		end
 	  end
 	end
 
@@ -163,7 +162,7 @@ module PagarMe
 	end
 
 	def generate_card_hash
-	  request = PagarMe::Request.new("/transactions/card_hash_key", 'GET', self.live)
+	  request = PagarMe::Request.new("/transactions/card_hash_key", 'GET')
 	  response = request.run
 
 	  public_key = OpenSSL::PKey::RSA.new(response['public_key'])

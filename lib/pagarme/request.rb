@@ -21,9 +21,10 @@ module PagarMe
 		raise PagarMeError.new("You need to configure a API key before performing requests.")
 	  end
 
+	  self.headers = self.live ? { 'X-Live' => '1' } : {}
+
 	  parameters = self.parameters.merge({
-		:api_key => PagarMe.api_key,
-		:live => (self.live ? "1" : "0")
+		:api_key => PagarMe.api_key
 	  })
 
 	  error = nil
