@@ -4,17 +4,17 @@ PagarMe.api_key = "4f0907cdfaf855b83a5d4a83a247772f"
 PagarMe.live = true
 
 begin
-#   transaction = PagarMe::Transaction.new
-#   transaction.card_number = "0000000000000000"
-#   transaction.card_holder_name = "Test User"
-#   transaction.card_expiracy_month = "12"
-#   transaction.card_expiracy_year = "15"
-#   transaction.card_cvv = "314"
-#   transaction.amount = 1000
-#   transaction.charge
-#   puts transaction
-#   puts transaction.payment_method
-#   puts transaction.status
+  # transaction = PagarMe::Transaction.new
+  # transaction.card_number = "0000000000000000"
+  # transaction.card_holder_name = "Test User"
+  # transaction.card_expiracy_month = "12"
+  # transaction.card_expiracy_year = "15"
+  # transaction.card_cvv = "314"
+  # transaction.amount = 1000
+  # transaction.charge
+  # puts transaction
+  # puts transaction.payment_method
+  # puts transaction.status
 
   # transaction.chargeback
 
@@ -41,8 +41,8 @@ begin
 
   # puts "\n\n"
   
-  transactions = PagarMe::Transaction.all
-  puts transactions.inspect
+  # transactions = PagarMe::Transaction.all
+  # puts transactions.inspect
   
   # plan = PagarMe::Plan.new
   # plan.name = "Test Plan"
@@ -56,6 +56,17 @@ begin
   # plan.trial_days = 10
   # plan.update
   # puts plan.inspect
+
+  subscription = PagarMe::Subscription.new
+  subscription.card_number = "0000000000000000"
+  subscription.card_holder_name = "Test User"
+  subscription.card_expiracy_month = "12"
+  subscription.card_expiracy_year = "15"
+  subscription.card_cvv = "314"
+  subscription.amount = 1000
+  subscription.customer_email = "pedro@lol.com"
+  subscription.create
+  puts subscription.inspect
 rescue PagarMe::PagarMeError => e
   puts "Error: #{e}"
 end

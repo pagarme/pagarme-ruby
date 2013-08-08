@@ -1,4 +1,6 @@
 require File.join(File.dirname(__FILE__), '.', 'pagarme/model')
+require File.join(File.dirname(__FILE__), '.', 'pagarme/transaction_common')
+require File.join(File.dirname(__FILE__), '.', 'pagarme/subscription')
 require File.join(File.dirname(__FILE__), '.', 'pagarme/transaction')
 require File.join(File.dirname(__FILE__), '.', 'pagarme/plan')
 require File.join(File.dirname(__FILE__), '.', 'pagarme/request')
