@@ -3,7 +3,8 @@ require File.join(File.dirname(__FILE__), '..', 'pagarme')
 
 module PagarMe
   class Plan < Model
-	attr_accessor :id, :amount, :days, :name, :trial_days
+	attr_reader :id
+	attr_accessor :amount, :days, :name, :trial_days
 	@root_url = '/plans'
 	
 	def initialize(hash = nil, server_response = nil)
