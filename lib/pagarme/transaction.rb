@@ -2,8 +2,6 @@
 require 'openssl'
 require 'base64'
 require File.join(File.dirname(__FILE__), '..', 'pagarme')
-require File.join(File.dirname(__FILE__), '.', 'utils')
-require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
   class Transaction < Model
