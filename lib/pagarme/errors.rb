@@ -13,7 +13,7 @@ module PagarMe
 	end
   end
 
-  class TransactionError < PagarMeError
+  class RequestError < PagarMeError
   end
 
   class ConnectionError < PagarMeError

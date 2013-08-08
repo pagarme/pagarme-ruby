@@ -6,8 +6,10 @@ require File.join(File.dirname(__FILE__), '.', 'utils')
 require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
-  class Transaction
+  class Transaction < Model
+	attr_reader :date_created, :id, :status
 	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :card_hash, :installments, :card_last_digits, :postback_url, :payment_method
+	@root_url = '/transactions'
 
 	# initializers
 
@@ -41,45 +43,12 @@ module PagarMe
 	  update_fields_from_response(server_response) if server_response
 	end
 
-	def self.find_by_id(id)
-	  request = PagarMe::Request.new("/transactions/#{id}", 'GET')
-	  response = request.run
-	  PagarMe::Transaction.new(nil, response)
-	end
-
-	def self.all(page = 1, count = 10)
-	  raise TransactionError.new("Invalid page count") if page < 1 or count < 1
-
-	  request = PagarMe::Request.new('/transactions', 'GET')
-	  request.parameters = {
-		:page => page,
-		:count => count
-	  }
-
-	  response = request.run
-	  response.map { |transaction_response| PagarMe::Transaction.new(nil, transaction_response) }
-	end
-
-	# getters
-
-	def status
-	  @status
-	end
-
-	def date_created
-	  @date_created
-	end
-
-	def id
-	  @id
-	end
-
 	# server requests methods
 
 	def charge
 	  validation_error = self.card_hash ? nil : error_in_transaction
-	  raise TransactionError.new(validation_error) if validation_error
-	  raise TransactionError.new("Transaction already charged!") if @status != 'local'
+	  raise RequestError.new(validation_error) if validation_error
+	  raise RequestError.new("Transaction already charged!") if @status != 'local'
 
 	  request = PagarMe::Request.new('/transactions', 'POST')
 	  request.parameters = {
@@ -95,9 +64,9 @@ module PagarMe
 	end
 
 	def chargeback
-	  raise TransactionError.new("Transaction already chargebacked!") if @status == 'chargebacked'
-	  raise TransactionError.new("Transaction needs to be paid to be chargebacked") if @status != 'paid'
-	  raise TransactionError.new("Boletos não podem ser cancelados") if self.payment_method != 'credit_card'
+	  raise RequestError.new("Transaction already chargebacked!") if @status == 'chargebacked'
+	  raise RequestError.new("Transaction needs to be paid to be chargebacked") if @status != 'paid'
+	  raise RequestError.new("Boletos não podem ser cancelados") if self.payment_method != 'credit_card'
 
 	  request = PagarMe::Request.new("/transactions/#{self.id}", 'DELETE')
 	  response = request.run
