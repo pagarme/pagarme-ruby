@@ -35,10 +35,12 @@ module PagarMe
 
 	def amount=(new_amount)
 	  raise "'amount' não pode ser editado!" if self.id
+	  @amount = new_amount
 	end
 
 	def days=(new_days)
 	  raise "'days' não pode ser editado!" if self.id
+	  @days = new_days
 	end
 
 	def update
@@ -66,10 +68,10 @@ module PagarMe
 	private
 
 	def validate
-	  raise "'amount' inválido" if self.amount <= 0
-	  raise "'days' inválido" if self.days <= 0
-	  raise "'name' inválido" if self.name.length <= 0
-	  raise "'trial_days' inválido" if self.trial_days < 0
+	  raise "'amount' inválido" if @amount <= 0
+	  raise "'days' inválido" if @days <= 0
+	  raise "'name' inválido" if @name.length <= 0
+	  raise "'trial_days' inválido" if @trial_days < 0
 	end
   end
 end

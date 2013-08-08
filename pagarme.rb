@@ -44,28 +44,30 @@ begin
   # transactions = PagarMe::Transaction.all
   # puts transactions.inspect
   
-  # plan = PagarMe::Plan.new
-  # plan.name = "Test Plan"
-  # plan.amount = 1000
-  # plan.days = 30
-  # plan.create
+  plan = PagarMe::Plan.new
+  plan.name = "Test Plan"
+  plan.amount = 1000
+  plan.days = 30
+  plan.create
 
   # puts plan.inspect
   #
   # plan = PagarMe::Plan.find_by_id(2)
-  # plan.trial_days = 10
-  # plan.update
-  # puts plan.inspect
+  puts plan.inspect
 
   subscription = PagarMe::Subscription.new
+  # subscription.payment_method = "boleto"
   subscription.card_number = "0000000000000000"
   subscription.card_holder_name = "Test User"
   subscription.card_expiracy_month = "12"
   subscription.card_expiracy_year = "15"
   subscription.card_cvv = "314"
-  subscription.amount = 1000
+  subscription.plan = plan
+  # subscription.amount = 1000
   subscription.customer_email = "pedro@lol.com"
   subscription.create
+
+  # subscription.charge(1750)
   puts subscription.inspect
 rescue PagarMe::PagarMeError => e
   puts "Error: #{e}"

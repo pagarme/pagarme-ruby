@@ -37,6 +37,20 @@ module PagarMe
 
 	  request.parameters[:plan_id] = self.plan.id if self.plan
 
+	  puts request.parameters.inspect
+
+	  response = request.run
+	  update_fields_from_response(response)
+	end
+
+	def charge(amount)
+	  raise RequestError.new("Subscription não é variável") if self.plan
+
+	  request = PagarMe::Request.new("/subscriptions/#{self.id}", 'POST')
+	  request.parameters = {
+		:amount => amount,
+	  }
+
 	  response = request.run
 	  update_fields_from_response(response)
 	end
