@@ -3,16 +3,11 @@ require File.join(File.dirname(__FILE__), '..', 'pagarme')
 
 module PagarMe
   class TransactionCommon < Model
-	attr_accessor :amount, :card_number, :card_holder_name, :card_expiracy_month, :card_expiracy_year, :card_cvv, :card_hash, :payment_method
 
-	def fill_fields_from_hash(hash)
-	  self.amount = hash[:amount] || ''
-	  self.card_number = hash[:card_number] || ''
-	  self.card_holder_name = hash[:card_holder_name] || ''
-	  self.card_expiracy_month = hash[:card_expiracy_month] || ''
-	  self.card_expiracy_year = hash[:card_expiracy_year] || ''
-	  self.card_cvv = hash[:card_cvv] || ''
-	  self.payment_method = hash[:payment_method] || 'credit_card'
+	def initialize(response = {})
+	  super(response)
+	  self.payment_method = 'credit_card' unless self.payment_method
+	  self.installments = 1 unless self.installments
 	end
 
 	def is_valid_credit_card(card)
@@ -63,7 +58,7 @@ module PagarMe
 	  response = request.run
 
 	  public_key = OpenSSL::PKey::RSA.new(response['public_key'])
-	  "#{response['id']}_#{Base64.strict_encode64(public_key.public_encrypt(card_data_parameters.to_params))}"
+	  ret = "#{response['id']}_#{Base64.strict_encode64(public_key.public_encrypt(card_data_parameters.to_params))}"
 	end
   end
 end

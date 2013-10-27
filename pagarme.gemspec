@@ -5,10 +5,10 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 Gem::Specification.new do |spec|
   spec.name          = "pagarme"
   spec.version       = 0.15
-  spec.authors       = ["Pedro Franceschi"]
-  spec.email         = ["pedrohfranceschi@gmail.com"]
-  spec.description   = %q{Gem do pagar.me para Ruby}
-  spec.summary       = %q{Permite a integração com a API do pagar.me por Ruby.}
+  spec.authors       = ["Pedro Franceschi", "Henrique Dubugras"]
+  spec.email         = ["pedrohfranceschi@gmail.com", "henrique@pagar.me"]
+  spec.description   = %q{Pagar.me's ruby gem}
+  spec.summary       = %q{Allows integration with Pagar.me}
   spec.homepage      = "http://pagar.me/"
 
   spec.files         = `git ls-files`.split($/)
@@ -18,6 +18,8 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency('shoulda', '~> 3.4.0')
+  spec.add_development_dependency('test-unit')
 
   spec.add_dependency "rest-client"
   spec.add_dependency "multi_json"

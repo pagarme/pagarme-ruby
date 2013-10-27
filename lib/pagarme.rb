@@ -1,3 +1,5 @@
+require File.join(File.dirname(__FILE__), '.', 'pagarme/pagarmeobject')
+require File.join(File.dirname(__FILE__), '.', 'pagarme/util')
 require File.join(File.dirname(__FILE__), '.', 'pagarme/model')
 require File.join(File.dirname(__FILE__), '.', 'pagarme/transaction_common')
 require File.join(File.dirname(__FILE__), '.', 'pagarme/subscription')
@@ -9,7 +11,7 @@ require File.join(File.dirname(__FILE__), '.', 'pagarme/errors')
 module PagarMe
 
   @@api_key = nil
-  @@api_endpoint = 'https://0.0.0.0:3001'
+  @@api_endpoint = 'https://api.pagar.me'
   @@api_version = '1'
   @@live = true
   @@api_card_encryption_public_key = File.join(File.dirname(__FILE__), '..', 'certs/public_key.pem')
@@ -37,16 +39,5 @@ module PagarMe
   def self.live=(live)
 	@@live = live
   end
-
-  # def self.request(method, url, parameters)
-  # 	request_options = {
-  # 		:method => method,
-  # 		:url => self.full_api_url(url)
-  # 		:headers => nil,
-  # 		:open_timeout => 30,
-  # 		:payload => payload,
-  # 		:timeout => 80,
-  # 	}
-  # end
 
 end
