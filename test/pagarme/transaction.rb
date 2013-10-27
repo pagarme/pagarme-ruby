@@ -47,6 +47,9 @@ module PagarMe
 	  assert transaction.status == 'refunded'
 	end
 
+	should 'validate invalid transaction' do
+	end
+
 
   end
 end
