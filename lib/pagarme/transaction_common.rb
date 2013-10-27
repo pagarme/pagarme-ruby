@@ -29,7 +29,7 @@ module PagarMe
 	  end
 
 	  if self.payment_method == 'credit_card'
-		if self.card_number.length < 16 || self.card_number.length > 20 || !is_valid_credit_card(self.card_number)
+		if self.card_number.to_s.length < 16 || self.card_number.to_s.length > 20 || !is_valid_credit_card(self.card_number.to_s)
 		  "Número do cartão inválido."
 		elsif self.card_holder_name.length == 0
 		  "Nome do portador inválido."
@@ -37,7 +37,7 @@ module PagarMe
 		  "Mês de expiração inválido."
 		elsif self.card_expiracy_year.to_i <= 0
 		  "Ano de expiração inválido."
-		elsif self.card_cvv.length < 3 || self.card_cvv.length > 4
+		elsif self.card_cvv.to_s.length < 3 || self.card_cvv.to_s.length > 4
 		  "Código de segurança inválido."
 		else
 		  nil

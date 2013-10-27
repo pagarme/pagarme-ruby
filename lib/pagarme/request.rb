@@ -1,7 +1,7 @@
 require 'uri'
 require 'rest_client'
 require 'multi_json'
-require File.join(File.dirname(__FILE__), '.', 'utils')
+require File.join(File.dirname(__FILE__), '.', 'util')
 require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
@@ -14,6 +14,11 @@ module PagarMe
 	  self.live = live
 	  self.parameters = {}
 	  self.headers = {}
+	end
+
+	def self.url_encode(params)
+	  Util.flatten_params(params).
+		map { |k,v| "#{k}=#{Util.url_encode(v)}" }.join('&')
 	end
 
 	def run
@@ -35,7 +40,7 @@ module PagarMe
 		  :url => PagarMe.full_api_url(self.path),
 		  :headers => self.headers,
 		  :open_timeout => 30,
-		  :payload => parameters.to_params,
+		  :payload => self.class.url_encode(parameters),
 		  :timeout => 90,
 		  :verify_ssl => false # TODO: change to verify SSL
 		})
@@ -48,17 +53,12 @@ module PagarMe
 		  raise
 		end
 	  rescue RestClient::ExceptionWithResponse => e
-		if e.http_code and e.http_body
-		  parsed_error = parse_json_response(e.http_body)
-		  if parsed_error['errors']
-			error = parsed_error
-			raise PagarMeError.initFromServerResponse(error)
-		  else
-			error = "Invalid response code (#{e.http_code})."
-			raise PagarMeError.new(error)
-		  end
+		parsed_error = parse_json_response(e.http_body)
+		if parsed_error['errors']
+		  error = parsed_error
+		  raise PagarMeError.initFromServerResponse(error)
 		else
-		  raise PagarMeError.new("Unexpected response code (#{e.message} - #{e.http_code})")
+		  raise PagarMeError.new(e.http_body)
 		end
 	  rescue RestClient::Exception, Errno::ECONNREFUSED => e
 		error = "Error connecting to server: connection refused"

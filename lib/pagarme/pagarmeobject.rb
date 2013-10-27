@@ -40,9 +40,15 @@ module PagarMe
 	end
 
 	def to_hash
-	  @values
+	  @values.each do |k,v|
+			@values[k] = @values[k].to_hash if @values[k].kind_of?(PagarMeObject) 	
+	  end
 	end
 
+	def inspect()
+      id_string = (self.respond_to?(:id) && !self.id.nil?) ? " id=#{self.id}" : ""
+      "#<#{self.class}:0x#{self.object_id.to_s(16)}#{id_string}> JSON: " + MultiJson.dump(@values, :pretty => true)
+    end
 	protected
 
 	def metaclass

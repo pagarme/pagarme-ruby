@@ -55,9 +55,9 @@ end
 
 def test_transaction_with_customer(params = {})
   return PagarMe::Transaction.new({
-	:amount => 70000,
+	:amount => 1000,
 	:card_number => '4901720080344448', 
-	:card_holder_name => "Jose da silva", 
+	:card_holder_name => "Jose da Silva", 
 	:card_expiracy_month => 11, 
 	:card_expiracy_year => "13", 
 	:card_cvv => 356, 
@@ -83,11 +83,11 @@ end
 
 def test_subscription_with_customer(params = {})
   return PagarMe::Subscription.new({
-	:amount => 70000,
+	:amount => 1000,
 	:card_number => '4901720080344448', 
 	:card_holder_name => "Jose da silva", 
 	:card_expiracy_month => 11, 
-	:card_expiracy_year => "13", 
+	:card_expiracy_year => 13, 
 	:card_cvv => 356, 
 	:customer_email => 'teste@teste.com',
 	:customer => { 
@@ -108,6 +108,19 @@ def test_subscription_with_customer(params = {})
 	  :born_at => '1970-10-11'	
 	}
   }.merge(params))
+end
+
+
+def test_customer_response(customer)
+  assert customer.id
+  assert customer.addresses.class == Array
+  assert customer.phones.class == Array
+  assert customer.document_type == 'cpf'
+  assert customer.name == 'Jose da Silva'
+  assert customer.born_at
+  assert customer.id
+  assert customer.addresses[0].class == PagarMe::Address
+  assert customer.phones[0].class == PagarMe::Phone
 end
 
 def test_transaction_response(transaction)
