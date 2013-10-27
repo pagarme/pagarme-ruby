@@ -1,11 +1,23 @@
 module PagarMe
   class PagarMeError < StandardError
-	attr_reader :message
-	attr_reader :original_error
+	attr_accessor :message
+	attr_accessor :parameter_name
+	attr_accessor :type
+	attr_accessor :url
+	attr_accessor :errors
 
-	def initialize(message=nil, original_error=nil)
-	  @message = message
-	  @original_error = original_error
+	def initialize(message = "", url = "", parameter_name = "", type = "") 
+	  self.message = message
+	  self.type = type
+	  self.parameter_name = parameter_name
+	  self.errors = []
+	end
+
+	def self.initFromServerResponse(response = {})
+		response.errors.map do |error|
+		  self.message += error.message + ', '
+		  self.errors << PagarMeError.new(error.message, response.url, error.parameter_name, error.type)
+		end
 	end
 	
 	def to_s

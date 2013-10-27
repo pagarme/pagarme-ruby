@@ -5,23 +5,27 @@ module PagarMe
 
 	should 'be able to charge' do
 		transaction = test_transaction
+		assert transaction.status == 'local'
 		transaction.charge
-
-		assert transaction.id
-
-		assert transaction.card_holder_name
 		assert transaction.status == 'paid'
-		assert !transaction.refuse_reason 
-		assert transaction.date_created
-		assert transaction.amount == 1000
-		assert transaction.installments == "1"
-		assert transaction.card_holder_name == 'Jose da Silva'
-		# assert transaction.card_brand == 'visa'
-		assert transaction.payment_method == 'credit_card'
-		assert !transaction.boleto_url
-		assert !transaction.boleto_barcode
-		assert !transaction.subscription_id
+		test_transaction_response(transaction)
 	end
 
+	should 'be able to refund' do
+	  transaction = test_transaction
+	  transaction.charge
+	  test_transaction_response(transaction)
+	  transaction.refund
+	  assert transaction.status == 'refunded'
+	end
+
+	should 'be able to find a transaction' do
+	  transaction = test_transaction
+	  transaction.charge
+	  test_transaction_response(transaction)
+
+	  transaction_2 = PagarMe::Transaction.find_by_id(transaction.id)
+	  assert transaction_2.id == transaction.id
+	end
   end
 end

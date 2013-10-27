@@ -27,14 +27,14 @@ module PagarMe
 	  refresh_from(response)
 	end
 
-	def chargeback
-	  raise RequestError.new("Transaction already chargebacked!") if @status == 'chargebacked'
-	  raise RequestError.new("Transaction needs to be paid to be chargebacked") if @status != 'paid'
-	  raise RequestError.new("Boletos não podem ser cancelados") if self.payment_method != 'credit_card'
+	def refund
+	  raise RequestError.new("Transação já estornada") if self.status == 'refunded'
+	  raise RequestError.new("Transação precisa estar paga para ser estornada") if self.status != 'paid'
+	  raise RequestError.new("Boletos não pode ser estornados") if self.payment_method != 'credit_card'
 
-	  request = PagarMe::Request.new("/transactions/#{self.id}", 'DELETE')
+	  request = PagarMe::Request.new(self.url + '/refund', 'POST')
 	  response = request.run
-	  update_fields_from_response(response)
+	  refresh_from(response)
 	end
   end
 end

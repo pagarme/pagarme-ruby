@@ -13,24 +13,14 @@ module PagarMe
 	end
 
 	def url
-	  unless id = self['id']
-		raise PagarMeError.new("ID invalido", 'id')
-	  end
-	  "/#{self.class.url}/#{CGI.escape(id)}"
-	end
-
-	def create
-	  request = PagarMe::Request.new(self.class.url, 'POST')
-	  request.parameters = @values
-	  response = request.run
-	  refresh_from(response)
+		raise PagarMeError.new("ID invalido", 'id') if !self.id
+	  "#{self.class.url}/#{CGI.escape(id.to_s)}"
 	end
 
 	def self.find_by_id(id)
-	  request = PagarMe::Request.new("#{url}/#{id}", 'GET')
+	  request = PagarMe::Request.new(self.url + "/#{id}", 'GET')
 	  response = request.run
-	  object = self.new(response)
-	  object.refresh_from(resposne)
+	  PagarMe::Util.convert_to_pagarme_object(response)
 	end
 
 	def self.all(page = 1, count = 10)

@@ -51,14 +51,15 @@ module PagarMe
 		if e.http_code and e.http_body
 		  parsed_error = parse_json_response(e.http_body)
 		  if parsed_error['error']
-			error = "HTTP error #{e.http_code}: #{parsed_error['error']}"
+			error = parsed_error
+			raise PagarMeError.initFromServerResponse(error)
 		  else
 			error = "Invalid response code (#{e.http_code})."
+			raise PagarMeError.new(message)
 		  end
 		else
-		  error = "Unexpected response code (#{e.message} - #{e.http_code})"
+		  raise PagarMeError.new("Unexpected response code (#{e.message} - #{e.http_code})")
 		end
-		raise ResponseError.new(error)
 	  rescue RestClient::Exception, Errno::ECONNREFUSED => e
 		error = "Error connecting to server: connection refused"
 	  end
@@ -74,7 +75,7 @@ module PagarMe
 	  begin
 		MultiJson.load(response)
 	  rescue MultiJson::LoadError => e
-		raise ResponseError.new("Server response is not a valid JSON.")
+		raise PagarMeError.new("Server response is not a valid JSON.")
 	  end
 	end
   end

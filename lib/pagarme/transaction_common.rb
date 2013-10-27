@@ -8,6 +8,7 @@ module PagarMe
 	  super(response)
 	  self.payment_method = 'credit_card' unless self.payment_method
 	  self.installments = 1 unless self.installments
+	  self.status = 'local' unless self.status
 	end
 
 	def is_valid_credit_card(card)

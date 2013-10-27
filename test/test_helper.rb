@@ -110,6 +110,21 @@ def test_subscription_with_customer(params = {})
   }.merge(params))
 end
 
+def test_transaction_response(transaction)
+		assert transaction.id
+		assert transaction.card_holder_name
+		assert !transaction.refuse_reason 
+		assert transaction.date_created
+		assert transaction.amount == 1000
+		assert transaction.installments == "1"
+		assert transaction.card_holder_name == 'Jose da Silva'
+		# assert transaction.card_brand == 'visa'
+		assert transaction.payment_method == 'credit_card'
+		assert !transaction.boleto_url
+		assert !transaction.boleto_barcode
+		assert !transaction.subscription_id
+end
+
 class Test::Unit::TestCase
   setup do
     PagarMe.api_key="ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo"
