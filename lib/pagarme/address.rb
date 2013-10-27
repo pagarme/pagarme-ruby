@@ -1,4 +1,4 @@
 module PagarMe
-  class Address
+  class Address < Model
   end
 end

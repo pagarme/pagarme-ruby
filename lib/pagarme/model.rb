@@ -17,6 +17,14 @@ module PagarMe
 	  "#{self.class.url}/#{CGI.escape(id.to_s)}"
 	end
 
+	def create
+	  request = PagarMe::Request.new(self.class.url, 'POST')
+	  request.parameters = self.to_hash
+	  response = request.run
+	  refresh_from(response)
+	end
+
+
 	def self.find_by_id(id)
 	  request = PagarMe::Request.new(self.url + "/#{id}", 'GET')
 	  response = request.run

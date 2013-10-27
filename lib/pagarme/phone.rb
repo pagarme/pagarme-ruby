@@ -1,4 +1,4 @@
 module PagarMe
-  class Phone
+  class Phone < Model
   end
 end

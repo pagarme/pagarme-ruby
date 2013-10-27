@@ -1,4 +1,4 @@
 module PagarMe
-  class Customer
+  class Customer < Model
   end
 end

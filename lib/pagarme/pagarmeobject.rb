@@ -39,7 +39,9 @@ module PagarMe
 	  @values[key.to_sym]
 	end
 
-
+	def to_hash
+	  @values
+	end
 
 	protected
 

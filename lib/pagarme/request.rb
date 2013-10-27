@@ -50,12 +50,12 @@ module PagarMe
 	  rescue RestClient::ExceptionWithResponse => e
 		if e.http_code and e.http_body
 		  parsed_error = parse_json_response(e.http_body)
-		  if parsed_error['error']
+		  if parsed_error['errors']
 			error = parsed_error
 			raise PagarMeError.initFromServerResponse(error)
 		  else
 			error = "Invalid response code (#{e.http_code})."
-			raise PagarMeError.new(message)
+			raise PagarMeError.new(error)
 		  end
 		else
 		  raise PagarMeError.new("Unexpected response code (#{e.message} - #{e.http_code})")

@@ -8,23 +8,23 @@ module PagarMe
 
 	# server requests methods
 
+	def to_hash
+	  {
+		:amount => self.amount,
+		:payment_method => self.payment_method,
+		:installments => self.installments,
+		:card_hash => (self.payment_method == 'credit_card' ? self.card_hash : nil),
+		:postback_url => self.postback_url,
+		:customer => (self.customer) ? self.customer.to_hash : nil
+	  }
+	end
+
 	def charge
 	  validation_error = self.card_hash ? nil : error_in_transaction
 	  raise RequestError.new(validation_error) if validation_error
 	  raise RequestError.new("Transaction already charged!") if self.status != 'local' && self.status
-
-	  request = PagarMe::Request.new(self.class.url, 'POST')
 	  self.card_hash = generate_card_hash unless self.card_hash
-	  request.parameters = {
-		:amount => self.amount.to_s,
-		:payment_method => self.payment_method,
-		:installments => self.installments.to_i,
-		:card_hash => self.payment_method == 'credit_card' ? self.card_hash : nil,
-		:postback_url => self.postback_url
-	  }
-
-	  response = request.run
-	  refresh_from(response)
+	  create
 	end
 
 	def refund

@@ -14,10 +14,12 @@ module PagarMe
 	end
 
 	def self.initFromServerResponse(response = {})
-		response.errors.map do |error|
-		  self.message += error.message + ', '
-		  self.errors << PagarMeError.new(error.message, response.url, error.parameter_name, error.type)
+	  object = self.new
+		response['errors'].map do |error|
+		  object.message += error['message'] + ', '
+		  object.errors << PagarMeError.new(error['message'], response['url'], error['parameter_name'], error['type'] )
 		end
+		object
 	end
 	
 	def to_s
