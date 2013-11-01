@@ -16,9 +16,8 @@ module PagarMe
 	  self.headers = {}
 	end
 
-	def self.url_encode(params)
-	  Util.flatten_params(params).
-		map { |k,v| "#{k}=#{Util.url_encode(v)}" }.join('&')
+	def self.encode(params)
+	  Util.normalize_params(params).to_params
 	end
 
 	def run
@@ -40,7 +39,7 @@ module PagarMe
 		  :url => PagarMe.full_api_url(self.path),
 		  :headers => self.headers,
 		  :open_timeout => 30,
-		  :payload => self.class.url_encode(parameters),
+		  :payload => self.class.encode(parameters),
 		  :timeout => 90,
 		  :verify_ssl => false # TODO: change to verify SSL
 		})

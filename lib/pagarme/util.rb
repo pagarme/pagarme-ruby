@@ -16,7 +16,7 @@ module PagarMe
 	  when Array
 		response.map{ |i| convert_to_pagarme_object(i)}
 	  when Hash
-		self.pagarme_classes.fetch(response['object'], PagarMeObject).construct_from(response)
+		self.pagarme_classes.fetch(response['object'], PagarMeObject).build(response)
 	  else
 		response
 	  end
@@ -26,41 +26,50 @@ module PagarMe
 	  URI.escape(key.to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
 	end
 
-	def self.flatten_params(params, parent_key=nil)
-	  result = []
-	  params.each do |key, value|
-		calculated_key = parent_key ? "#{parent_key}[#{url_encode(key)}]" : url_encode(key)
-		if value.is_a?(Hash)
-		  result += flatten_params(value, calculated_key)
-		elsif value.is_a?(Array)
-		  result += flatten_params_array(value, calculated_key)
+
+	def self.normalize_params(parameters, parent = nil)
+	  ret = []
+	  parameters.each do |k, v|
+		current_key = parent ? "#{parent}[#{url_encode(k)}]" : url_encode(k)
+		case v
+		when Hash
+		  ret += normalize_params(v, current_key)
+		when Array
+		  ret += normalize_array_params(v, current_key)
 		else
-		  result << [calculated_key, value]
+		  ret << [current_key, v]
 		end
 	  end
-	  result
+	  ret
 	end
 
-	def self.flatten_params_array(value, calculated_key)
-	  result = []
-	  value.each do |elem|
-		if elem.is_a?(Hash)
-		  result += flatten_params(elem, calculated_key)
-		elsif elem.is_a?(Array)
-		  result += flatten_params_array(elem, calculated_key)
+	def self.normalize_array_params(value, current_key)
+	  ret = []
+	  value.each do |element|
+		case element
+		when Hash
+		  ret += normalize_params(element, current_key)
+		when Array
+		  ret += normalize_array_params(element, current_key)
 		else
-		  result << ["#{calculated_key}[]", elem]
+		  ret << ["#{current_key}[]", element]
 		end
 	  end
-	  result
+	  ret
 	end
   end
-
 end
 
 class Hash
   def to_params
-	self.collect{ |key, value| "#{key}=#{value}" }.join('&')
+	self.map{ |key, value| "#{key}=#{value}" }.join('&')
   end
 end
+
+class Array
+  def to_params
+	self.map{ |key, value| "#{key}=#{value}" }.join('&')
+  end
+end
+
 

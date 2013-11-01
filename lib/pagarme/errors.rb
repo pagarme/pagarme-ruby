@@ -6,7 +6,7 @@ module PagarMe
 	attr_accessor :url
 	attr_accessor :errors
 
-	def initialize(message = "", url = "", parameter_name = "", type = "") 
+	def initialize(message = "", parameter_name = "", type = "", url = "") 
 	  self.message = message
 	  self.type = type
 	  self.parameter_name = parameter_name
@@ -17,7 +17,7 @@ module PagarMe
 	  object = self.new
 		response['errors'].map do |error|
 		  object.message += error['message'] + ', '
-		  object.errors << PagarMeError.new(error['message'], response['url'], error['parameter_name'], error['type'] )
+		  object.errors << PagarMeError.new(error['message'],  error['parameter_name'], error['type'], response['url'])
 		end
 		object
 	end

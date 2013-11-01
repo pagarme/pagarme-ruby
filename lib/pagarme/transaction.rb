@@ -5,7 +5,6 @@ require File.join(File.dirname(__FILE__), '..', 'pagarme')
 
 module PagarMe
   class Transaction < TransactionCommon
-
 	# server requests methods
 
 	def to_hash
@@ -34,7 +33,7 @@ module PagarMe
 
 	  request = PagarMe::Request.new(self.url + '/refund', 'POST')
 	  response = request.run
-	  refresh_from(response)
+	  update(response)
 	end
   end
 end

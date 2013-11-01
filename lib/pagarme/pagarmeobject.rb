@@ -6,49 +6,45 @@ module PagarMe
 	end
 
 	def initialize(response = {})
-	  @values = {}
-	  refresh_from(response)
+	  @attributes = {}
+	  update(response)
 	end
 
-	def self.construct_from(values)
-	  object = self.new(values)
+	def self.build(attributes)
+	  object = self.new(attributes)
 	  return object
 	end
 
-	def refresh_from(values)
+	def update(attributes)
 	  instance_eval do
-		remove_acessors(@values.keys)
-		add_accessors(values.keys)
+		remove_attribute(@attributes.keys)
+		add_attribute(attributes.keys)
 	  end
-	  @values = Hash.new
+	  @attributes = Hash.new
 
-	  values.each do |key,value|
-		@values[key] = Util.convert_to_pagarme_object(value)
+	  attributes.each do |key,value|
+		@attributes[key] = Util.convert_to_pagarme_object(value)
 	  end
 	end
 
 	def each(&block)
-	  @values.each(&block)
+	  @attributes.each(&block)
 	end
 
 	def []=(key,value)
-	  @values[key] = value
+	  @attributes[key] = value
 	end
 
 	def [](key)
-	  @values[key.to_sym]
+	  @attributes[key.to_sym]
 	end
 
 	def to_hash
-	  @values.each do |k,v|
-			@values[k] = @values[k].to_hash if @values[k].kind_of?(PagarMeObject) 	
+	  @attributes.each do |k,v|
+			@attributes[k] = @attributes[k].to_hash if @attributes[k].kind_of?(PagarMeObject) 	
 	  end
 	end
 
-	def inspect()
-      id_string = (self.respond_to?(:id) && !self.id.nil?) ? " id=#{self.id}" : ""
-      "#<#{self.class}:0x#{self.object_id.to_s(16)}#{id_string}> JSON: " + MultiJson.dump(@values, :pretty => true)
-    end
 	protected
 
 	def metaclass
@@ -56,7 +52,7 @@ module PagarMe
 	end
 
 
-	def remove_acessors(keys)
+	def remove_attribute(keys)
 	  metaclass.instance_eval do
 		keys.each do |key|
 		  key_sym = :"#{key}="
@@ -66,16 +62,16 @@ module PagarMe
 	  end
 	end
 
-	def add_accessors(keys)
+	def add_attribute(keys)
 	  metaclass.instance_eval do
 		keys.each do |key| 
 		  key_set = "#{key}="
-		  define_method(key) { @values[key] }
+		  define_method(key) { @attributes[key] }
 		  define_method(key_set) do |value|
 			if v == ""
 			  raise ArgumentError.new("Voce nao pode atribuir a #{key} uma string vazia.")
 			end
-			@values[key] = value
+			@attributes[key] = value
 		  end
 		end
 	  end
@@ -84,7 +80,7 @@ module PagarMe
 	def method_missing(name, *args)
 	  if name.to_s.end_with?('=')
 		attr = name.to_s[0...-1].to_sym
-		add_accessors([attr])
+		add_attribute([attr])
 		begin
 		  mth = method(name)
 		rescue NameError
@@ -92,7 +88,7 @@ module PagarMe
 		end
 		return mth.call(args[0])
 	  else
-		return @values[name] if @values.has_key?(name)
+		return @attributes[name] if @attributes.has_key?(name)
 	  end
 	end
   end

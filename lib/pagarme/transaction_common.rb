@@ -25,31 +25,33 @@ module PagarMe
 
 	def error_in_transaction
 	  if self.amount.to_i <= 0
-		"Valor inválido."
+		raise PagarMeError.new("Valor inválido. Valor: #{self.amount}", 'amount')
 	  end
 
 	  if self.payment_method == 'credit_card'
 		if self.card_number.to_s.length < 16 || self.card_number.to_s.length > 20 || !is_valid_credit_card(self.card_number.to_s)
-		  "Número do cartão inválido."
+		  raise PagarMeError.new("Número do cartão inválido.", 'card_number')
 		elsif self.card_holder_name.length == 0
-		  "Nome do portador inválido."
-		elsif self.card_expiracy_month.to_i <= 0 || self.card_expiracy_month.to_i > 12
-		  "Mês de expiração inválido."
-		elsif self.card_expiracy_year.to_i <= 0
-		  "Ano de expiração inválido."
+		  raise PagarMeError.new("Nome do portador inválido.", 'card_holder_name')
+		elsif self.card_expiration_month.to_i <= 0 || self.card_expiration_month.to_i > 12
+		  raise PagarMeError.new("Mês de expiração inválido.", 'card_expiration_date')
+		elsif self.card_expiration_year.to_i <= 0
+		  raise PagarMeError.new("Ano de expiração inválido.", 'card_expiration_date')
 		elsif self.card_cvv.to_s.length < 3 || self.card_cvv.to_s.length > 4
-		  "Código de segurança inválido."
+		  raise PagarMeError.new("Código de segurança inválido.", 'card_cvv')
 		else
 		  nil
 		end
 	  end
 	end
 
+
+
 	def card_data_parameters
 	  {
 		:card_number => self.card_number,
 		:card_holder_name => self.card_holder_name,
-		:card_expiracy_date => "#{self.card_expiracy_month}#{self.card_expiracy_year}",
+		:card_expiration_date => "#{self.card_expiration_month}#{self.card_expiration_year}",
 		:card_cvv => self.card_cvv
 	  }
 	end

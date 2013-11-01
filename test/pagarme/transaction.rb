@@ -48,6 +48,26 @@ module PagarMe
 	end
 
 	should 'validate invalid transaction' do
+	  # transaction = PagarMe::Transaction.new({
+	  # 	:card_number => '123456',
+	#	:card_holder_name => "Jose da Silva",
+	  # })
+
+	  # transaction.charge
+	  # assert_raise PagarMeError 
+
+	  # # transaction.card_number = '4901720080344448'
+	  # # transaction.amount = -10
+
+	  # # assert_raise PagarMeError
+
+	  # # transaction.amount = 1000
+	  # # transaction.card_expiration_year = 12
+	  # # transaction.card_expiration_month = 1
+
+	  # # assert_raise PagarMeError
+
+
 	end
 
 
