@@ -9,6 +9,7 @@ module PagarMe
 	  self.payment_method = 'credit_card' unless self.payment_method
 	  self.installments = 1 unless self.installments
 	  self.status = 'local' unless self.status
+	  before_set_filter :amount, :format_amount
 	end
 
 	def is_valid_credit_card(card)
@@ -29,23 +30,31 @@ module PagarMe
 	  end
 
 	  if self.payment_method == 'credit_card'
-		if self.card_number.to_s.length < 16 || self.card_number.to_s.length > 20 || !is_valid_credit_card(self.card_number.to_s)
+		if !self.card_number || self.card_number.to_s.length < 16 || self.card_number.to_s.length > 20 || !is_valid_credit_card(self.card_number.to_s)
 		  raise PagarMeError.new("Número do cartão inválido.", 'card_number')
-		elsif self.card_holder_name.length == 0
+		elsif !self.card_holder_name || !self.card_holder_name || self.card_holder_name.length == 0
 		  raise PagarMeError.new("Nome do portador inválido.", 'card_holder_name')
-		elsif self.card_expiration_month.to_i <= 0 || self.card_expiration_month.to_i > 12
+		elsif !self.card_expiration_month || self.card_expiration_month.to_i <= 0 || self.card_expiration_month.to_i > 12
 		  raise PagarMeError.new("Mês de expiração inválido.", 'card_expiration_date')
-		elsif self.card_expiration_year.to_i <= 0
+		elsif !self.card_expiration_year || self.card_expiration_year.to_i <= 0
 		  raise PagarMeError.new("Ano de expiração inválido.", 'card_expiration_date')
-		elsif self.card_cvv.to_s.length < 3 || self.card_cvv.to_s.length > 4
+		elsif !self.card_cvv || self.card_cvv.to_s.length < 3 || self.card_cvv.to_s.length > 4
 		  raise PagarMeError.new("Código de segurança inválido.", 'card_cvv')
 		else
 		  nil
 		end
 	  end
 	end
-
-
+	
+	def format_amount(amount)
+	  if amount.kind_of?(String)
+		value = amount.gsub(/\./, "")
+		value = value.strip
+		value = value.match(/\d+/)[0]
+		amount = value
+	  end
+	  amount
+	end
 
 	def card_data_parameters
 	  {

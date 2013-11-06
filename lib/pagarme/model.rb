@@ -21,7 +21,7 @@ module PagarMe
 	  request = PagarMe::Request.new(self.class.url, 'POST')
 	  request.parameters = self.to_hash
 	  response = request.run
-	  refresh_from(response)
+	  update(response)
 	end
 
 

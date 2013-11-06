@@ -7,6 +7,7 @@ module PagarMe
 
 	def initialize(response = {})
 	  @attributes = {}
+	  @filters = Hash.new
 	  update(response)
 	end
 
@@ -41,7 +42,7 @@ module PagarMe
 
 	def to_hash
 	  @attributes.each do |k,v|
-			@attributes[k] = @attributes[k].to_hash if @attributes[k].kind_of?(PagarMeObject) 	
+		@attributes[k] = @attributes[k].to_hash if @attributes[k].kind_of?(PagarMeObject) 	
 	  end
 	end
 
@@ -68,13 +69,23 @@ module PagarMe
 		  key_set = "#{key}="
 		  define_method(key) { @attributes[key] }
 		  define_method(key_set) do |value|
-			if v == ""
-			  raise ArgumentError.new("Voce nao pode atribuir a #{key} uma string vazia.")
+			if @filters[key]
+			  @filters[key].each do |meth| 
+				if methods.include?(meth)
+				  @attributes[key] = method(meth).call(value)
+				end
+			  end
+			else 
+			  @attributes[key] = value
 			end
-			@attributes[key] = value
 		  end
 		end
 	  end
+	end
+
+	def before_set_filter(attribute, method) 
+	  @filters[attribute.to_sym] ||= Array.new unless @filters[attribute.to_sym]
+	  @filters[attribute.to_sym] << method.to_sym
 	end
 
 	def method_missing(name, *args)

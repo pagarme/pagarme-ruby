@@ -47,29 +47,83 @@ module PagarMe
 	  assert transaction.status == 'refunded'
 	end
 
-	should 'validate invalid transaction' do
-	  # transaction = PagarMe::Transaction.new({
-	  # 	:card_number => '123456',
-	#	:card_holder_name => "Jose da Silva",
-	  # })
-
-	  # transaction.charge
-	  # assert_raise PagarMeError 
-
-	  # # transaction.card_number = '4901720080344448'
-	  # # transaction.amount = -10
-
-	  # # assert_raise PagarMeError
-
-	  # # transaction.amount = 1000
-	  # # transaction.card_expiration_year = 12
-	  # # transaction.card_expiration_month = 1
-
-	  # # assert_raise PagarMeError
-
-
+	should 'should allow transactions with R$ amount' do
+	  transaction = test_transaction
+	  transaction.amount = 'R$ 10.00'
+	  transaction.charge
+	  assert transaction.amount == 1000
 	end
 
+	should 'validate invalid transaction' do
 
+	  #Test invalid card_number
+	  exception = assert_raises PagarMeError do 
+		transaction = PagarMe::Transaction.new({
+		  :amount => "1000",
+		  :card_number => '123456',
+		  :card_holder_name => "Jose da Silva",
+		})
+		transaction.charge
+	  end
+	  assert exception.parameter_name == 'card_number'
+
+	  #Test missing amount
+	  exception = assert_raises PagarMeError do
+		transaction = PagarMe::Transaction.new({
+		  :card_number => '4111111111111111',
+		  :card_holder_name => "Jose da Silva",
+		})
+		transaction.charge
+	  end
+	  assert exception.parameter_name == 'amount'
+
+	  #Test missing card_holder_name
+	  exception = assert_raises PagarMeError do
+		transaction = PagarMe::Transaction.new({
+		  :card_number => '4111111111111111',
+		  :amount => "1000",
+		})
+		transaction.charge
+	  end
+	  assert exception.parameter_name == 'card_holder_name'
+
+	  #Test invalid expiracy month
+	  exception = assert_raises PagarMeError do
+		transaction = PagarMe::Transaction.new({
+		  :card_number => '4111111111111111',
+		  :card_holder_name => "Jose da Silva",
+		  :amount => "1000",
+		  :card_expiracy_month => 15
+		})
+		transaction.charge
+	  end
+	  assert exception.parameter_name == 'card_expiration_date'
+
+	  #Test invalid expiracy year
+	  exception = assert_raises PagarMeError do
+		transaction = PagarMe::Transaction.new({
+		  :card_number => '4111111111111111',
+		  :card_holder_name => "Jose da Silva",
+		  :amount => "1000",
+		  :card_expiration_month => 12,
+		  :card_expiration_year => -1,
+		})
+		transaction.charge
+	  end
+	  assert exception.parameter_name == 'card_expiration_date'
+
+	  #Test invalid expiracy year
+	  exception = assert_raises PagarMeError do
+		transaction = PagarMe::Transaction.new({
+		  :card_number => '4111111111111111',
+		  :card_holder_name => "Jose da Silva",
+		  :amount => "1000",
+		  :card_expiration_month => 12,
+		  :card_expiration_year => 16,
+		})
+		transaction.charge
+	  end
+	  assert exception.parameter_name == 'card_cvv'
+	end
   end
 end
