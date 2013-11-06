@@ -1,10 +1,12 @@
+# encoding: utf-8
 module PagarMe
   class PagarMeObject
 
 	def initialize(response = {})
 	  @attributes = {}
 	  @filters =  {}
-	  @unmutable = [:object, :id, :date_created]
+	  @unsaved_values = Set.new
+	  @attributes ||= Has.new
 	  update(response)
 	end
 
@@ -14,14 +16,23 @@ module PagarMe
 	end
 
 	def update(attributes)
-	  instance_eval do
-		remove_attribute(@attributes.keys)
-		add_attribute(attributes.keys)
-	  end
-	  @attributes = Hash.new
 
-	  attributes.each do |key,value|
+	  removed = Set.new(@attributes.keys - attributes.keys)
+	  added = Set.new(attributes.keys - @attributes.keys)
+
+	  instance_eval do
+		remove_attribute(removed)
+		add_attribute(added)
+	  end
+
+	  removed.each do |key|
+		@attributes.delete(key)
+		@unsaved_values.delete(key)
+	  end
+
+	  attributes.each do |key, value|
 		@attributes[key] = Util.convert_to_pagarme_object(value)
+		@unsaved_values.delete(key)
 	  end
 	end
 
@@ -37,17 +48,25 @@ module PagarMe
 	  @attributes[key.to_sym]
 	end
 
+	def unsaved_values
+	  values = {}
+	  @unsaved_values.each do |k|
+		if(@attributes[k].kind_of?(PagarMeObject))
+		  values[k] = @attributes[k].unsaved_value
+		else
+		  values[k] = @attributes[k]
+		end
+	  end
+	  values
+	end
+
 	def to_hash
 	  ret_attributes = {}
 	  @attributes.each do |k,v|
 		if @attributes[k].kind_of?(PagarMeObject)
 		  ret_attributes[k] = @attributes[k].to_hash if @attributes[k].kind_of?(PagarMeObject) 	
 		else
-		  if self.id
-		  	ret_attributes[k] = @attributes[k] unless @unmutable.include?(k.to_sym) 
-		  else
-			ret_attributes[k] = @attributes[k]
-		  end
+		  ret_attributes[k] = @attributes[k]
 		end
 	  end
 	  return ret_attributes
@@ -58,7 +77,6 @@ module PagarMe
 	def metaclass
 	  class << self; self; end
 	end
-
 
 	def remove_attribute(keys)
 	  metaclass.instance_eval do
@@ -80,18 +98,16 @@ module PagarMe
 			  @filters[key].each do |meth| 
 				if methods.include?(meth)
 				  @attributes[key] = method(meth).call(value)
+				  @unsaved_values.add(key)
 				end
 			  end
 			else 
 			  @attributes[key] = value
+			  @unsaved_values.add(key)
 			end
 		  end
 		end
 	  end
-	end
-
-	def add_unmutable_attribute(*keys)
-	  @unmutable.push(keys).flatten!
 	end
 
 	def before_set_filter(attribute, method) 

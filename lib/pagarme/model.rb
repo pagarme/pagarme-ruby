@@ -26,7 +26,7 @@ module PagarMe
 
 	def save
 	  request = PagarMe::Request.new(self.url, 'PUT')
-	  request.parameters = self.to_hash
+	  request.parameters = self.unsaved_values
 	  response = request.run
 	  update(response)
 	end

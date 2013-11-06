@@ -13,16 +13,16 @@ module PagarMe
 		:payment_method => self.payment_method,
 		:installments => self.installments,
 		:card_hash => (self.payment_method == 'credit_card' ? self.card_hash : nil),
-		:postback_url => self.postback_url,
+		:postback_url => self[:postback_url],
 		:customer => (self.customer) ? self.customer.to_hash : nil
 	  }
 	end
 
 	def charge
-	  validation_error = self.card_hash ? nil : error_in_transaction
+	  validation_error = self[:card_hash] ? nil : error_in_transaction
 	  raise RequestError.new(validation_error) if validation_error
 	  raise RequestError.new("Transaction already charged!") if self.status != 'local' && self.status
-	  self.card_hash = generate_card_hash unless self.card_hash
+	  self.card_hash = generate_card_hash unless self[:card_hash]
 	  create
 	end
 

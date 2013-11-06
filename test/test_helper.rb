@@ -124,18 +124,18 @@ def test_customer_response(customer)
 end
 
 def test_transaction_response(transaction)
-		assert transaction.id
-		assert transaction.card_holder_name
-		assert !transaction.refuse_reason 
-		assert transaction.date_created
-		assert transaction.amount == 1000
-		assert transaction.installments == "1"
-		assert transaction.card_holder_name == 'Jose da Silva'
-		# assert transaction.card_brand == 'visa'
-		assert transaction.payment_method == 'credit_card'
-		assert !transaction.boleto_url
-		assert !transaction.boleto_barcode
-		assert !transaction.subscription_id
+  assert transaction.id
+  assert transaction.card_holder_name
+  assert !transaction.refuse_reason 
+  assert transaction.date_created
+  assert transaction.amount == 1000
+  assert transaction.installments == "1"
+  assert transaction.card_holder_name == 'Jose da Silva'
+  # assert transaction.card_brand == 'visa'
+  assert transaction.payment_method == 'credit_card'
+  assert !transaction.boleto_url
+  assert !transaction.boleto_barcode
+  assert !transaction.subscription_id
 end
 
 def test_plan_response(plan)
@@ -148,10 +148,10 @@ end
 
 class Test::Unit::TestCase
   setup do
-    PagarMe.api_key="ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo"
+	PagarMe.api_key="ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo"
   end
 
   teardown do
-    PagarMe.api_key=nil
+	PagarMe.api_key=nil
   end
 end

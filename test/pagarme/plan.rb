@@ -21,5 +21,44 @@ module PagarMe
 	  plan.create
 	  assert plan.amount == 1000
 	end
+
+	should 'validate plan ' do 
+	  exception = assert_raises do
+		plan = Plan.new({
+		  :amount => -1	
+		})	
+		plan.create
+	  end
+	  assert exception.errors.first.parameter_name == 'amount'
+	  exception = assert_raises do
+		plan = Plan.new({
+		  :amount => 1000,
+		  :days => -1,
+		})
+		plan.create
+	  end
+	  assert exception.errors.first.parameter_name == 'days'
+
+	  exception = assert_raises do 
+		plan = Plan.new({
+			:amount => 1000,
+			:days => 30,
+		})
+		plan.create
+	  end
+	  assert exception.errors.first.parameter_name == 'name'
+	  exception = assert_raises do 
+		plan = Plan.new({
+			:amount => 1000,
+			:days => 30,
+			:name => "Plano Silver"
+		})
+		plan.create
+		plan.days = 'Plano gold'
+		plan.save
+	  end
+	  puts exception.errors.first.parameter_name
+	  assert exception.errors.first.parameter_name == 'days'
+	end
   end
 end

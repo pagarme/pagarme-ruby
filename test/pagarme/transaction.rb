@@ -2,7 +2,6 @@ require File.expand_path('../../test_helper', __FILE__)
 
 module PagarMe
   class TransactionTest < Test::Unit::TestCase
-=begin
 	should 'be able to charge' do
 	  transaction = test_transaction
 	  assert transaction.status == 'local'
@@ -65,7 +64,7 @@ module PagarMe
 		})
 		transaction.charge
 	  end
-	  assert exception.parameter_name == 'card_number'
+	  assert exception.errors.first.parameter_name == 'card_number'
 
 	  #Test missing amount
 	  exception = assert_raises PagarMeError do
@@ -75,7 +74,7 @@ module PagarMe
 		})
 		transaction.charge
 	  end
-	  assert exception.parameter_name == 'amount'
+	  assert exception.errors.first.parameter_name == 'amount'
 
 	  #Test missing card_holder_name
 	  exception = assert_raises PagarMeError do
@@ -85,7 +84,7 @@ module PagarMe
 		})
 		transaction.charge
 	  end
-	  assert exception.parameter_name == 'card_holder_name'
+	  assert exception.errors.first.parameter_name == 'card_holder_name'
 
 	  #Test invalid expiracy month
 	  exception = assert_raises PagarMeError do
@@ -97,7 +96,7 @@ module PagarMe
 		})
 		transaction.charge
 	  end
-	  assert exception.parameter_name == 'card_expiration_date'
+	  assert exception.errors.first.parameter_name == 'card_expiration_date'
 
 	  #Test invalid expiracy year
 	  exception = assert_raises PagarMeError do
@@ -110,7 +109,7 @@ module PagarMe
 		})
 		transaction.charge
 	  end
-	  assert exception.parameter_name == 'card_expiration_date'
+	  assert exception.errors.first.parameter_name == 'card_expiration_date'
 
 	  #Test invalid expiracy year
 	  exception = assert_raises PagarMeError do
@@ -123,8 +122,7 @@ module PagarMe
 		})
 		transaction.charge
 	  end
-	  assert exception.parameter_name == 'card_cvv'
+	  assert exception.errors.first.parameter_name == 'card_cvv'
 	end
-=end
   end
 end
