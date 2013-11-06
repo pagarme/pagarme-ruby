@@ -30,7 +30,6 @@ module PagarMe
 	  parameters = self.parameters.merge({
 		:api_key => PagarMe.api_key
 	  })
-
 	  error = nil
 
 	  begin

@@ -24,6 +24,13 @@ module PagarMe
 	  update(response)
 	end
 
+	def save
+	  request = PagarMe::Request.new(self.url, 'PUT')
+	  request.parameters = self.to_hash
+	  response = request.run
+	  update(response)
+	end
+
 
 	def self.find_by_id(id)
 	  request = PagarMe::Request.new(self.url + "/#{id}", 'GET')

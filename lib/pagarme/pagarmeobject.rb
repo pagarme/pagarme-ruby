@@ -1,13 +1,10 @@
 module PagarMe
   class PagarMeObject
 
-	if method_defined?(:id)
-	  undef :id
-	end
-
 	def initialize(response = {})
 	  @attributes = {}
-	  @filters = Hash.new
+	  @filters =  {}
+	  @unmutable = [:object, :id, :date_created]
 	  update(response)
 	end
 
@@ -41,9 +38,19 @@ module PagarMe
 	end
 
 	def to_hash
+	  ret_attributes = {}
 	  @attributes.each do |k,v|
-		@attributes[k] = @attributes[k].to_hash if @attributes[k].kind_of?(PagarMeObject) 	
+		if @attributes[k].kind_of?(PagarMeObject)
+		  ret_attributes[k] = @attributes[k].to_hash if @attributes[k].kind_of?(PagarMeObject) 	
+		else
+		  if self.id
+		  	ret_attributes[k] = @attributes[k] unless @unmutable.include?(k.to_sym) 
+		  else
+			ret_attributes[k] = @attributes[k]
+		  end
+		end
 	  end
+	  return ret_attributes
 	end
 
 	protected
@@ -83,8 +90,12 @@ module PagarMe
 	  end
 	end
 
+	def add_unmutable_attribute(*keys)
+	  @unmutable.push(keys).flatten!
+	end
+
 	def before_set_filter(attribute, method) 
-	  @filters[attribute.to_sym] ||= Array.new unless @filters[attribute.to_sym]
+	  @filters[attribute.to_sym] = Array.new unless @filters[attribute.to_sym]
 	  @filters[attribute.to_sym] << method.to_sym
 	end
 

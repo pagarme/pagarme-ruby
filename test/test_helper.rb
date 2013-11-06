@@ -138,6 +138,14 @@ def test_transaction_response(transaction)
 		assert !transaction.subscription_id
 end
 
+def test_plan_response(plan)
+  assert plan.id
+  assert plan.name == 'Plano gold'
+  assert plan.trial_days == 5
+  assert plan.days == 30
+  assert plan.amount = 3000
+end
+
 class Test::Unit::TestCase
   setup do
     PagarMe.api_key="ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo"
