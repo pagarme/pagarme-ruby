@@ -18,6 +18,18 @@ module PagarMe
 	  assert transaction.status == 'refunded'
 	end
 
+	should 'be able to create transaciton with boleto' do
+	  transaction = PagarMe::Transaction.new({
+	  	:payment_method => "boleto",
+		:amount => "1000"
+	  })
+	  transaction.charge
+
+	  assert transaction.payment_method == 'boleto'
+	  assert transaction.status == 'waiting_payment'
+	  assert transaction.amount.to_s == '1000'
+	end
+
 	should 'be able to find a transaction' do
 	  transaction = test_transaction
 	  transaction.charge
@@ -65,16 +77,6 @@ module PagarMe
 		transaction.charge
 	  end
 	  assert exception.errors.first.parameter_name == 'card_number'
-
-	  #Test missing amount
-	  exception = assert_raises PagarMeError do
-		transaction = PagarMe::Transaction.new({
-		  :card_number => '4111111111111111',
-		  :card_holder_name => "Jose da Silva",
-		})
-		transaction.charge
-	  end
-	  assert exception.errors.first.parameter_name == 'amount'
 
 	  #Test missing card_holder_name
 	  exception = assert_raises PagarMeError do

@@ -6,9 +6,9 @@ module PagarMe
 
 	def initialize(response = {})
 	  super(response)
-	  self.payment_method = 'credit_card' unless self[:payment_method]
-	  self.installments = 1  unless self[:installments]
-	  self.status = 'local' unless self[:status]
+	  self.payment_method = 'credit_card' unless self.payment_method
+	  self.installments = 1  unless self.installments
+	  self.status = 'local' unless self.status
 	  before_set_filter :amount, :format_amount
 	end
 
@@ -24,26 +24,22 @@ module PagarMe
 	  (s1 + s2) % 10 == 0
 	end
 
-	def error_in_transaction
+	def validate
 	  error = PagarMeError.new
-	  if self.amount.to_i <= 0
-		error.errors << PagarMeError.new("Valor inválido. Valor: #{self.amount}", 'amount')
-	  end
-
 	  if self.payment_method == 'credit_card'
-		if !self[:card_number] || self.card_number.to_s.length < 16 || self.card_number.to_s.length > 20 || !is_valid_credit_card(self.card_number.to_s)
+		if !self.card_number || self.card_number.to_s.length < 16 || self.card_number.to_s.length > 20 || !is_valid_credit_card(self.card_number.to_s)
 		  error.errors << PagarMeError.new("Número do cartão inválido.", 'card_number')
 		end
-		if !self[:card_holder_name] || !self.card_holder_name || self.card_holder_name.length == 0
+		if !self.card_holder_name || !self.card_holder_name || self.card_holder_name.length == 0
 		  error.errors << PagarMeError.new("Nome do portador inválido.", 'card_holder_name')
 		end
-		if !self[:card_expiration_month] || self.card_expiration_month.to_i <= 0 || self.card_expiration_month.to_i > 12
+		if !self.card_expiration_month || self.card_expiration_month.to_i <= 0 || self.card_expiration_month.to_i > 12
 		  error.errors << PagarMeError.new("Mês de expiração inválido.", 'card_expiration_date')
 		end
-		if !self[:card_expiration_year] || self.card_expiration_year.to_i <= 0
+		if !self.card_expiration_year || self.card_expiration_year.to_i <= 0
 		  error.errors << PagarMeError.new("Ano de expiração inválido.", 'card_expiration_date')
 		end
-		if !self[:card_cvv] || self.card_cvv.to_s.length < 3 || self.card_cvv.to_s.length > 4
+		if !self.card_cvv || self.card_cvv.to_s.length < 3 || self.card_cvv.to_s.length > 4
 		  error.errors << PagarMeError.new("Código de segurança inválido.", 'card_cvv')
 		end
 	  end

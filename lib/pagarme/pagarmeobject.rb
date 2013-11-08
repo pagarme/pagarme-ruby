@@ -3,10 +3,16 @@ module PagarMe
   class PagarMeObject
 
 	def initialize(response = {})
+	  #init @attributes - which are the attributes in the object
 	  @attributes = {}
+
+	  # filters - which are the filters that will be called when appropriate , such as before_set
 	  @filters =  {}
+
+	  # Values that were changed in the object but weren't saved
 	  @unsaved_values = Set.new
-	  @attributes ||= Has.new
+
+	  #Update object
 	  update(response)
 	end
 
@@ -52,7 +58,7 @@ module PagarMe
 	  values = {}
 	  @unsaved_values.each do |k|
 		if(@attributes[k].kind_of?(PagarMeObject))
-		  values[k] = @attributes[k].unsaved_value
+		  values[k] = @attributes[k].unsaved_values
 		else
 		  values[k] = @attributes[k]
 		end

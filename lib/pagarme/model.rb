@@ -31,7 +31,6 @@ module PagarMe
 	  update(response)
 	end
 
-
 	def self.find_by_id(id)
 	  request = PagarMe::Request.new(self.url + "/#{id}", 'GET')
 	  response = request.run
