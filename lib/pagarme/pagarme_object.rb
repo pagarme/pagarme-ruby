@@ -1,4 +1,6 @@
 # encoding: utf-8
+require 'set'
+
 module PagarMe
   class PagarMeObject
 
@@ -70,7 +72,7 @@ module PagarMe
 	  ret_attributes = {}
 	  @attributes.each do |k,v|
 		if @attributes[k].kind_of?(PagarMeObject)
-		  ret_attributes[k] = @attributes[k].to_hash if @attributes[k].kind_of?(PagarMeObject) 	
+		  ret_attributes[k] = @attributes[k].to_hash if @attributes[k].kind_of?(PagarMeObject)
 		else
 		  ret_attributes[k] = @attributes[k]
 		end
@@ -96,18 +98,18 @@ module PagarMe
 
 	def add_attribute(keys)
 	  metaclass.instance_eval do
-		keys.each do |key| 
+		keys.each do |key|
 		  key_set = "#{key}="
 		  define_method(key) { @attributes[key] }
 		  define_method(key_set) do |value|
 			if @filters[key]
-			  @filters[key].each do |meth| 
+			  @filters[key].each do |meth|
 				if methods.include?(meth)
 				  @attributes[key] = method(meth).call(value)
 				  @unsaved_values.add(key)
 				end
 			  end
-			else 
+			else
 			  @attributes[key] = value
 			  @unsaved_values.add(key)
 			end
@@ -116,7 +118,7 @@ module PagarMe
 	  end
 	end
 
-	def before_set_filter(attribute, method) 
+	def before_set_filter(attribute, method)
 	  @filters[attribute.to_sym] = Array.new unless @filters[attribute.to_sym]
 	  @filters[attribute.to_sym] << method.to_sym
 	end
