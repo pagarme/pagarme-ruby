@@ -1,5 +1,6 @@
 # encoding: utf-8
-require File.expand_path('../../test_helper', __FILE__)
+require_relative '../test_helper'
+
 module PagarMe
 	class SubscriptionTest < Test::Unit::TestCase
 	  should 'be able to create subscription with plan' do
@@ -23,6 +24,6 @@ module PagarMe
 		  test_subscription_transaction_response(t)
 		end
 	  end
-		
+
 	end
 end
