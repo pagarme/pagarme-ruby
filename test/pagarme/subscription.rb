@@ -24,5 +24,9 @@ module PagarMe
 		  test_subscription_transaction_response(t)
 		end
 	  end
+<<<<<<< HEAD
+=======
+
+>>>>>>> 207889e5c41917b3b349c579f490bfd705055e1e
 	end
 end

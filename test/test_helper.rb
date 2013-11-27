@@ -4,48 +4,48 @@ require 'shoulda'
 
 def test_transaction(params = {})
   return PagarMe::Transaction.new({
-	:card_number => "4901720080344448",
-	:card_holder_name => "Jose da Silva",
-	:card_expiration_month => "10",
-	:card_expiration_year => "15",
-	:card_cvv => "314",
-	:amount => 1000
+  :card_number => "4901720080344448",
+  :card_holder_name => "Jose da Silva",
+  :card_expiration_month => "10",
+  :card_expiration_year => "15",
+  :card_cvv => "314",
+  :amount => 1000
   }.merge(params))
 end
 
 def test_subscription_without_plan(params = {})
   return PagarMe::Subscription.new({
-	:payment_method => 'credit_card',
-	:card_number => "4901720080344448",
-	:card_holder_name => "Jose da Silva",
-	:card_expiration_month => "10",
-	:card_expiration_year => "15",
-	:card_cvv => "314",
-	:customer_email => 'test@test.com',
-	:postback_url => "http://test.com/postback"
+  :payment_method => 'credit_card',
+  :card_number => "4901720080344448",
+  :card_holder_name => "Jose da Silva",
+  :card_expiration_month => "10",
+  :card_expiration_year => "15",
+  :card_cvv => "314",
+  :customer_email => 'test@test.com',
+  :postback_url => "http://test.com/postback"
   }.merge(params))
 end
 
 def test_plan(params = {})
   return PagarMe::Plan.new({
-	:name => "Plano gold",
-	:trial_days => 5,
-	:days => 30,
-	:amount => 3000,
+  :name => "Plano gold",
+  :trial_days => 5,
+  :days => 30,
+  :amount => 3000,
   }.merge(params))
 end
 
 
 def test_subscription(params = {})
   return PagarMe::Subscription.new({
-	:payment_method => 'credit_card',
-	:card_number => "4901720080344448",
-	:card_holder_name => "Jose da Silva",
-	:card_expiration_month => "10",
-	:card_expiration_year => "15",
-	:card_cvv => "314",
-	:customer_email => 'test@test.com',
-	:postback_url => "http://test.com/postback",
+  :payment_method => 'credit_card',
+  :card_number => "4901720080344448",
+  :card_holder_name => "Jose da Silva",
+  :card_expiration_month => "10",
+  :card_expiration_year => "15",
+  :card_cvv => "314",
+  :customer_email => 'test@test.com',
+  :postback_url => "http://test.com/postback",
   }.merge(params))
 end
 
@@ -156,11 +156,11 @@ def test_plan_response(plan)
 end
 
 class Test::Unit::TestCase
-	  def setup
-		PagarMe.api_key="ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo"
-	  end
-
-	def teardown
-	  PagarMe.api_key=nil
-	end
+  def setup
+    PagarMe.api_key="ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo"
   end
+
+  def teardown
+    PagarMe.api_key=nil
+  end
+end
