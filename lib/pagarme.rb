@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '.', 'pagarme/pagarmeobject')
+require File.join(File.dirname(__FILE__), '.', 'pagarme/pagarme_object')
 require File.join(File.dirname(__FILE__), '.', 'pagarme/util')
 require File.join(File.dirname(__FILE__), '.', 'pagarme/model')
 require File.join(File.dirname(__FILE__), '.', 'pagarme/transaction_common')
@@ -35,12 +35,6 @@ module PagarMe
 	"#{@@api_endpoint}/#{@@api_version}#{relative_path}"
   end
 
-  def self.live
-	@@live
+  def self.validate_fingerprint(id, fingerprint)
   end
-
-  def self.live=(live)
-	@@live = live
-  end
-
 end

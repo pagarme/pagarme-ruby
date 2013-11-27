@@ -6,12 +6,11 @@ require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
   class Request
-	attr_accessor :path, :method, :parameters, :headers, :live
+	attr_accessor :path, :method, :parameters, :headers
 
-	def initialize(path, method, live=PagarMe.live)
+	def initialize(path, method)
 	  self.path = path
 	  self.method = method
-	  self.live = live
 	  self.parameters = {}
 	  self.headers = {}
 	end
@@ -25,7 +24,7 @@ module PagarMe
 		raise PagarMeError.new("You need to configure a API key before performing requests.")
 	  end
 
-	  self.headers = self.live ? { 'X-Live' => '1' } : {}
+	  self.headers =  {}
 
 	  parameters = self.parameters.merge({
 		:api_key => PagarMe.api_key

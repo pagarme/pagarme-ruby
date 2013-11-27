@@ -30,6 +30,17 @@ module PagarMe
 	  assert transaction.amount.to_s == '1000'
 	end
 
+	should 'be able to send metadata' do
+	  transaction = test_transaction
+	  transaction.metadata = {event: {:name => "Evento foda", :id => 335}}
+	  transaction.charge
+	  assert transaction.metadata
+
+	  transaction2 = PagarMe::Transaction.find_by_id(transaction.id)
+	  assert transaction2.metadata.event.id.to_i == 335
+	  assert transaction2.metadata.event.name == "Evento foda"
+	end
+
 	should 'be able to find a transaction' do
 	  transaction = test_transaction
 	  transaction.charge

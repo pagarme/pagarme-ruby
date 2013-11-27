@@ -81,7 +81,7 @@ end
 
 def test_subscription_with_customer(params = {})
   return PagarMe::Subscription.new({
-	:amount => 1000,
+	:amount => 2000,
 	:card_number => '4901720080344448', 
 	:card_holder_name => "Jose da silva", 
 	:card_expiration_month => 11, 
@@ -159,7 +159,7 @@ end
 
 class Test::Unit::TestCase
   setup do
-	PagarMe.api_key="ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo"
+	PagarMe.api_key="ak_test_w4Z1VL1Ofj3SoIxEXD3NSrLEgz7Xvu"
   end
 
   teardown do

@@ -14,7 +14,8 @@ module PagarMe
 		:installments => self.installments,
 		:card_hash => (self.payment_method == 'credit_card' ? self.card_hash : nil),
 		:postback_url => self[:postback_url],
-		:customer => (self.customer) ? self.customer.to_hash : nil
+		:customer => (self.customer) ? self.customer.to_hash : nil,
+		:metadata => self.metadata
 	  }
 	end
 
