@@ -1,5 +1,6 @@
 # encoding: utf-8
-require File.expand_path('../../test_helper', __FILE__)
+require_relative '../test_helper'
+
 module PagarMe
 	class SubscriptionTest < Test::Unit::TestCase
 	  should 'be able to create subscription with plan' do
@@ -23,17 +24,5 @@ module PagarMe
 		  test_subscription_transaction_response(t)
 		end
 	  end
-
-	  should 'be able to create subscription with customer' do
-		subscription = test_subscription_with_customer
-		subscription.create
-		assert subscription.id
-		assert subscription.transactions.first.kind_of?(PagarMe::Transaction)
-		test_customer_response(subscription.customer)
-		subscription.transactions.each do |t|
-		  test_subscription_transaction_response(t)
-		end
-	  end
-		
 	end
 end
