@@ -32,14 +32,10 @@ module PagarMe
 
   def self.full_api_url(relative_path)
     "#{@@api_endpoint}/#{@@api_version}#{relative_path}"
-<<<<<<< HEAD
-<<<<<<< HEAD
   end
 
   def self.validate_fingerprint(id, fingerprint)
-=======
-=======
->>>>>>> 207889e5c41917b3b349c579f490bfd705055e1e
+    # should do something? 
   end
 
   def self.live
@@ -48,9 +44,5 @@ module PagarMe
 
   def self.live=(live)
     @@live = live
-<<<<<<< HEAD
->>>>>>> 207889e5c41917b3b349c579f490bfd705055e1e
-=======
->>>>>>> 207889e5c41917b3b349c579f490bfd705055e1e
   end
 end
