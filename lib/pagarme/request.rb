@@ -31,6 +31,9 @@ module PagarMe
 	  })
 	  error = nil
 
+	  puts self.class.encode(parameters)
+
+
 	  begin
 		response = RestClient::Request.execute({
 		  :method => self.method,

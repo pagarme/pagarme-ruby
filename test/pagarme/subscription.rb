@@ -24,9 +24,17 @@ module PagarMe
 		  test_subscription_transaction_response(t)
 		end
 	  end
-<<<<<<< HEAD
-=======
 
->>>>>>> 207889e5c41917b3b349c579f490bfd705055e1e
+	  
+	  # should 'be able to pass metadata to subscription' do
+		# subscription = test_subscription
+		# subscription.metadata = {:event => {:event_name => "Evento 2 ", :id => 13}}
+		# subscription.create
+
+		# subscription2 = PagarMe::Subscription.find_by_id(subscription.id)
+		# assert subscription2.id == subscription.id
+		# assert subscription2.metadata.event.event_name == 'Evento 2'
+		# assert subscription2.metadata.event.id == 13
+	  # end
 	end
 end
