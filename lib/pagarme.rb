@@ -1,3 +1,4 @@
+require 'digest/sha1'
 require 'pagarme/pagarme_object'
 require 'pagarme/util'
 require 'pagarme/model'
@@ -35,5 +36,6 @@ module PagarMe
   end
 
   def self.validate_fingerprint(id, fingerprint)
+		Digest::SHA1.hexdigest(id.to_s + "#" + @@api_key) == fingerprint	
   end
 end
