@@ -27,7 +27,7 @@ module PagarMe
 	def validate
 	  error = PagarMeError.new
 	  if self.payment_method == 'credit_card'
-		if !self.card_number || self.card_number.to_s.length < 16 || self.card_number.to_s.length > 20 || !is_valid_credit_card(self.card_number.to_s)
+		if !self.card_number || self.card_number.to_s.length > 20 || !is_valid_credit_card(self.card_number.to_s)
 		  error.errors << PagarMeError.new("Número do cartão inválido.", 'card_number')
 		end
 		if !self.card_holder_name || !self.card_holder_name || self.card_holder_name.length == 0
