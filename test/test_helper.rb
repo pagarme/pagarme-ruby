@@ -15,14 +15,16 @@ end
 
 def test_subscription_without_plan(params = {})
   return PagarMe::Subscription.new({
-  :payment_method => 'credit_card',
-  :card_number => "4901720080344448",
-  :card_holder_name => "Jose da Silva",
-  :card_expiration_month => "10",
-  :card_expiration_year => "15",
-  :card_cvv => "314",
-  :customer_email => 'test@test.com',
-  :postback_url => "http://test.com/postback"
+	:payment_method => 'credit_card',
+	:card_number => "4901720080344448",
+	:card_holder_name => "Jose da Silva",
+	:card_expiration_month => "10",
+	:card_expiration_year => "15",
+	:card_cvv => "314",
+	:postback_url => "http://test.com/postback",
+	:customer => {
+	  :email => 'customer@pagar.me'
+	}
   }.merge(params))
 end
 
@@ -38,14 +40,16 @@ end
 
 def test_subscription(params = {})
   return PagarMe::Subscription.new({
-  :payment_method => 'credit_card',
-  :card_number => "4901720080344448",
-  :card_holder_name => "Jose da Silva",
-  :card_expiration_month => "10",
-  :card_expiration_year => "15",
-  :card_cvv => "314",
-  :customer_email => 'test@test.com',
-  :postback_url => "http://test.com/postback",
+	:payment_method => 'credit_card',
+	:card_number => "4901720080344448",
+	:card_holder_name => "Jose da Silva",
+	:card_expiration_month => "10",
+	:card_expiration_year => "15",
+	:card_cvv => "314",
+	:postback_url => "http://test.com/postback",
+	:customer => {
+	  email: 'customer@pagar.me'
+	}
   }.merge(params))
 end
 
@@ -85,7 +89,6 @@ def test_subscription_with_customer(params = {})
 	:card_expiration_month => 11,
 	:card_expiration_year => 14,
 	:card_cvv => 356,
-	:customer_email => 'teste@teste.com',
 	:customer => {
 	  :name => "Jose da Silva",
 	  :document_number => "36433809847",
