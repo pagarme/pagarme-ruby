@@ -25,16 +25,47 @@ module PagarMe
 		end
 	  end
 
-	  
-	  # should 'be able to pass metadata to subscription' do
+	  should 'be able to change plans' do
+		subscription = test_subscription
+		plan = test_plan
+		plan.create
+
+		plan2 = PagarMe::Plan.new({
+			:name => "Plano Silver",
+			:days => 30,
+			:amount => 3000
+		});
+		plan2.create
+
+		subscription.plan = plan
+		subscription.create
+
+		assert subscription.plan.id == plan.id
+		subscription.plan = plan2
+		subscription.save
+
+		assert subscription.plan.id == plan2.id
+	  end
+
+	  # should 'be able to change from a plan with trial to a plan without trial' do
 		# subscription = test_subscription
-		# subscription.metadata = {:event => {:event_name => "Evento 2 ", :id => 13}}
+		# plan = test_plan
+		# plan.create
+
+		# plan2 = test_plan
+		# plan2.trial_days = nil
+
+		# subscription.plan = plan
 		# subscription.create
 
-		# subscription2 = PagarMe::Subscription.find_by_id(subscription.id)
-		# assert subscription2.id == subscription.id
-		# assert subscription2.metadata.event.event_name == 'Evento 2'
-		# assert subscription2.metadata.event.id == 13
+		# assert subscription.plan_id == plan.id
+
+		# subscription.plan = plan2
+		# subscription.save
+
+		# assert subscription.plan_id == plan2.id
+		# p = PagarMe::Plan.find_by_id(subscription.plan_id)
+		# assert p.trial_days == nil
 	  # end
 	end
 end

@@ -12,6 +12,21 @@ module PagarMe
 	  before_set_filter :amount, :format_amount
 	end
 
+	def create
+	  validation_error = self.card_hash ? nil : validate
+	  self.card_hash = generate_card_hash unless self.card_hash
+	  unset_creditcard_information
+	  super
+	end
+	
+	def unset_creditcard_information
+	  self.card_number = nil
+	  self.card_holder_name = nil
+	  self.card_expiration_year = nil
+	  self.card_expiration_month = nil
+	  self.card_cvv = nil
+	end
+
 	def is_valid_credit_card(card)
 	  s1 = s2 = 0
 	  card.to_s.reverse.chars.each_slice(2) do |odd, even| 
