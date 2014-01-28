@@ -23,6 +23,12 @@ module PagarMe
 	  super
 	end
 
+	def cancel
+	  request = PagarMe::Request.new(self.url + '/cancel', 'POST')
+	  response = request.run
+	  update(response)
+	end
+
 	def charge(amount)
 	  request = PagarMe::Request.new(self.url, 'POST')
 	  request.parameters = {
