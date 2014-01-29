@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pagarme (1.4)
+    pagarme (1.7)
       multi_json
       rest-client
 
