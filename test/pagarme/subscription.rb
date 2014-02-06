@@ -16,13 +16,10 @@ module PagarMe
 	should 'be able to create subscription without plan' do
 	  subscription = test_subscription({:amount => 2000})
 	  subscription.create
-	  assert subscription.transactions.length == 1
+	  assert subscription.current_transaction.amount == 2000
 	  subscription.charge(2000)
-	  assert subscription.transactions.length == 2
-	  assert subscription.transactions.first.kind_of?(PagarMe::Transaction)
-	  subscription.transactions.each do |t|
-		test_subscription_transaction_response(t)
-	  end
+	  assert subscription.current_transaction.kind_of?(PagarMe::Transaction)
+	  test_subscription_transaction_response(subscription.current_transaction)
 	end
 
 	should 'be able to change plans' do

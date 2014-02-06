@@ -97,7 +97,7 @@ def test_subscription_with_customer(params = {})
 		:street => 'Av. Brigadeiro Faria Lima',
 		:neighborhood => 'Itaim bibi',
 		:zipcode => '01452000',
-		:street_number => 2941,
+		:street_number => 1000,
 	  } ,
 	  :phone => {
 		:ddd => 12,
@@ -112,14 +112,10 @@ end
 
 def test_customer_response(customer)
   assert customer.id
-  assert customer.addresses.class == Array
-  assert customer.phones.class == Array
   assert customer.document_type == 'cpf'
   assert customer.name == 'Jose da Silva'
   assert customer.born_at
   assert customer.id
-  assert customer.addresses[0].class == PagarMe::Address
-  assert customer.phones[0].class == PagarMe::Phone
 end
 
 def test_subscription_transaction_response(transaction)

@@ -55,6 +55,8 @@ module PagarMe
 	  transaction = test_transaction_with_customer
 	  transaction.charge
 	  test_transaction_response(transaction)
+	  assert transaction.address.class == Address
+	  assert transaction.address.street== 'Av. Brigadeiro Faria Lima'
 	  assert transaction.customer.class == Customer
 	  test_customer_response(transaction.customer)
 	end

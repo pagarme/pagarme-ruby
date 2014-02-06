@@ -30,12 +30,14 @@ module PagarMe
 	end
 
 	def charge(amount)
-	  request = PagarMe::Request.new(self.url, 'POST')
+	  request = PagarMe::Request.new(self.url + '/transactions', 'POST')
 	  request.parameters = {
 		:amount => amount,
 	  }
 	  response = request.run
-	  update(response)
+
+	  request = PagarMe::Request.new(self.url, 'GET')
+	  update(request.run)
 	end
 
   end
