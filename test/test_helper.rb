@@ -142,8 +142,6 @@ def test_transaction_response(transaction)
   # assert transaction.card_brand == 'visa'
   assert transaction.payment_method == 'credit_card'
   assert transaction.status == 'paid'
-  assert !transaction.boleto_url
-  assert !transaction.boleto_barcode
 end
 
 def test_plan_response(plan)

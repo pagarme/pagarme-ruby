@@ -22,6 +22,16 @@ module PagarMe
 	  test_subscription_transaction_response(subscription.current_transaction)
 	end
 
+	should 'be able to update subscription' do
+	  subscription = test_subscription
+	  subscription.create
+	  subscription.payment_method = 'boleto'
+	  subscription.save
+
+	  subscription2 = PagarMe::Subscription.find_by_id(subscription.id)
+	  assert subscription2.payment_method == 'boleto'
+	end
+
 	should 'be able to change plans' do
 	  subscription = test_subscription
 	  plan = test_plan
