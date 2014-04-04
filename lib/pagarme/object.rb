@@ -134,7 +134,9 @@ module PagarMe
 		end
 		return mth.call(args[0])
 	  else
-		return @attributes[name] if @attributes.has_key?(name)
+		if @attributes.has_key?(name)
+		  return @attributes[name]
+		end
 	  end
 	end
   end

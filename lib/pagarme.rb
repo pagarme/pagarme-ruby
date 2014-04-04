@@ -1,5 +1,5 @@
 require 'digest/sha1'
-require 'pagarme/pagarme_object'
+require 'pagarme/object'
 require 'pagarme/util'
 require 'pagarme/model'
 require 'pagarme/transaction_common'
