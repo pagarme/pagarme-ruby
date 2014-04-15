@@ -37,6 +37,17 @@ module PagarMe
 	  PagarMe::Util.convert_to_pagarme_object(response)
 	end
 
+	def self.find_by(hash, page = 1, count = 10)
+	  raise RequestError.new("Invalid page count") if page < 1 or count < 1
+	  
+	  request = PagarMe::Request.new(self.url,  'GET')
+	  
+	  request.parameters = hash
+	  request.parameters.merge!({:page => page, :count => count})
+	  response = request.run
+	  PagarMe::Util.convert_to_pagarme_object(response)
+	end
+
 	def self.all(page = 1, count = 10)
 	  raise RequestError.new("Invalid page count") if page < 1 or count < 1
 
