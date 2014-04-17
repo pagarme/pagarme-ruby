@@ -38,8 +38,7 @@ module PagarMe
 		  :headers => self.headers,
 		  :open_timeout => 30,
 		  :payload => self.class.encode(parameters),
-		  :timeout => 90,
-		  :verify_ssl => false # TODO: change to verify SSL
+		  :timeout => 90
 		})
 	  rescue SocketError => e
 		error = "Error connecting to server (#{e.message})."
