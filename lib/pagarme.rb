@@ -14,10 +14,17 @@ require 'pagarme/errors'
 
 module PagarMe
   @@api_key = nil
-  @@api_endpoint = 'https://api.pagar.me'
-  @@api_version = '1'
+  @@api_endpoint = 'https://api.pagar.me/1'
   @@live = true
   @@api_card_encryption_public_key = File.join(File.dirname(__FILE__), '..', 'certs/public_key.pem')
+
+  def self.api_endpoint=(api_endpoint)
+	@@api_endpoint = api_endpoint
+  end
+
+  def self.api_endpoint
+	@@api_endpoint
+  end
 
   def self.api_key=(api_key)
     @@api_key = api_key
@@ -32,7 +39,7 @@ module PagarMe
   end
 
   def self.full_api_url(relative_path)
-   "#{@@api_endpoint}/#{@@api_version}#{relative_path}"
+   "#{@@api_endpoint}#{relative_path}"
   end
 
   def self.validate_fingerprint(id, fingerprint)
