@@ -78,5 +78,17 @@ module PagarMe
 
 	  assert subscription.status == 'canceled'
 	end
+
+	should 'be able to list subscription transactions' do
+	  subscription = test_subscription_without_plan
+	  subscription.create
+
+	  subscription.charge(1000)
+	  subscription.charge(2000)
+
+	  assert_equal 2, subscription.transactions.size
+	  assert_equal 2000, subscription.transactions[0].amount
+	  assert_equal 1000, subscription.transactions[1].amount
+	end
   end
 end
