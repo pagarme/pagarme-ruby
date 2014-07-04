@@ -29,11 +29,6 @@ module PagarMe
 	  update(response)
 	end
 
-	def transactions
-	  request = PagarMe::Request.new(self.url + '/transactions', 'GET')
-	  PagarMe::Util.convert_to_pagarme_object(request.run)
-	end
-
 	def charge(amount)
 	  request = PagarMe::Request.new(self.url + '/transactions', 'POST')
 	  request.parameters = {
