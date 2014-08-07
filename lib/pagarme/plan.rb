@@ -19,10 +19,10 @@ module PagarMe
 
     def format_amount(amount)
       if amount.kind_of?(String)
-      value = amount.gsub(/\./, "")
-      value = value.strip
-      value = value.match(/\d+/)[0]
-      amount = value
+        value = amount.gsub(/\./, "")
+        value = value.strip
+        value = value.match(/\d+/)[0]
+        amount = value
       end
       amount
     end
