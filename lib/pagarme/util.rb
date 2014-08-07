@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), '..', 'pagarme')
 module PagarMe
   class Util
     def self.calculate_installments(params)
-      request = PagarMe::Request.new('/transactions/calculate_installments', 'GET')
+      request = PagarMe::Request.new('/transactions/calculate_installments_amount', 'GET')
       request.parameters.merge!(params)
       response = request.run
       response
