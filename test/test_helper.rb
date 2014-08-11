@@ -4,108 +4,108 @@ require 'shoulda'
 
 def test_transaction(params = {})
   return PagarMe::Transaction.new({
-  :card_number => "4901720080344448",
-  :card_holder_name => "Jose da Silva",
-  :card_expiration_month => "10",
-  :card_expiration_year => "15",
-  :card_cvv => "314",
-  :amount => 1000
+    :card_number => "4901720080344448",
+    :card_holder_name => "Jose da Silva",
+    :card_expiration_month => "10",
+    :card_expiration_year => "15",
+    :card_cvv => "314",
+    :amount => 1000
   }.merge(params))
 end
 
 def test_subscription_without_plan(params = {})
   return PagarMe::Subscription.new({
-	:payment_method => 'credit_card',
-	:card_number => "4901720080344448",
-	:card_holder_name => "Jose da Silva",
-	:card_expiration_month => "10",
-	:card_expiration_year => "15",
-	:card_cvv => "314",
-	:postback_url => "http://test.com/postback",
-	:customer => {
-	  :email => 'customer@pagar.me'
-	}
+    :payment_method => 'credit_card',
+    :card_number => "4901720080344448",
+    :card_holder_name => "Jose da Silva",
+    :card_expiration_month => "10",
+    :card_expiration_year => "15",
+    :card_cvv => "314",
+    :postback_url => "http://test.com/postback",
+    :customer => {
+      :email => 'customer@pagar.me'
+    }
   }.merge(params))
 end
 
 def test_plan(params = {})
   return PagarMe::Plan.new({
-  :name => "Plano gold",
-  :trial_days => 5,
-  :days => 30,
-  :amount => 3000,
+    :name => "Plano gold",
+    :trial_days => 5,
+    :days => 30,
+    :amount => 3000,
   }.merge(params))
 end
 
 
 def test_subscription(params = {})
   return PagarMe::Subscription.new({
-	:payment_method => 'credit_card',
-	:card_number => "4901720080344448",
-	:card_holder_name => "Jose da Silva",
-	:card_expiration_month => "10",
-	:card_expiration_year => "15",
-	:card_cvv => "314",
-	:postback_url => "http://test.com/postback",
-	:customer => {
-	  email: 'customer@pagar.me'
-	}
+    :payment_method => 'credit_card',
+    :card_number => "4901720080344448",
+    :card_holder_name => "Jose da Silva",
+    :card_expiration_month => "10",
+    :card_expiration_year => "15",
+    :card_cvv => "314",
+    :postback_url => "http://test.com/postback",
+    :customer => {
+      email: 'customer@pagar.me'
+    }
   }.merge(params))
 end
 
 def test_transaction_with_customer(params = {})
   return PagarMe::Transaction.new({
-	:amount => 1000,
-	:card_number => '4901720080344448',
-	:card_holder_name => "Jose da Silva",
-	:card_expiration_month => 11,
-	:card_expiration_year => "14",
-	:card_cvv => 356,
-	:customer => {
-	  :name => "Jose da Silva",
-	  :document_number => "36433809847",
-	  :email => "henrique@pagar.me",
-	  :address => {
-		:street => 'Av. Brigadeiro Faria Lima',
-		:neighborhood => 'Itaim bibi',
-		:zipcode => '01452000',
-		:street_number => 2941,
-	  },
-	  :phone => {
-		:ddd => 12,
-		:number => '981433533',
-	  },
-	  :sex => 'M',
-	  :born_at => '1970-10-11'
-	}
+    :amount => 1000,
+    :card_number => '4901720080344448',
+    :card_holder_name => "Jose da Silva",
+    :card_expiration_month => 11,
+    :card_expiration_year => "14",
+    :card_cvv => 356,
+    :customer => {
+      :name => "Jose da Silva",
+      :document_number => "36433809847",
+      :email => "henrique@pagar.me",
+      :address => {
+        :street => 'Av. Brigadeiro Faria Lima',
+        :neighborhood => 'Itaim bibi',
+        :zipcode => '01452000',
+        :street_number => 2941,
+      },
+      :phone => {
+        :ddd => 12,
+        :number => '981433533',
+      },
+      :sex => 'M',
+      :born_at => '1970-10-11'
+    }
   }.merge(params))
 end
 
 def test_subscription_with_customer(params = {})
   return PagarMe::Subscription.new({
-	:amount => 1000,
-	:card_number => '4901720080344448',
-	:card_holder_name => "Jose da silva",
-	:card_expiration_month => 11,
-	:card_expiration_year => 14,
-	:card_cvv => 356,
-	:customer => {
-	  :name => "Jose da Silva",
-	  :document_number => "36433809847",
-	  :email => "henrique@pagar.me",
-	  :address => {
-		:street => 'Av. Brigadeiro Faria Lima',
-		:neighborhood => 'Itaim bibi',
-		:zipcode => '01452000',
-		:street_number => 1000,
-	  } ,
-	  :phone => {
-		:ddd => 12,
-		:number => '981444444',
-	  } ,
-	  :sex => 'M',
-	  :born_at => '1970-10-11'
-	}
+    :amount => 1000,
+    :card_number => '4901720080344448',
+    :card_holder_name => "Jose da silva",
+    :card_expiration_month => 11,
+    :card_expiration_year => 14,
+    :card_cvv => 356,
+    :customer => {
+      :name => "Jose da Silva",
+      :document_number => "36433809847",
+      :email => "henrique@pagar.me",
+      :address => {
+        :street => 'Av. Brigadeiro Faria Lima',
+        :neighborhood => 'Itaim bibi',
+        :zipcode => '01452000',
+        :street_number => 1000,
+      } ,
+      :phone => {
+        :ddd => 12,
+        :number => '981444444',
+      } ,
+      :sex => 'M',
+      :born_at => '1970-10-11'
+    }
   }.merge(params))
 end
 

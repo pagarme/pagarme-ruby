@@ -1,24 +1,34 @@
+# encoding: utf-8
+require File.join(File.dirname(__FILE__), '..', 'pagarme')
+
 module PagarMe
   class Util
+    def self.calculate_installments(params)
+      request = PagarMe::Request.new('/transactions/calculate_installments_amount', 'GET')
+      request.parameters.merge!(params)
+      response = request.run
+      response
+    end
+
     def self.pagarme_classes
       return {
-      'transaction' => Transaction,
-      'plan' => Plan,
-      'customer' => Customer,
-      'subscription' => Subscription,
-      'address' => Address,
-      'phone' => Phone,
+        'transaction' => Transaction,
+        'plan' => Plan,
+        'customer' => Customer,
+        'subscription' => Subscription,
+        'address' => Address,
+        'phone' => Phone,
       }
     end
 
     def self.convert_to_pagarme_object(response)
       case response
       when Array
-      response.map{ |i| convert_to_pagarme_object(i)}
+        response.map{ |i| convert_to_pagarme_object(i)}
       when Hash
-      self.pagarme_classes.fetch(response['object'], PagarMeObject).build(response)
+        self.pagarme_classes.fetch(response['object'], PagarMeObject).build(response)
       else
-      response
+        response
       end
     end
 

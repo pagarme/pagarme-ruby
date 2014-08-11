@@ -5,40 +5,40 @@ module PagarMe
   class Subscription < TransactionCommon
 
 
-	def create
-	  if self.plan
-		self.plan_id = plan.id
-	  end
+    def create
+      if self.plan
+        self.plan_id = plan.id
+      end
 
-	  self.plan = nil
-	  super
-	end
+      self.plan = nil
+      super
+    end
 
-	def save
-	  if self.plan
-		self.plan_id = plan.id
-	  end
+    def save
+      if self.plan
+        self.plan_id = plan.id
+      end
 
-	  self.plan = nil
-	  super
-	end
+      self.plan = nil
+      super
+    end
 
-	def cancel
-	  request = PagarMe::Request.new(self.url + '/cancel', 'POST')
-	  response = request.run
-	  update(response)
-	end
+    def cancel
+      request = PagarMe::Request.new(self.url + '/cancel', 'POST')
+      response = request.run
+      update(response)
+    end
 
-	def charge(amount)
-	  request = PagarMe::Request.new(self.url + '/transactions', 'POST')
-	  request.parameters = {
-		:amount => amount,
-	  }
-	  response = request.run
+    def charge(amount)
+      request = PagarMe::Request.new(self.url + '/transactions', 'POST')
+      request.parameters = {
+        :amount => amount,
+      }
+      response = request.run
 
-	  request = PagarMe::Request.new(self.url, 'GET')
-	  update(request.run)
-	end
+      request = PagarMe::Request.new(self.url, 'GET')
+      update(request.run)
+    end
 
   end
 end

@@ -17,17 +17,17 @@ module PagarMe
       assert plan.name == 'plano silver'
     end
 
-	should 'be able to search by anything' do
-	  plan = test_plan
-	  plan.create
+    should 'be able to search by anything' do
+      plan = test_plan
+      plan.create
 
-	  plans = PagarMe::Plan.find_by({:trial_days => 5})
+      plans = PagarMe::Plan.find_by({:trial_days => 5})
 
-	  assert plans.size
-	  plans.each do |p|
-		assert p.trial_days == 5
-	  end
-	end
+      assert plans.size
+      plans.each do |p|
+        assert p.trial_days == 5
+      end
+    end
 
     should 'be able to create with unformatted amount' do
       plan = test_plan
