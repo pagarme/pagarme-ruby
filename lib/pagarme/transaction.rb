@@ -5,6 +5,13 @@ require File.join(File.dirname(__FILE__), '..', 'pagarme')
 
 module PagarMe
   class Transaction < TransactionCommon
+    def self.calculate_installments(params)
+      request = PagarMe::Request.new('/transactions/calculate_installments_amount', 'GET')
+      request.parameters.merge!(params)
+      response = request.run
+      response
+    end
+
     def charge
       create
     end
