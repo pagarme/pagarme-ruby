@@ -22,6 +22,16 @@ module PagarMe
       test_subscription_transaction_response(subscription.current_transaction)
     end
 
+    should 'be able to create subscription without plan and charge with installments' do
+      subscription = test_subscription({:amount => 2000, :installments => 6})
+      subscription.create
+      assert subscription.current_transaction.amount == 2000
+      assert subscription.current_transaction.installments == 6
+      subscription.charge(1500, 3)
+      assert subscription.current_transaction.kind_of?(PagarMe::Transaction)
+      test_subscription_transaction_response(subscription.current_transaction, 1500, 3)
+    end
+
     should 'be able to search by anything' do
       subscription = test_subscription_with_customer
       subscription.create

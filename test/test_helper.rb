@@ -118,12 +118,14 @@ def test_customer_response(customer)
   assert customer.id
 end
 
-def test_subscription_transaction_response(transaction)
+def test_subscription_transaction_response(transaction, amount = nil, installments = nil)
+	amount ||= 2000
+	installments ||= 1
   assert transaction.id
   assert !transaction.refuse_reason
   assert transaction.date_created
-  assert transaction.amount == 2000
-  assert transaction.installments.to_i == 1
+  assert transaction.amount == amount
+  assert transaction.installments.to_i == installments
   # assert transaction.card_brand == 'visa'
   assert transaction.payment_method == 'credit_card'
   assert transaction.status == 'paid'
