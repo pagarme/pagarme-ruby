@@ -82,13 +82,6 @@ module PagarMe
       assert transaction.status == 'refunded'
     end
 
-    should 'should allow transactions with R$ amount' do
-      transaction = test_transaction
-      transaction.amount = 'R$ 10.00'
-      transaction.charge
-      assert transaction.amount == 1000
-    end
-
     should 'validate invalid transaction' do
 
       #Test invalid card_number

@@ -3,8 +3,6 @@ require File.join(File.dirname(__FILE__), '..', 'pagarme')
 
 module PagarMe
   class Subscription < TransactionCommon
-
-
     def create
       if self.plan
         self.plan_id = plan.id
@@ -33,7 +31,7 @@ module PagarMe
       request = PagarMe::Request.new(self.url + '/transactions', 'POST')
       request.parameters = {
         :amount => amount,
-				:installments => installments
+		:installments => installments
       }
       response = request.run
 
