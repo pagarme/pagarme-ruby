@@ -29,13 +29,6 @@ module PagarMe
       end
     end
 
-    should 'be able to create with unformatted amount' do
-      plan = test_plan
-      plan.amount = 'R$ 10.00'
-      plan.create
-      assert plan.amount == 1000
-    end
-
     should 'validate plan' do
       exception = assert_raises PagarMeError do
         plan = Plan.new({

@@ -8,11 +8,11 @@ module PagarMe
       #init @attributes - which are the attributes in the object
       @attributes = {}
 
-      # filters - which are the filters that will be called when appropriate , such as before_set
-      @filters =  {}
-
       # Values that were changed in the object but weren't saved
       @unsaved_values = Set.new
+
+	  # Methods that already existed
+	  @@existing_methods = Array.new
 
       #Update object
       update(response)
@@ -90,7 +90,9 @@ module PagarMe
       metaclass.instance_eval do
         keys.each do |key|
           key_sym = :"#{key}="
-          remove_method(key) if method_defined?(key)
+		  if !@@existing_methods.include?(key)
+          	remove_method(key) if method_defined?(key) 
+		  end
           remove_method(key_sym) if method_defined?(key_sym)
         end
       end
@@ -100,27 +102,17 @@ module PagarMe
       metaclass.instance_eval do
         keys.each do |key|
           key_set = "#{key}="
-          define_method(key) { @attributes[key] }
+		  if method_defined?(key)
+			@@existing_methods.push(key)
+		  else
+         	define_method(key) { @attributes[key] } 
+		  end
           define_method(key_set) do |value|
-            if @filters[key]
-              @filters[key].each do |meth|
-                if methods.include?(meth)
-                  @attributes[key] = method(meth).call(value)
+                  @attributes[key] = value
                   @unsaved_values.add(key)
-                end
-              end
-            else
-              @attributes[key] = value
-              @unsaved_values.add(key)
-            end
           end
         end
       end
-    end
-
-    def before_set_filter(attribute, method)
-      @filters[attribute.to_sym] = Array.new unless @filters[attribute.to_sym]
-      @filters[attribute.to_sym] << method.to_sym
     end
 
     def method_missing(name, *args)

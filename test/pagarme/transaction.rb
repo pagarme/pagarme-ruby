@@ -61,6 +61,30 @@ module PagarMe
       assert transaction_2.id == transaction.id
     end
 
+	should 'accept parameters on the refund' do
+	  transaction = PagarMe::Transaction.new({
+	  	:payment_method => 'boleto',
+		:amount => '1000'
+	  })
+
+	  transaction2 = PagarMe::Transaction.new({
+	  	:payment_method => 'boleto',
+		:amount => '1000'
+	  })
+	  
+	  transaction.charge
+	  transaction2.charge
+
+	  transaction.status = 'paid'
+	  transaction.save
+
+	  transaction2.status = 'paid'
+	  transaction2.save
+
+	  transaction.refund({bank_account: {:bank_code => '399', :agencia => '1234', :conta => '1234567', :conta_dv => '1', :legal_name => 'Jose da silva', :document_number => '68782915423'}})
+	  assert transaction.status == 'pending_refund'
+	end
+
     should 'be able to create transaction with customer' do
       transaction = test_transaction_with_customer
       transaction.charge
@@ -81,6 +105,15 @@ module PagarMe
 
       assert transaction.status == 'refunded'
     end
+
+	should 'be able to capture a transaction and pass an amount' do
+	  transaction = test_transaction({:capture => false})
+	  transaction.charge
+	  assert transaction.status == 'authorized'
+	  transaction.capture({:amount => 1000})
+	  assert transaction.status == 'paid'
+	  assert transaction.amount == 1000
+	end
 
     should 'validate invalid transaction' do
 
