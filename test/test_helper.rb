@@ -13,6 +13,16 @@ def test_transaction(params = {})
   }.merge(params))
 end
 
+def test_card(params = {})
+  return PagarMe::Card.new({
+	:card_number => '4111111111111111',
+	:card_holder_name => 'Jose da Silva',
+	:card_expiration_month => '10',
+	:card_expiration_year => '15',
+	:card_cvv => '314'
+  }.merge(params))
+end
+
 def test_subscription_without_plan(params = {})
   return PagarMe::Subscription.new({
     :payment_method => 'credit_card',
