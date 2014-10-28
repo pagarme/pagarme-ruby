@@ -12,12 +12,14 @@ module PagarMe
 	end
 
 	def create
-	  self.card_hash = generate_card_hash unless self.card_hash
-	  self.card_number = nil
-	  self.card_holder_name = nil
-	  self.card_expiration_year = nil
-	  self.card_expiration_month = nil
-	  self.card_cvv = nil
+	  check_card_object
+	  clear_card_data
+	  super
+	end
+
+	def save
+	  check_card_object
+	  clear_card_data
 	  super
 	end
 
@@ -37,5 +39,36 @@ module PagarMe
 	  public_key = OpenSSL::PKey::RSA.new(response['public_key'])
 	  ret = "#{response['id']}_#{Base64.strict_encode64(public_key.public_encrypt(card_data_parameters.to_params))}"
 	end
+
+	def should_generate_card_hash
+	  true
+	end
+
+	private
+	  def check_card_object
+		if self.card
+		  if self.card.id
+			self.card_id = self.card.id
+		  else
+			self.card_number = self.card.card_number
+			self.card_holder_name = self.card.card_holder_name
+			self.card_expiration_year = self.card.card_expiration_year
+			self.card_expiration_month = self.card.card_expiration_month
+			self.card_cvv = self.card.card_cvv
+		  end
+		  self.card = nil
+		end
+	  end
+
+	  def clear_card_data
+		if self.should_generate_card_hash
+		  self.card_hash = generate_card_hash unless self.card_hash || self.card_id
+		  self.card_number = nil
+		  self.card_holder_name = nil
+		  self.card_expiration_year = nil
+		  self.card_expiration_month = nil
+		  self.card_cvv = nil
+		end
+	  end
   end
 end

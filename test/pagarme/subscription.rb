@@ -13,6 +13,49 @@ module PagarMe
       test_transaction_with_customer(subscription)
     end
 
+	should 'be able to create subscription with plan and unsaved card' do
+	  plan = test_plan
+	  plan.create
+
+	  card = test_card
+
+	  subscription = PagarMe::Subscription.new({
+		:postback_url => 'http://test.com/postback',
+		:payment_method => 'credit_card',
+		:card => card,
+		:plan => plan,
+		:customer => {
+		  :email => 'customer@pagar.me'
+		}
+	  })
+	  subscription.create
+	  
+	  assert subscription.id
+	  assert subscription.plan.id == plan.id
+	end
+
+	should 'be able to create subscription with plan and saved card' do
+	  plan = test_plan
+	  plan.create
+
+	  card = test_card
+	  card.create
+
+	  subscription = PagarMe::Subscription.new({
+		:postback_url => 'http://test.com/postback',
+		:payment_method => 'credit_card',
+		:card => card,
+		:plan => plan,
+		:customer => {
+		  :email => 'customer@pagar.me'
+		}
+	  })
+	  subscription.create
+	  
+	  assert subscription.id
+	  assert subscription.plan.id == plan.id
+	end
+
     should 'be able to create subscription without plan' do
       subscription = test_subscription({:amount => 2000})
       subscription.create

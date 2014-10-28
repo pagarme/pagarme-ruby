@@ -11,6 +11,40 @@ module PagarMe
       test_transaction_response(transaction)
     end
 
+	should 'be able to charge with a saved card' do
+	  card = test_card
+	  card.create
+
+	  transaction = PagarMe::Transaction.new({
+		:card => card,
+		:amount => 1000,
+		:payment_method => 'credit_card'
+	  })
+
+	  transaction.charge
+	  assert transaction.status == 'paid'
+	end
+
+	should 'be able to charge with an unsaved card' do
+	  card = test_card
+	  transaction = PagarMe::Transaction.new({
+		:card => card,
+		:amount => 1000,
+		:payment_method => 'credit_card'
+	  })
+
+	  transaction.charge
+	  assert transaction.status == 'paid'
+	end
+
+	should 'return a card object' do
+	  transaction = test_transaction
+	  transaction.create
+	  assert transaction.card.id
+	  assert transaction.card.first_digits == '490172'
+	  assert transaction.card.last_digits == '4448'
+	end
+
     should 'be able to refund' do
       transaction = test_transaction
       transaction.charge
