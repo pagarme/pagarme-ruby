@@ -47,6 +47,17 @@ def test_plan(params = {})
   }.merge(params))
 end
 
+def test_bank_account(params = {})
+  return PagarMe::BankAccount.new({
+    :bank_code => '237',
+    :agencia => '1935',
+    :agencia_dv => '9',
+    :conta => '23398',
+    :conta_dv => '9',
+    :legal_name => 'foo bar loem',
+    :document_number => '111.111.111-11'
+  }.merge(params))
+end
 
 def test_subscription(params = {})
   return PagarMe::Subscription.new({
