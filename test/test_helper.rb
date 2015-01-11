@@ -1,4 +1,4 @@
-require 'pagarme'
+require_relative '../lib/pagarme'
 require 'test/unit'
 require 'shoulda'
 
@@ -80,12 +80,12 @@ def test_transaction_with_customer(params = {})
     :card_number => '4901720080344448',
     :card_holder_name => "Jose da Silva",
     :card_expiration_month => 11,
-    :card_expiration_year => "14",
+    :card_expiration_year => "19",
     :card_cvv => 356,
     :customer => {
       :name => "Jose da Silva",
       :document_number => "36433809847",
-      :email => "henrique@pagar.me",
+      :email => "henrique+test@pagar.me",
       :address => {
         :street => 'Av. Brigadeiro Faria Lima',
         :neighborhood => 'Itaim bibi',
@@ -108,7 +108,7 @@ def test_subscription_with_customer(params = {})
     :card_number => '4901720080344448',
     :card_holder_name => "Jose da silva",
     :card_expiration_month => 11,
-    :card_expiration_year => 14,
+    :card_expiration_year => 19,
     :card_cvv => 356,
     :customer => {
       :name => "Jose da Silva",

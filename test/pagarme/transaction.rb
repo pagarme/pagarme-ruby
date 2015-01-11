@@ -127,6 +127,7 @@ module PagarMe
       assert transaction.address.street== 'Av. Brigadeiro Faria Lima'
       assert transaction.customer.class == Customer
       test_customer_response(transaction.customer)
+	  assert transaction.customer.email = "henrique+test@pagar.me"
     end
 
     should 'be able to refund transaction with customer' do

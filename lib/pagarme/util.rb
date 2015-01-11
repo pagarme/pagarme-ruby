@@ -26,7 +26,7 @@ module PagarMe
     end
 
     def self.url_encode(key)
-      URI.escape(key.to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+      URI.encode_www_form_component(key.to_s)
     end
 
 
@@ -40,7 +40,7 @@ module PagarMe
         when Array
           ret += normalize_array_params(v, current_key)
         else
-          ret << [current_key, v]
+          ret << [current_key, url_encode(v)]
         end
       end
       ret
@@ -55,7 +55,7 @@ module PagarMe
         when Array
           ret += normalize_array_params(element, current_key)
         else
-          ret << ["#{current_key}[]", element]
+          ret << ["#{current_key}[]", url_encode(element)]
         end
       end
       ret
