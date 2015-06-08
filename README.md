@@ -4,7 +4,7 @@ Pagar.me Ruby library
 
 ## Documentation
 
-* [API Guide](https://pagar.me/docs/apis/ruby/)
+* [API Guide](http://pagar.me/docs)
 
 ## Code Status
 
