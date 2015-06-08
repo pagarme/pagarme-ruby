@@ -13,6 +13,12 @@ def test_transaction(params = {})
   }.merge(params))
 end
 
+def test_transfer(params = {})
+  return PagarMe::Transfer.new({
+    amount: 1000,
+  }.merge(params))
+end
+
 def test_card(params = {})
   return PagarMe::Card.new({
 	:card_number => '4111111111111111',
