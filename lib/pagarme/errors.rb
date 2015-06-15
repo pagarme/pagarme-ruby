@@ -1,12 +1,8 @@
 module PagarMe
   class PagarMeError < StandardError
-    attr_accessor :message
-    attr_accessor :parameter_name
-    attr_accessor :type
-    attr_accessor :url
-    attr_accessor :errors
+    attr_accessor :message, :parameter_name, :type, :url, :errors
 
-    def initialize(message = "", parameter_name = "", type = "", url = "") 
+    def initialize(message = "", parameter_name = "", type = "", url = "")
       self.message = message
       self.type = type
       self.parameter_name = parameter_name
