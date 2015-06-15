@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'openssl'
 require 'base64'
 require File.join(File.dirname(__FILE__), '..', 'pagarme')
@@ -16,18 +15,19 @@ module PagarMe
       create
     end
 
-	def capture(params={})
-	  request = PagarMe::Request.new(self.url + '/capture', 'POST')
-	  request.parameters.merge!(params)
-	  response = request.run
-	  update(response)
-	end
+    def capture(params={})
+      request = PagarMe::Request.new(self.url + '/capture', 'POST')
+      request.parameters.merge!(params)
+      response = request.run
+      update(response)
+    end
 
     def refund(params={})
       request = PagarMe::Request.new(self.url + '/refund', 'POST')
-	  request.parameters.merge!(params)
+      request.parameters.merge!(params)
       response = request.run
       update(response)
     end
   end
 end
+

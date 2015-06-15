@@ -1,4 +1,3 @@
-# encoding: utf-8
 require_relative '../test_helper'
 
 module PagarMe
@@ -11,39 +10,36 @@ module PagarMe
       test_transaction_response(transaction)
     end
 
-	should 'be able to charge with a saved card' do
-	  card = test_card
-	  card.create
+    should 'be able to charge with a saved card' do
+      card = test_card
+      card.create
+      transaction = PagarMe::Transaction.new({
+        :card => card,
+        :amount => 1000,
+        :payment_method => 'credit_card'
+      })
+      transaction.charge
+      assert transaction.status == 'paid'
+    end
 
-	  transaction = PagarMe::Transaction.new({
-		:card => card,
-		:amount => 1000,
-		:payment_method => 'credit_card'
-	  })
+    should 'be able to charge with an unsaved card' do
+      card = test_card
+      transaction = PagarMe::Transaction.new({
+        :card => card,
+        :amount => 1000,
+        :payment_method => 'credit_card'
+      })
+      transaction.charge
+      assert transaction.status == 'paid'
+    end
 
-	  transaction.charge
-	  assert transaction.status == 'paid'
-	end
-
-	should 'be able to charge with an unsaved card' do
-	  card = test_card
-	  transaction = PagarMe::Transaction.new({
-		:card => card,
-		:amount => 1000,
-		:payment_method => 'credit_card'
-	  })
-
-	  transaction.charge
-	  assert transaction.status == 'paid'
-	end
-
-	should 'return a card object' do
-	  transaction = test_transaction
-	  transaction.create
-	  assert transaction.card.id
-	  assert transaction.card.first_digits == '490172'
-	  assert transaction.card.last_digits == '4448'
-	end
+    should 'return a card object' do
+      transaction = test_transaction
+      transaction.create
+      assert transaction.card.id
+      assert transaction.card.first_digits == '490172'
+      assert transaction.card.last_digits == '4448'
+    end
 
     should 'be able to refund' do
       transaction = test_transaction
@@ -95,29 +91,29 @@ module PagarMe
       assert transaction_2.id == transaction.id
     end
 
-	should 'accept parameters on the refund' do
-	  transaction = PagarMe::Transaction.new({
-	  	:payment_method => 'boleto',
-		:amount => '1000'
-	  })
+    should 'accept parameters on the refund' do
+      transaction = PagarMe::Transaction.new({
+        :payment_method => 'boleto',
+        :amount => '1000'
+      })
 
-	  transaction2 = PagarMe::Transaction.new({
-	  	:payment_method => 'boleto',
-		:amount => '1000'
-	  })
-	  
-	  transaction.charge
-	  transaction2.charge
+      transaction2 = PagarMe::Transaction.new({
+        :payment_method => 'boleto',
+        :amount => '1000'
+      })
 
-	  transaction.status = 'paid'
-	  transaction.save
+      transaction.charge
+      transaction2.charge
 
-	  transaction2.status = 'paid'
-	  transaction2.save
+      transaction.status = 'paid'
+      transaction.save
 
-	  transaction.refund({bank_account: {:bank_code => '399', :agencia => '1234', :conta => '1234567', :conta_dv => '1', :legal_name => 'Jose da silva', :document_number => '68782915423'}})
-	  assert transaction.status == 'pending_refund'
-	end
+      transaction2.status = 'paid'
+      transaction2.save
+
+      transaction.refund({bank_account: {:bank_code => '399', :agencia => '1234', :conta => '1234567', :conta_dv => '1', :legal_name => 'Jose da silva', :document_number => '68782915423'}})
+      assert transaction.status == 'pending_refund'
+    end
 
     should 'be able to create transaction with customer' do
       transaction = test_transaction_with_customer
@@ -127,7 +123,7 @@ module PagarMe
       assert transaction.address.street== 'Av. Brigadeiro Faria Lima'
       assert transaction.customer.class == Customer
       test_customer_response(transaction.customer)
-	  assert transaction.customer.email = "henrique+test@pagar.me"
+    assert transaction.customer.email = "henrique+test@pagar.me"
     end
 
     should 'be able to refund transaction with customer' do
@@ -141,17 +137,16 @@ module PagarMe
       assert transaction.status == 'refunded'
     end
 
-	should 'be able to capture a transaction and pass an amount' do
-	  transaction = test_transaction({:capture => false})
-	  transaction.charge
-	  assert transaction.status == 'authorized'
-	  transaction.capture({:amount => 1000})
-	  assert transaction.status == 'paid'
-	  assert transaction.amount == 1000
-	end
+    should 'be able to capture a transaction and pass an amount' do
+      transaction = test_transaction({:capture => false})
+      transaction.charge
+      assert transaction.status == 'authorized'
+      transaction.capture({:amount => 1000})
+      assert transaction.status == 'paid'
+      assert transaction.amount == 1000
+    end
 
     should 'validate invalid transaction' do
-
       #Test invalid card_number
       exception = assert_raises PagarMeError do
         transaction = PagarMe::Transaction.new({
@@ -212,7 +207,7 @@ module PagarMe
       assert exception.errors.first.parameter_name == 'card_cvv'
     end
 
-	should 'calculate installments' do
+    should 'calculate installments' do
       installments_result = PagarMe::Transaction.calculate_installments({
         amount: 10000,
         interest_rate: 0

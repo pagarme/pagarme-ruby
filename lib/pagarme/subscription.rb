@@ -1,4 +1,3 @@
-# encoding: utf-8
 require File.join(File.dirname(__FILE__), '..', 'pagarme')
 
 module PagarMe
@@ -31,7 +30,7 @@ module PagarMe
       request = PagarMe::Request.new(self.url + '/transactions', 'POST')
       request.parameters = {
         :amount => amount,
-		:installments => installments
+        :installments => installments
       }
       response = request.run
 

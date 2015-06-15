@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'set'
 
 module PagarMe
@@ -11,8 +10,8 @@ module PagarMe
       # Values that were changed in the object but weren't saved
       @unsaved_values = Set.new
 
-	  # Methods that already existed
-	  @@existing_methods = Array.new
+      # Methods that already existed
+      @@existing_methods = Array.new
 
       #Update object
       update(response)
@@ -90,9 +89,9 @@ module PagarMe
       metaclass.instance_eval do
         keys.each do |key|
           key_sym = :"#{key}="
-		  if !@@existing_methods.include?(key)
-          	remove_method(key) if method_defined?(key) 
-		  end
+      if !@@existing_methods.include?(key)
+            remove_method(key) if method_defined?(key)
+      end
           remove_method(key_sym) if method_defined?(key_sym)
         end
       end
@@ -102,11 +101,11 @@ module PagarMe
       metaclass.instance_eval do
         keys.each do |key|
           key_set = "#{key}="
-		  if method_defined?(key)
-			@@existing_methods.push(key)
-		  else
-         	define_method(key) { @attributes[key] } 
-		  end
+      if method_defined?(key)
+      @@existing_methods.push(key)
+      else
+          define_method(key) { @attributes[key] }
+      end
           define_method(key_set) do |value|
                   @attributes[key] = value
                   @unsaved_values.add(key)

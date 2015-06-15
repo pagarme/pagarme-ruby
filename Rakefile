@@ -2,17 +2,17 @@ require "bundler/gem_tasks"
 
 task :default => [:all]
 
-task :test, :test_file do |t, args| 
+task :test, :test_file do |t, args|
   ret = true
   test_file = args[:test_file]
 
   if args[:test_file]
-	f = "test/pagarme/#{args[:test_file]}.rb"
-	ret = ret && ruby(f, '')
-  else
-	Dir["test/**/*.rb"].each do |f|
+    f = "test/pagarme/#{args[:test_file]}.rb"
     ret = ret && ruby(f, '')
-  end
+  else
+    Dir["test/**/*.rb"].each do |f|
+      ret = ret && ruby(f, '')
+    end
   end
 end
 

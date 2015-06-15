@@ -30,7 +30,6 @@ module PagarMe
         :api_key => PagarMe.api_key
       })
       error = nil
-	  # puts parameters.inspect
 
       begin
         response = RestClient::Request.execute({

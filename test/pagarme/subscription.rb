@@ -1,4 +1,3 @@
-# encoding: utf-8
 require_relative '../test_helper'
 
 module PagarMe
@@ -13,48 +12,48 @@ module PagarMe
       test_transaction_with_customer(subscription)
     end
 
-	should 'be able to create subscription with plan and unsaved card' do
-	  plan = test_plan
-	  plan.create
+    should 'be able to create subscription with plan and unsaved card' do
+      plan = test_plan
+      plan.create
 
-	  card = test_card
+      card = test_card
 
-	  subscription = PagarMe::Subscription.new({
-		:postback_url => 'http://test.com/postback',
-		:payment_method => 'credit_card',
-		:card => card,
-		:plan => plan,
-		:customer => {
-		  :email => 'customer@pagar.me'
-		}
-	  })
-	  subscription.create
-	  
-	  assert subscription.id
-	  assert subscription.plan.id == plan.id
-	end
+      subscription = PagarMe::Subscription.new({
+        :postback_url => 'http://test.com/postback',
+        :payment_method => 'credit_card',
+        :card => card,
+        :plan => plan,
+        :customer => {
+          :email => 'customer@pagar.me'
+        }
+      })
+      subscription.create
 
-	should 'be able to create subscription with plan and saved card' do
-	  plan = test_plan
-	  plan.create
+      assert subscription.id
+      assert subscription.plan.id == plan.id
+    end
 
-	  card = test_card
-	  card.create
+    should 'be able to create subscription with plan and saved card' do
+      plan = test_plan
+      plan.create
 
-	  subscription = PagarMe::Subscription.new({
-		:postback_url => 'http://test.com/postback',
-		:payment_method => 'credit_card',
-		:card => card,
-		:plan => plan,
-		:customer => {
-		  :email => 'customer@pagar.me'
-		}
-	  })
-	  subscription.create
-	  
-	  assert subscription.id
-	  assert subscription.plan.id == plan.id
-	end
+      card = test_card
+      card.create
+
+      subscription = PagarMe::Subscription.new({
+        :postback_url => 'http://test.com/postback',
+        :payment_method => 'credit_card',
+        :card => card,
+        :plan => plan,
+        :customer => {
+          :email => 'customer@pagar.me'
+        }
+      })
+      subscription.create
+
+      assert subscription.id
+      assert subscription.plan.id == plan.id
+    end
 
     should 'be able to create subscription without plan' do
       subscription = test_subscription({:amount => 2000})
@@ -81,7 +80,7 @@ module PagarMe
 
       subscriptions = PagarMe::Subscription.find_by({'customer[name]' => 'Jose da Silva'})
       assert subscriptions.size
-      subscriptions.each do |s| 
+      subscriptions.each do |s|
         # puts s.inspect unless s.customer.name == 'Jose da Silva'
         # assert s.customer.name == 'Jose da Silva'
       end
