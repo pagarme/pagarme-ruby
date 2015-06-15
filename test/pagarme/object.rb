@@ -6,12 +6,9 @@ module PagarMe
       object = PagarMe::PagarMeObject.new({
         :attr1 => 2
       })
-
       assert object.attr1 == 2
-
       object = PagarMe::PagarMeObject.new
       object.attr1 = 2
-
       assert object.attr1 == 2
     end
 
@@ -21,7 +18,6 @@ module PagarMe
           :attr => 2
         }
       })
-
       assert object.nested.attr = 2
     end
   end

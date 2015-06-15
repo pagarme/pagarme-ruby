@@ -183,10 +183,10 @@ end
 
 class Test::Unit::TestCase
   def setup
-    PagarMe.api_key="ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo"
+    PagarMe.api_key = "ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo"
   end
 
   def teardown
-    PagarMe.api_key=nil
+    PagarMe.api_key = nil
   end
 end
