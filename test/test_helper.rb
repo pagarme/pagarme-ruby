@@ -21,11 +21,11 @@ end
 
 def test_card(params = {})
   return PagarMe::Card.new({
-	:card_number => '4111111111111111',
-	:card_holder_name => 'Jose da Silva',
-	:card_expiration_month => '10',
-	:card_expiration_year => '15',
-	:card_cvv => '314'
+    :card_number => '4111111111111111',
+    :card_holder_name => 'Jose da Silva',
+    :card_expiration_month => '10',
+    :card_expiration_year => '15',
+    :card_cvv => '314'
   }.merge(params))
 end
 
@@ -146,8 +146,8 @@ def test_customer_response(customer)
 end
 
 def test_subscription_transaction_response(transaction, amount = nil, installments = nil)
-	amount ||= 2000
-	installments ||= 1
+  amount ||= 2000
+  installments ||= 1
   assert transaction.id
   assert !transaction.refuse_reason
   assert transaction.date_created
