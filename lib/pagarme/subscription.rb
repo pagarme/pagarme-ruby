@@ -31,7 +31,7 @@ module PagarMe
       request = PagarMe::Request.new(self.url + '/transactions', 'POST')
       request.parameters = {
         :amount => amount,
-		:installments => installments
+        :installments => installments
       }
       response = request.run
 
