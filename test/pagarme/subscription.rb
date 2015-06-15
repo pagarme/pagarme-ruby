@@ -1,4 +1,3 @@
-# encoding: utf-8
 require_relative '../test_helper'
 
 module PagarMe
@@ -82,6 +81,7 @@ module PagarMe
       subscriptions = PagarMe::Subscription.find_by({'customer[name]' => 'Jose da Silva'})
       assert subscriptions.size
       subscriptions.each do |s|
+        # puts s.inspect unless s.customer.name == 'Jose da Silva'
         # assert s.customer.name == 'Jose da Silva'
       end
     end

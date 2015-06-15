@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'openssl'
 require 'base64'
 require File.join(File.dirname(__FILE__), '..', 'pagarme')
