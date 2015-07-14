@@ -56,28 +56,37 @@ module PagarMe
       @attributes[key.to_sym]
     end
 
+		def to_hash_value(value, type)
+			case value
+			when PagarMeObject
+				value.send type
+			when Array
+				value.map do |v|
+					to_hash_value v, type
+				end
+			else
+				value
+			end
+		end
+
     def unsaved_values
       values = {}
+
       @unsaved_values.each do |k|
-        if(@attributes[k].kind_of?(PagarMeObject))
-          values[k] = @attributes[k].unsaved_values
-        else
-          values[k] = @attributes[k]
-        end
+				values[k] = to_hash_value(@attributes[k], 'unsaved_values')
       end
+
       values
     end
 
     def to_hash
       ret_attributes = {}
-      @attributes.each do |k,v|
-        if @attributes[k].kind_of?(PagarMeObject)
-          ret_attributes[k] = @attributes[k].to_hash if @attributes[k].kind_of?(PagarMeObject)
-        else
-          ret_attributes[k] = @attributes[k]
-        end
+
+      @attributes.each do |k, v|
+				ret_attributes[k] = to_hash_value(v, 'to_hash')
       end
-      return ret_attributes
+
+      ret_attributes
     end
 
     protected

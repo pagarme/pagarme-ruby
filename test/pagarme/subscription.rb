@@ -75,18 +75,6 @@ module PagarMe
       test_subscription_transaction_response(subscription.current_transaction, 1500, 3)
     end
 
-    should 'be able to search by anything' do
-      subscription = test_subscription_with_customer
-      subscription.create
-
-      subscriptions = PagarMe::Subscription.find_by({'customer[name]' => 'Jose da Silva'})
-      assert subscriptions.size
-      subscriptions.each do |s| 
-        # puts s.inspect unless s.customer.name == 'Jose da Silva'
-        # assert s.customer.name == 'Jose da Silva'
-      end
-    end
-
     should 'be able to update subscription' do
       subscription = test_subscription
       subscription.create

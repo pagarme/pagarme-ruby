@@ -53,16 +53,6 @@ module PagarMe
       assert transaction.status == 'refunded'
     end
 
-    should 'be able to search by anything' do
-      transaction = test_transaction_with_customer
-      transaction.charge
-      transactions = PagarMe::Transaction.find_by({'customer[document_number]' => 36433809847}, 2, 10)
-      assert transactions.size == 10
-      transactions.each do |t|
-        assert t.customer.document_number == '36433809847'
-      end
-    end
-
     should 'be able to create transaciton with boleto' do
       transaction = PagarMe::Transaction.new({
         :payment_method => "boleto",

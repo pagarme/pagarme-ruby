@@ -16,7 +16,7 @@ module PagarMe
     end
 
     def self.encode(params)
-      Util.normalize_params(params).to_params
+	  MultiJson.dump params
     end
 
     def run
@@ -24,22 +24,22 @@ module PagarMe
         raise PagarMeError.new("You need to configure a API key before performing requests.")
       end
 
-      self.headers =  {}
-
-      parameters = self.parameters.merge({
-        :api_key => PagarMe.api_key
-      })
       error = nil
-	  # puts parameters.inspect
 
       begin
         response = RestClient::Request.execute({
           :method => self.method,
+		  :user => PagarMe.api_key,
+		  :password => 'x',
           :url => PagarMe.full_api_url(self.path),
-          :headers => self.headers,
-          :open_timeout => 30,
+          :headers => {
+			:content_type => :json,
+			:accept => :json
+		  },
           :payload => self.class.encode(parameters),
-          :timeout => 90
+          :open_timeout => 30,
+          :timeout => 90,
+		  :ssl_ca_file => File.join(File.dirname(__FILE__), '..', '..', 'certs', 'cabundle.pem')
         })
       rescue SocketError => e
         error = "Error connecting to server (#{e.message})."
