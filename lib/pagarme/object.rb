@@ -2,59 +2,56 @@
 require 'set'
 
 module PagarMe
-  class PagarMeObject
+	class PagarMeObject
+		def initialize(response = {})
+			#init @attributes - which are the attributes in the object
+			@attributes = {}
 
-    def initialize(response = {})
-      #init @attributes - which are the attributes in the object
-      @attributes = {}
+			# Values that were changed in the object but weren't saved
+			@unsaved_values = Set.new
 
-      # Values that were changed in the object but weren't saved
-      @unsaved_values = Set.new
+			# Methods that already existed
+			@@existing_methods = Array.new
 
-	  # Methods that already existed
-	  @@existing_methods = Array.new
+			#Update object
+			update(response)
+		end
 
-      #Update object
-      update(response)
-    end
+		def self.build(attributes)
+			self.new(attributes)
+		end
 
-    def self.build(attributes)
-      object = self.new(attributes)
-      return object
-    end
+		def update(attributes)
+			removed = Set.new(@attributes.keys - attributes.keys)
+			added = Set.new(attributes.keys - @attributes.keys)
 
-    def update(attributes)
+			instance_eval do
+				remove_attribute(removed)
+				add_attribute(added)
+			end
 
-      removed = Set.new(@attributes.keys - attributes.keys)
-      added = Set.new(attributes.keys - @attributes.keys)
+			removed.each do |key|
+				@attributes.delete(key)
+				@unsaved_values.delete(key)
+			end
 
-      instance_eval do
-        remove_attribute(removed)
-        add_attribute(added)
-      end
+			attributes.each do |key, value|
+				@attributes[key] = Util.convert_to_pagarme_object(value)
+				@unsaved_values.delete(key)
+			end
+		end
 
-      removed.each do |key|
-        @attributes.delete(key)
-        @unsaved_values.delete(key)
-      end
+		def each(&block)
+			@attributes.each(&block)
+		end
 
-      attributes.each do |key, value|
-        @attributes[key] = Util.convert_to_pagarme_object(value)
-        @unsaved_values.delete(key)
-      end
-    end
+		def []=(key,value)
+			@attributes[key] = value
+		end
 
-    def each(&block)
-      @attributes.each(&block)
-    end
-
-    def []=(key,value)
-      @attributes[key] = value
-    end
-
-    def [](key)
-      @attributes[key.to_sym]
-    end
+		def [](key)
+			@attributes[key.to_sym]
+		end
 
 		def to_hash_value(value, type)
 			case value
@@ -69,76 +66,68 @@ module PagarMe
 			end
 		end
 
-    def unsaved_values
-      values = {}
+		def unsaved_values
+			Hash[@unsaved_values.map { |k| [k, to_hash_value(@attributes[k], 'unsaved_values')] }]
+		end
 
-      @unsaved_values.each do |k|
-				values[k] = to_hash_value(@attributes[k], 'unsaved_values')
-      end
+		def to_hash
+			Hash[@attributes.map { |k, v| [k, to_hash_value(v, 'to_hash')] }]
+		end
 
-      values
-    end
+		protected
 
-    def to_hash
-      ret_attributes = {}
+		def metaclass
+			class << self; self; end
+		end
 
-      @attributes.each do |k, v|
-				ret_attributes[k] = to_hash_value(v, 'to_hash')
-      end
+		def remove_attribute(keys)
+			metaclass.instance_eval do
+				keys.each do |key|
+					key_sym = :"#{key}="
 
-      ret_attributes
-    end
+					if !@@existing_methods.include?(key)
+						remove_method(key) if method_defined?(key) 
+					end
 
-    protected
+					remove_method(key_sym) if method_defined?(key_sym)
+				end
+			end
+		end
 
-    def metaclass
-      class << self; self; end
-    end
+		def add_attribute(keys)
+			metaclass.instance_eval do
+				keys.each do |key|
+					key_set = "#{key}="
 
-    def remove_attribute(keys)
-      metaclass.instance_eval do
-        keys.each do |key|
-          key_sym = :"#{key}="
-		  if !@@existing_methods.include?(key)
-          	remove_method(key) if method_defined?(key) 
-		  end
-          remove_method(key_sym) if method_defined?(key_sym)
-        end
-      end
-    end
+					if method_defined?(key)
+						@@existing_methods.push(key)
+					else
+						define_method(key) { @attributes[key] } 
+					end
 
-    def add_attribute(keys)
-      metaclass.instance_eval do
-        keys.each do |key|
-          key_set = "#{key}="
-		  if method_defined?(key)
-			@@existing_methods.push(key)
-		  else
-         	define_method(key) { @attributes[key] } 
-		  end
-          define_method(key_set) do |value|
-                  @attributes[key] = value
-                  @unsaved_values.add(key)
-          end
-        end
-      end
-    end
+					define_method(key_set) do |value|
+						@attributes[key] = value
+						@unsaved_values.add(key)
+					end
+				end
+			end
+		end
 
-    def method_missing(name, *args)
-      if name.to_s.end_with?('=')
-        attr = name.to_s[0...-1].to_sym
-        add_attribute([attr])
-        begin
-          mth = method(name)
-        rescue NameError
-          raise NoMethodError.new("O atributo #{name} nao e permitido.")
-        end
-        return mth.call(args[0])
-      else
-        if @attributes.has_key?(name)
-          return @attributes[name]
-        end
-      end
-    end
-  end
+		def method_missing(name, *args)
+			if name.to_s.end_with?('=')
+				attr = name.to_s[0...-1].to_sym
+				add_attribute([attr])
+
+				begin
+					m = method(name)
+				rescue NameError
+					raise NoMethodError.new("O atributo #{name} nao e permitido.")
+				end
+
+				m.call *args
+			else
+				@attributes[name] if @attributes.has_key?(name)
+			end
+		end
+	end
 end

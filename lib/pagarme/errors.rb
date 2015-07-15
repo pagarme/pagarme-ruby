@@ -13,12 +13,14 @@ module PagarMe
       self.errors = []
     end
 
-    def self.initFromServerResponse(response = {})
+    def self.fromServerResponse(response = {})
       object = self.new
+
       response['errors'].map do |error|
         object.message += error['message'] + ', '
         object.errors << PagarMeError.new(error['message'],  error['parameter_name'], error['type'], response['url'])
       end
+
       object
     end
 
@@ -36,3 +38,4 @@ module PagarMe
   class ResponseError < PagarMeError
   end
 end
+
