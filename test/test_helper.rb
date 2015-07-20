@@ -61,7 +61,7 @@ def test_bank_account(params = {})
     :conta => '23398',
     :conta_dv => '9',
     :legal_name => 'foo bar loem',
-    :document_number => '111.111.111-11'
+    :document_number => '00000000000000'
   }.merge(params))
 end
 
