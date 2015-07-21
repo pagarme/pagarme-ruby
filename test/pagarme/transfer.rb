@@ -3,6 +3,19 @@ require_relative '../test_helper'
 
 module PagarMe
   class TransferTest < Test::Unit::TestCase
+		def setup
+			super
+
+			t = PagarMe::Transaction.new({
+				:payment_method => 'boleto',
+				:amount => 10000
+			})
+
+			t.charge
+			t.status = 'paid'
+			t.save
+		end
+
     should 'be able to create a transfer' do
       transfer = test_transfer
       transfer.create
