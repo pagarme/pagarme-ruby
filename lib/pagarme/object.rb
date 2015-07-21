@@ -22,11 +22,17 @@ module PagarMe
 		end
 
 		def update(attributes)
+			removed_attributes = @attributes.keys - attributes.keys
+
+			removed_attributes.each do |key|
+				@attributes.delete key
+			end
+
 			attributes.each do |key, value|
 				key = key.to_s
 
 				@attributes[key] = Util.convert_to_pagarme_object(value)
-				@unsaved_values.delete(key)
+				@unsaved_values.delete key
 			end
 		end
 
@@ -36,10 +42,11 @@ module PagarMe
 
 		def []=(key,value)
 			@attributes[key] = value
+			@unsaved_values.add key
 		end
 
 		def [](key)
-			@attributes[key.to_sym]
+			@attributes[key]
 		end
 
 		def to_hash_value(value, type)
@@ -63,18 +70,23 @@ module PagarMe
 			Hash[@attributes.map { |k, v| [k, to_hash_value(v, 'to_hash')] }]
 		end
 
+		def respond_to?(name, include_all = false)
+			return true if name.to_s.end_with? '='
+
+			@attributes.has_key?(name.to_s) || super
+		end
+
 		protected
 
 		def method_missing(name, *args)
 			name = name.to_s
 
-			if name.end_with?('=')
+			if name.end_with? '='
 				attribute_name = name[0...-1]
 
-				@attributes[attribute_name] = args[0]
-				@unsaved_values.add(attribute_name)
+				self[attribute_name] = args[0]
 			else
-				@attributes[name] || nil
+				self[name]
 			end
 		end
 	end
