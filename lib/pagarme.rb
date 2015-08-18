@@ -19,6 +19,8 @@ module PagarMe
   @@api_key = nil
   @@api_endpoint = 'https://api.pagar.me/1'
   @@live = true
+  @@open_timeout = 30
+  @@timeout = 90
 
   def self.api_endpoint=(api_endpoint)
     @@api_endpoint = api_endpoint
@@ -34,6 +36,22 @@ module PagarMe
 
   def self.api_key
     @@api_key
+  end
+
+  def self.open_timeout=(open_timeout)
+    @@open_timeout = open_timeout
+  end
+
+  def self.open_timeout
+    @@open_timeout
+  end
+
+  def self.timeout=(timeout)
+    @@timeout = timeout
+  end
+
+  def self.timeout
+    @@timeout
   end
 
   def self.full_api_url(relative_path)
