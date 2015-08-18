@@ -26,8 +26,8 @@ module PagarMe
 					:password => 'x',
 					:url => PagarMe.full_api_url(self.path) + '?' + URI.encode_www_form(query),
 					:payload => MultiJson.encode(parameters),
-					:open_timeout => 30,
-					:timeout => 90,
+					:open_timeout => PagarMe.open_timeout,
+					:timeout => PagarMe.timeout,
 					:ssl_ca_file => File.join(File.dirname(__FILE__), '..', '..', 'certs', 'cabundle.pem'),
 					:headers => {
 						'Content-Type' => 'application/json; charset=utf8',
@@ -49,4 +49,3 @@ module PagarMe
 		end
 	end
 end
-
