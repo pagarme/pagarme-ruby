@@ -202,7 +202,7 @@ module PagarMe
       assert exception.errors.first.parameter_name == 'card_cvv'
     end
 
-	should 'calculate installments' do
+	  should 'calculate installments' do
       installments_result = PagarMe::Transaction.calculate_installments({
         amount: 10000,
         interest_rate: 0
@@ -210,6 +210,17 @@ module PagarMe
 
       assert installments_result['installments'].size == 12
       assert installments_result['installments']['2']['installment_amount'] == 5000
+    end
+
+    should 'be able to notify by email about a bank_slip to be paid' do
+      transaction = PagarMe::Transaction.new({
+        :payment_method => 'boleto',
+        :amount => '1000'
+      })
+      transaction.charge
+      assert_raise PagarMe::PagarMeError do
+        transaction.collect_payment(:email => 'customer@mailinator.com')
+      end
     end
   end
 end

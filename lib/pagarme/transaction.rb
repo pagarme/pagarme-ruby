@@ -29,5 +29,12 @@ module PagarMe
 			response = request.run
 			update(response)
 		end
+
+		def collect_payment(params={})
+			request = PagarMe::Request.new(self.url + '/collect_payment', 'POST')
+			request.parameters.merge!(params)
+			response = request.run
+			update(response)
+		end
 	end
 end
