@@ -22,15 +22,15 @@ module PagarMe
     end
 
     def unsaved_attributes
-      @unsaved_attributes.map do |key|
+      Hash[@unsaved_attributes.map do |key|
         [ key, to_hash_value(self[key], :unsaved_attributes) ]
-      end.to_h
+      end]
     end
 
     def to_hash
-      @attributes.map do |key, value|
+      Hash[@attributes.map do |key, value|
         [ key, to_hash_value(value, :to_hash) ]
-      end.to_h
+      end]
     end
 
     def respond_to?(name, include_all = false)
