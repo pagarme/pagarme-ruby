@@ -1,65 +1,29 @@
+require 'set'
+require 'time'
 require 'digest/sha1'
+
+require_relative 'pagarme/version'
 require_relative 'pagarme/object'
-require_relative 'pagarme/util'
 require_relative 'pagarme/model'
 require_relative 'pagarme/transaction_common'
-require_relative 'pagarme/customer'
-require_relative 'pagarme/phone'
-require_relative 'pagarme/address'
-require_relative 'pagarme/subscription'
-require_relative 'pagarme/transaction'
-require_relative 'pagarme/transfer'
-require_relative 'pagarme/card'
-require_relative 'pagarme/plan'
-require_relative 'pagarme/bank_account'
-require_relative 'pagarme/recipient'
 require_relative 'pagarme/request'
 require_relative 'pagarme/errors'
 
+Dir[File.expand_path('../pagarme/resources/*.rb', __FILE__)].map do |path|
+  require path
+end
+
 module PagarMe
-  @@api_key = nil
-  @@api_endpoint = 'https://api.pagar.me/1'
-  @@live = true
-  @@open_timeout = 30
-  @@timeout = 90
-
-  def self.api_endpoint=(api_endpoint)
-    @@api_endpoint = api_endpoint
+  class << self
+    attr_accessor :api_endpoint, :open_timeout, :timeout, :api_key
   end
 
-  def self.api_endpoint
-    @@api_endpoint
-  end
-
-  def self.api_key=(api_key)
-    @@api_key = api_key
-  end
-
-  def self.api_key
-    @@api_key
-  end
-
-  def self.open_timeout=(open_timeout)
-    @@open_timeout = open_timeout
-  end
-
-  def self.open_timeout
-    @@open_timeout
-  end
-
-  def self.timeout=(timeout)
-    @@timeout = timeout
-  end
-
-  def self.timeout
-    @@timeout
-  end
-
-  def self.full_api_url(relative_path)
-    "#{@@api_endpoint}#{relative_path}"
-  end
+  self.api_endpoint = 'https://api.pagar.me/1'
+  self.open_timeout = 30
+  self.timeout      = 90
+  self.api_key      = ENV['PAGARME_API_KEY']
 
   def self.validate_fingerprint(id, fingerprint)
-    Digest::SHA1.hexdigest(id.to_s + "#" + @@api_key) == fingerprint
+    Digest::SHA1.hexdigest(id.to_s + "#" + api_key) == fingerprint
   end
 end

@@ -1,64 +1,58 @@
 module PagarMe
   class Model < PagarMeObject
 
-    def self.class_name
-      self.name.split('::')[-1]
-    end
-
-    def self.url()
-      if self == Model
-        raise PagarMeError.new('Cant request for model')
-      end
-      "/#{CGI.escape(class_name.downcase)}s"
-    end
-
-    def url
-      raise PagarMeError.new("ID invalido", 'id') if !self.id
-      "#{self.class.url}/#{CGI.escape(id.to_s)}"
-    end
-
     def create
-      request = PagarMe::Request.new(self.class.url, 'POST')
-      request.parameters = self.to_hash
-      response = request.run
-      update(response)
+      update PagarMe::Request.post(self.class.url, params: to_hash).run
+      self
     end
 
     def save
-      request = PagarMe::Request.new(self.url, 'PUT')
-      request.parameters = self.unsaved_values
-      response = request.run
-      update(response)
+      update PagarMe::Request.put(url, params: unsaved_attributes).run
+      self
     end
 
-    def self.find_by_id(id)
-      request = PagarMe::Request.new(self.url + "/#{id}", 'GET')
-      response = request.run
-      PagarMe::Util.convert_to_pagarme_object(response)
+    def url(*params)
+      raise RequestError.new('Invalid ID') if id.nil? || id == ''
+      self.class.url CGI.escape(id.to_s), *params
     end
 
-    def self.find_by(hash, page = 1, count = 10)
-      raise RequestError.new("Invalid page count") if page < 1 or count < 1
+    class << self
 
-      request = PagarMe::Request.new(self.url,  'GET')
+      def create(*args, &block)
+        self.new(*args, &block).create
+      end
 
-      request.parameters = hash
-      request.parameters.merge!({:page => page, :count => count})
-      response = request.run
-      PagarMe::Util.convert_to_pagarme_object(response)
-    end
+      def find_by_id(id)
+        raise RequestError.new('Invalid ID') if id.nil? || id == ''
+        PagarMe::Request.get(url id).call
+      end
+      alias :find :find_by_id
 
-    def self.all(page = 1, count = 10)
-      raise RequestError.new("Invalid page count") if page < 1 or count < 1
+      def find_by(hash, page = 1, count = 10)
+        raise RequestError.new('Invalid page count') if page < 1 or count < 1
 
-      request = PagarMe::Request.new(url, 'GET')
-      request.parameters = {
-        :page => page,
-        :count => count
-      }
+        PagarMe::Request.get(url, params: hash.merge(
+          page:  page,
+          count: count
+        )).call
+      end
 
-      response = request.run
-      response.map { |obj_response| self.new(obj_response) }
+      def all(page = 1, count = 10)
+        find_by Hash.new, page, count
+      end
+
+      def url(*params)
+        ["/#{ CGI.escape underscored_class_name }s", *params].join '/'
+      end
+
+      def class_name
+        self.name.split('::').last
+      end
+
+      def underscored_class_name
+        class_name.gsub(/[a-z0-9][A-Z]/){|s| "#{s[0]}_#{s[1]}"}.downcase
+      end
+
     end
   end
 end

@@ -1,42 +1,47 @@
 module PagarMe
   class PagarMeError < StandardError
-    attr_accessor :message
-    attr_accessor :parameter_name
-    attr_accessor :type
-    attr_accessor :url
-    attr_accessor :errors
+  end
 
-    def initialize(message = "", parameter_name = "", type = "", url = "")
-      self.message = message
-      self.type = type
-      self.parameter_name = parameter_name
-      self.errors = []
-    end
+  class ConnectionError < PagarMeError
+    attr_reader :error
 
-    def self.fromServerResponse(response = {})
-      object = self.new
-
-      object.message += response['errors'].map {|e| e['message'] }.join(", ")
-
-      response['errors'].map do |error|
-        object.errors << PagarMeError.new(error['message'],  error['parameter_name'], error['type'], response['url'])
-      end
-
-      object
-    end
-
-    def to_s
-      "#{self.class.to_s} - #{message}"
+    def initialize(error)
+      @error = error
+      super error.message
     end
   end
 
   class RequestError < PagarMeError
   end
 
-  class ConnectionError < PagarMeError
+  class ResponseError < PagarMeError
+    attr_reader :request_params, :error
+
+    def initialize(request_params, error)
+      @request_params, @error = request_params, error
+      super @error.message
+    end
   end
 
-  class ResponseError < PagarMeError
+  class ValidationError < PagarMeError
+    attr_reader :response, :errors
+
+    def initialize(response)
+      @response = response
+      @errors   = response['errors'].map do |error|
+        params = error.values_at('message', 'parameter_name', 'type', 'url')
+        ParamError.new *params
+      end
+      super @errors.map(&:message).join(', ')
+    end
+  end
+
+  class ParamError < PagarMeError
+    attr_reader :parameter_name, :type, :url
+
+    def initialize(message, parameter_name, type, url)
+      @parameter_name, @type, @url = parameter_name, type, url
+      super message
+    end
   end
 end
-

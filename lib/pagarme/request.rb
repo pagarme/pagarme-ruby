@@ -1,51 +1,90 @@
 require 'uri'
 require 'rest_client'
 require 'multi_json'
-require File.join(File.dirname(__FILE__), '.', 'util')
-require File.join(File.dirname(__FILE__), '.', 'errors')
 
 module PagarMe
-	class Request
-		attr_accessor :path, :method, :parameters, :headers, :query
+  class Request
+    attr_accessor :path, :method, :parameters, :headers, :query
 
-		def initialize(path, method)
-			self.path = path
-			self.method = method
-			self.parameters = {}
-			self.query = {}
-			self.headers = {}
-		end
+    SSL_CA_FILEPATH = File.join File.dirname(__FILE__), '..', '..', 'certs', 'cabundle.pem'
+    DEFAULT_HEADERS = {
+      'Content-Type' => 'application/json; charset=utf8',
+      'Accept'       => 'application/json',
+      'User-Agent'   => "pagarme-ruby/#{PagarMe::VERSION}"
+    }
 
-		def run
-			raise PagarMeError, "You need to configure a API key before performing requests." unless PagarMe.api_key
+    def initialize(path, method, options={})
+      raise RequestError, 'You need to configure a API key before performing requests.' unless PagarMe.api_key
 
-			begin
-				response = RestClient::Request.execute({
-					:method => self.method,
-					:user => PagarMe.api_key,
-					:password => 'x',
-					:url => PagarMe.full_api_url(self.path) + '?' + URI.encode_www_form(query),
-					:payload => MultiJson.encode(parameters),
-					:open_timeout => PagarMe.open_timeout,
-					:timeout => PagarMe.timeout,
-					:ssl_ca_file => File.join(File.dirname(__FILE__), '..', '..', 'certs', 'cabundle.pem'),
-					:headers => {
-						'Content-Type' => 'application/json; charset=utf8',
-						'Accept' => 'application/json',
-						'User-Agent' => 'pagarme-ruby/1.0'
-					}
-				})
-			rescue RestClient::ExceptionWithResponse => e
-				parsed_error = MultiJson.decode(e.http_body)
+      @path       = path
+      @method     = method
+      @parameters = options[:params]  || Hash.new
+      @query      = options[:query]   || Hash.new
+      @headers    = options[:headers] || Hash.new
+    end
 
-				if parsed_error['errors']
-					raise PagarMeError.fromServerResponse(parsed_error)
-				else
-					raise PagarMeError.new(e.http_body)
-				end
-			end
+    def run
+      response = RestClient::Request.execute request_params
+      MultiJson.decode response.body
+    rescue RestClient::Exception => error
+      begin
+        parsed_error = MultiJson.decode error.http_body
 
-			MultiJson.decode response.body
-		end
-	end
+        if parsed_error['errors']
+          raise ValidationError.new parsed_error
+        else
+          raise ResponseError.new(request_params, error)
+        end
+      rescue MultiJson::ParseError
+        raise ResponseError.new(request_params, error)
+      end
+    rescue MultiJson::ParseError
+      raise ResponseError.new(request_params, response)
+    rescue SocketError
+      raise ConnectionError.new $!
+    rescue RestClient::ServerBrokeConnection
+      raise ConnectionError.new $!
+    end
+
+    def call
+      PagarMeObject.convert run
+    end
+
+    def self.get(url, options={})
+      self.new url, 'GET', options
+    end
+
+    def self.post(url, options={})
+      self.new url, 'POST', options
+    end
+
+    def self.put(url, options={})
+      self.new url, 'PUT', options
+    end
+
+    protected
+    def request_params
+      {
+        method:       method,
+        user:         PagarMe.api_key,
+        password:     'x',
+        url:          full_api_url,
+        payload:      MultiJson.encode(parameters),
+        open_timeout: PagarMe.open_timeout,
+        timeout:      PagarMe.timeout,
+        ssl_ca_file:  SSL_CA_FILEPATH,
+        headers:      DEFAULT_HEADERS.merge(headers)
+      }
+    end
+
+    def full_api_url
+      url = PagarMe.api_endpoint + path
+
+      if !query.nil? && !query.empty?
+        url += '?' + URI.encode_www_form(query)
+      end
+
+      url
+    end
+  end
 end
