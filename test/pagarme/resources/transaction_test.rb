@@ -186,6 +186,17 @@ module PagarMe
       assert exception.errors.any?{ |error| error.parameter_name == 'card_cvv' }
     end
 
+    should 'be able to split transaction' do
+      transaction = PagarMe::Transaction.charge transaction_with_card_with_split_rules_params
+      assert_split_rules transaction.split_rules
+    end
+
+    should 'raise error when there is an invalid split rule' do
+      assert_raises PagarMe::ValidationError do
+        PagarMe::Transaction.charge transaction_with_card_with_invalid_split_rules_params
+      end
+    end
+
     should 'calculate installments' do
       amount = 10000
       result = PagarMe::Transaction.calculate_installments amount: amount, interest_rate: 0

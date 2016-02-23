@@ -21,6 +21,32 @@ class Fixtures
     }
   end
 
+  def split_rule(recipient_id, percentage)
+    { recipient_id: recipient_id, percentage: percentage }
+  end
+
+  def split_rules
+    {
+      split_rules: [
+        split_rule('re_cikztxdng001ngw6e3p48w5cy', 10),
+        split_rule('re_cikztx4wa0026mt6dguqrrqkd', 20),
+        split_rule('re_cikztx415001mgw6emvst5syl', 30),
+        split_rule('re_cikzr6xs1000amt6d0hgo7n4k', 40)
+      ]
+    }
+  end
+
+  def invalid_split_rules
+    {
+      split_rules: [
+        { percentage: 10 },
+        split_rule('re_cikztx4wa0026mt6dguqrrqkd', 20),
+        split_rule('re_cikztx415001mgw6emvst5syl', 30),
+        split_rule('re_cikzr6xs1000amt6d0hgo7n4k', 40)
+      ]
+    }
+  end
+
   def refused_card
     # In test environment CVV's that starts with digit 6 are refused by acquirer
     card.merge card_cvv: '600'

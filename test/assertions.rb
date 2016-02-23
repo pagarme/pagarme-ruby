@@ -83,6 +83,21 @@ module Assertions
     assert_equal transaction.amount.to_s,    '1000'
   end
 
+  def assert_split_rules(split_rules)
+    assert_equal split_rules.size, 4
+    rules = split_rules.sort_by &:percentage
+
+    assert_equal rules[0].recipient_id, 're_cikztxdng001ngw6e3p48w5cy'
+    assert_equal rules[1].recipient_id, 're_cikztx4wa0026mt6dguqrrqkd'
+    assert_equal rules[2].recipient_id, 're_cikztx415001mgw6emvst5syl'
+    assert_equal rules[3].recipient_id, 're_cikzr6xs1000amt6d0hgo7n4k'
+
+    assert_equal rules[0].percentage, 10
+    assert_equal rules[1].percentage, 20
+    assert_equal rules[2].percentage, 30
+    assert_equal rules[3].percentage, 40
+  end
+
   def assert_plan_created(plan)
     assert       plan.id
     assert_equal plan.name,       'Plano gold'

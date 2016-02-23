@@ -2,6 +2,10 @@ module PagarMe
   class Transaction < TransactionCommon
     alias :charge :create
 
+    def split_rules
+      PagarMe::Request.get( url 'split_rules' ).call
+    end
+
     def capture(params={})
       update PagarMe::Request.post(url('capture'), params: params).run
     end
