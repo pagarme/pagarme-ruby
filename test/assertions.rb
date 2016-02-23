@@ -128,4 +128,28 @@ module Assertions
     assert_equal transfer.class, PagarMe::Transfer
     assert %w(doc credito_em_conta ted).include?(transfer.type)
   end
+
+  def assert_empty_balance(balance)
+    assert_equal balance.available.amount,     0
+    assert_equal balance.waiting_funds.amount, 0
+    assert_equal balance.transferred.amount,   0
+  end
+
+  def assert_available_balance(balance)
+    assert(balance.available.amount > 0)
+    assert_equal balance.waiting_funds.amount, 0
+    assert_equal balance.transferred.amount,   0
+  end
+
+  def assert_transfered_balance(balance)
+    assert(balance.transferred.amount > 0)
+    assert_equal balance.available.amount,     0
+    assert_equal balance.waiting_funds.amount, 0
+  end
+
+  def assert_increased_available_amount(previous_balance, balance)
+    assert(previous_balance.available.amount < balance.available.amount)
+    assert_equal previous_balance.waiting_funds.amount, balance.waiting_funds.amount
+    assert_equal previous_balance.transferred.amount,   balance.transferred.amount
+  end
 end
