@@ -16,7 +16,7 @@ module PagarMe
     end
 
     should 'be able to set postback url' do
-      transaction = PagarMe::Transaction.create transaction_with_card_with_postback_params
+      transaction = PagarMe::Transaction.create transaction_with_customer_with_card_with_postback_params
       assert_transaction_successfully_processing transaction
     end
 
