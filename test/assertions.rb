@@ -24,7 +24,7 @@ module Assertions
     assert_equal subscription.current_transaction.card_brand,     'visa'
   end
 
-  def assert_transaction_successfully_paid(transaction)
+  def assert_transaction_successfully(transaction)
     assert       transaction.id
     assert       transaction.date_created
     assert       transaction.card.id
@@ -33,10 +33,21 @@ module Assertions
     assert_equal transaction.installments.to_i, 1
     assert_equal transaction.card_holder_name,  'Jose da Silva'
     assert_equal transaction.payment_method,    'credit_card'
-    assert_equal transaction.status,            'paid'
     assert_equal transaction.card_brand,        'visa'
     assert_equal transaction.card.first_digits, '490172'
     assert_equal transaction.card.last_digits,  '4448'
+  end
+
+  def assert_transaction_successfully_paid(transaction)
+    assert                          !transaction.postback_url
+    assert_equal                    transaction.status, 'paid'
+    assert_transaction_successfully transaction
+  end
+
+  def assert_transaction_successfully_processing(transaction)
+    assert_equal                    transaction.postback_url, 'http://test.com/postback'
+    assert_equal                    transaction.status,       'processing'
+    assert_transaction_successfully transaction
   end
 
   def assert_transaction_with_customer_successfully_paid(transaction)

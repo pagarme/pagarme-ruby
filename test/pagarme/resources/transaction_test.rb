@@ -15,6 +15,11 @@ module PagarMe
       assert_transaction_successfully_paid transaction
     end
 
+    should 'be able to set postback url' do
+      transaction = PagarMe::Transaction.create transaction_with_card_with_postback_params
+      assert_transaction_successfully_processing transaction
+    end
+
     should 'not be able to charge when refused card' do
       transaction = PagarMe::Transaction.new transaction_with_customer_with_refused_card_params
       assert_equal transaction.status, 'local'

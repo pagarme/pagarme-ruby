@@ -24,6 +24,6 @@ module PagarMe
   self.api_key      = ENV['PAGARME_API_KEY']
 
   def self.validate_fingerprint(id, fingerprint)
-    Digest::SHA1.hexdigest(id.to_s + "#" + api_key) == fingerprint
+    PagarMe::Postback.validate id, fingerprint
   end
 end

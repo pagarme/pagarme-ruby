@@ -119,6 +119,18 @@ class Fixtures
     { postback_url: 'http://test.com/postback' }
   end
 
+  def postback_response
+    {
+      id:             194330,
+      event:          'transaction_status_changed',
+      fingerprint:    '9f4af94fa19e65b2420004a0eaed08fd5a22c74c',
+      desired_status: 'paid',
+      current_status: 'paid',
+      object:         'transaction',
+      old_status:     'processing'
+    }
+  end
+
   def subscription
     card.merge customer: { email: 'customer@pagar.me' }
   end
