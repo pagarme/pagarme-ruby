@@ -2,8 +2,13 @@ require_relative '../../test_helper'
 
 module PagarMe
   class TransactionTest < Test::Unit::TestCase
+    def setup
+      super
+      ensure_positive_balance
+    end
+
     should 'be able to charge' do
-      transaction = PagarMe::Transaction.new transaction_with_card_params
+      transaction = PagarMe::Transaction.new transaction_with_customer_with_card_params
       assert_equal transaction.status, 'local'
 
       transaction.charge
@@ -11,7 +16,7 @@ module PagarMe
     end
 
     should 'not be able to charge when refused card' do
-      transaction = PagarMe::Transaction.new transaction_with_refused_card_params
+      transaction = PagarMe::Transaction.new transaction_with_customer_with_refused_card_params
       assert_equal transaction.status, 'local'
 
       transaction.charge
@@ -20,18 +25,18 @@ module PagarMe
 
     should 'be able to charge with a saved card' do
       card        = PagarMe::Card.create card_params
-      transaction = PagarMe::Transaction.charge card: card, amount: 1000
+      transaction = PagarMe::Transaction.charge customer_params(card: card, amount: 1000)
       assert_transaction_successfully_paid transaction
     end
 
     should 'be able to charge with an unsaved card' do
       card        = PagarMe::Card.new card_params
-      transaction = PagarMe::Transaction.charge card: card, amount: 1000
+      transaction = PagarMe::Transaction.charge customer_params(card: card, amount: 1000)
       assert_transaction_successfully_paid transaction
     end
 
     should 'be able to refund' do
-      transaction = PagarMe::Transaction.charge transaction_with_card_params
+      transaction = PagarMe::Transaction.charge transaction_with_customer_with_card_params
       assert_transaction_successfully_paid transaction
 
       transaction.refund
@@ -52,7 +57,7 @@ module PagarMe
           }
         }
       }
-      transaction = PagarMe::Transaction.charge transaction_with_card_params(metadata)
+      transaction = PagarMe::Transaction.charge transaction_with_customer_with_card_params(metadata)
       assert_equal transaction.metadata.to_hash, metadata['metadata']
 
       found_transaction = PagarMe::Transaction.find_by_id transaction.id
@@ -60,7 +65,7 @@ module PagarMe
     end
 
     should 'be able to find a transaction' do
-      transaction = PagarMe::Transaction.charge transaction_with_card_params
+      transaction = PagarMe::Transaction.charge transaction_with_customer_with_card_params
       assert_transaction_successfully_paid transaction
 
       other_transaction = PagarMe::Transaction.find_by_id transaction.id
@@ -114,7 +119,7 @@ module PagarMe
     end
 
     should 'be able to capture a transaction and pass an amount' do
-      transaction = PagarMe::Transaction.charge transaction_with_card_params(capture: false, amount: 2000)
+      transaction = PagarMe::Transaction.charge transaction_with_customer_with_card_params(capture: false, amount: 2000)
       assert_equal transaction.status,          'authorized'
       assert_equal transaction.amount,          2000
       assert_equal transaction.paid_amount,     0
@@ -187,7 +192,7 @@ module PagarMe
     end
 
     should 'be able to split transaction' do
-      transaction = PagarMe::Transaction.charge transaction_with_card_with_split_rules_params
+      transaction = PagarMe::Transaction.charge transaction_with_customer_with_card_with_split_rules_params
       assert_split_rules transaction.split_rules
     end
 

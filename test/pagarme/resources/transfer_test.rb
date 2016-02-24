@@ -2,6 +2,11 @@ require_relative '../../test_helper'
 
 module PagarMe
   class TransferTest < Test::Unit::TestCase
+    def setup
+      super
+      ensure_positive_balance
+    end
+
     should 'be able to create a transfer' do
       transfer = PagarMe::Transfer.create transfer_params
       assert_transfer transfer

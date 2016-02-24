@@ -6,26 +6,26 @@ module PagarMe
       plan = PagarMe::Plan.create plan_params
       assert_plan_created plan
 
-      subscription = PagarMe::Subscription.create subscription_params(plan: plan)
+      subscription = PagarMe::Subscription.create subscription_with_customer_params(plan: plan)
       assert_subscription_created subscription, plan
     end
 
     should 'be able to create subscription with plan and unsaved card' do
       plan         = PagarMe::Plan.create plan_params
       card         = PagarMe::Card.new card_params
-      subscription = PagarMe::Subscription.create subscription_params(plan: plan, card: card)
+      subscription = PagarMe::Subscription.create subscription_with_customer_params(plan: plan, card: card)
       assert_subscription_created subscription, plan
     end
 
     should 'be able to create subscription with plan and saved card' do
       plan         = PagarMe::Plan.create plan_params
       card         = PagarMe::Card.create card_params
-      subscription = PagarMe::Subscription.create subscription_params(plan: plan, card: card)
+      subscription = PagarMe::Subscription.create subscription_with_customer_params(plan: plan, card: card)
       assert_subscription_created subscription, plan
     end
 
     should 'be able to create subscription without plan' do
-      subscription = PagarMe::Subscription.create subscription_with_card_params(amount: 2000)
+      subscription = PagarMe::Subscription.create subscription_with_customer_with_card_params(amount: 2000)
       assert_subscription_successfully_paid subscription, 2000
 
       found_subscription = PagarMe::Subscription.find_by_id subscription.id
@@ -33,7 +33,7 @@ module PagarMe
     end
 
     should 'be able to create subscription without plan and charge with installments' do
-      subscription = PagarMe::Subscription.create subscription_with_card_params(amount: 2000, installments: 6)
+      subscription = PagarMe::Subscription.create subscription_with_customer_with_card_params(amount: 2000, installments: 6)
       assert_subscription_successfully_paid subscription, 2000, 6
 
       id = subscription.id
@@ -47,7 +47,7 @@ module PagarMe
     end
 
     should 'be able to update subscription' do
-      subscription = PagarMe::Subscription.create subscription_with_card_params
+      subscription = PagarMe::Subscription.create subscription_with_customer_with_card_params
 
       subscription.payment_method = 'boleto'
       subscription.save
@@ -70,7 +70,7 @@ module PagarMe
       plan       = PagarMe::Plan.create plan_params
       other_plan = PagarMe::Plan.create other_plan_params
 
-      subscription = PagarMe::Subscription.create subscription_with_card_params(plan: plan)
+      subscription = PagarMe::Subscription.create subscription_with_customer_with_card_params(plan: plan)
       assert_equal subscription.plan.id, plan.id
 
       subscription.plan = other_plan
@@ -80,7 +80,7 @@ module PagarMe
 
     should 'be able to cancel a subscription' do
       plan         = PagarMe::Plan.create plan_params
-      subscription = PagarMe::Subscription.create subscription_with_card_params(plan: plan)
+      subscription = PagarMe::Subscription.create subscription_with_customer_with_card_params(plan: plan)
       assert_equal subscription.status, 'trialing'
 
       subscription.cancel

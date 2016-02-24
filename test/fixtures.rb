@@ -28,10 +28,10 @@ class Fixtures
   def split_rules
     {
       split_rules: [
-        split_rule('re_cikztxdng001ngw6e3p48w5cy', 10),
-        split_rule('re_cikztx4wa0026mt6dguqrrqkd', 20),
-        split_rule('re_cikztx415001mgw6emvst5syl', 30),
-        split_rule('re_cikzr6xs1000amt6d0hgo7n4k', 40)
+        split_rule(persistent_recipient_ids[0], 10),
+        split_rule(persistent_recipient_ids[1], 20),
+        split_rule(persistent_recipient_ids[2], 30),
+        split_rule(persistent_recipient_ids[3], 40)
       ]
     }
   end
@@ -40,9 +40,9 @@ class Fixtures
     {
       split_rules: [
         { percentage: 10 },
-        split_rule('re_cikztx4wa0026mt6dguqrrqkd', 20),
-        split_rule('re_cikztx415001mgw6emvst5syl', 30),
-        split_rule('re_cikzr6xs1000amt6d0hgo7n4k', 40)
+        split_rule(persistent_recipient_ids[1], 20),
+        split_rule(persistent_recipient_ids[2], 30),
+        split_rule(persistent_recipient_ids[3], 40)
       ]
     }
   end
@@ -144,6 +144,18 @@ class Fixtures
 
   def valid_expiration_year
     ( Time.now.year+1 ).to_s[2..-1]
+  end
+
+  def persistent_recipient_ids
+    VCR.use_cassette('fixtures/persistent_recipients') do
+      4.times.map do
+        PagarMe::Recipient.create(recipient_with_nested_bank_account).id
+      end
+    end
+  end
+
+  def self.persistent_recipient_ids
+    new.persistent_recipient_ids
   end
 
   protected
