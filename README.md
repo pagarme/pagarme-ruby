@@ -68,6 +68,24 @@ More about [Creating a Credit Card Transaction](https://docs.pagar.me/transactio
 
 More about [Creating a Boleto Transaction](https://docs.pagar.me/transactions/#realizando-uma-transacao-de-boleto-bancario).
 
+#### Split Rules
+
+With split rules, received amount could be splitted between more than one recipient.
+For example, splitting equally a transaction:
+
+```ruby
+  PagarMe::Transaction.new(
+    amount:    1000,      # in cents
+    card_hash: card_hash, # how to get a card hash: docs.pagar.me/capturing-card-data
+    split\_rules: [
+      { recipient_id: recipient_id_1, percentage: 50 },
+      { recipient_id: recipient_id_2, percentage: 50 }
+    ]
+  ).charge
+```
+
+More about [Split Rules](https://docs.pagar.me/api/#regras-do-split).
+
 ### Plans & Subscriptions
 
 You can use recurring charges, learn more [here](https://docs.pagar.me/plans-subscriptions).
@@ -98,6 +116,98 @@ More about [Creating a Plan](https://docs.pagar.me/plans-subscriptions/#criando-
 
 More about [Creating a Subscription](https://docs.pagar.me/plans-subscriptions/#criando-uma-assinatura).
 
+### Recipients
+
+#### Creating a Recipient
+
+To create a recipient, so it can receive payments through split rules or transfers:
+
+```ruby
+  PagarMe::Recipient.create(
+    bank_account: {
+      bank_code:       '237',
+      agencia:         '1935',
+      agencia_dv:      '9',
+      conta:           '23398',
+      conta_dv:        '9',
+      legal_name:      'Fulano da Silva',
+      document_number: '00000000000000' # CPF or CNPJ
+    },
+    transfer_enabled: false
+  )
+```
+
+More about [Creating a Recipient](https://docs.pagar.me/api/#recebedores).
+
+#### Transfer Available Amout to Bank Account Manually
+
+This is only needed if _transfer\_enabled_ is set to false. If set to true,
+_transfer\_interval_ and _transfer\_day_ will handle it automatically.
+
+```ruby
+  PagarMe::Recipient.find(recipient_id).receive amount
+```
+
+### Balance And Balance Operations
+
+#### Checking Balance
+
+```ruby
+  balance = PagarMe::Balance.balance
+  balance.waiting_funds.amount # money to be received in your account
+  balance.available.amount     # in your pagarme account
+  balance.transferred.amount   # transferred to your bank account
+```
+
+Just that!
+
+More about [Balance](https://docs.pagar.me/api/#saldo)
+
+#### Checking Balance Operations
+
+To access the history of balance operations:
+
+```ruby
+  PagarMe::BalanceOperation.balance_operations
+```
+
+Paginating:
+
+```ruby
+  PagarMe::BalanceOperation.balance_operations 2, 50 # second page, 50 per page
+```
+
+More about [Balance Operations](https://docs.pagar.me/api/#operacoes-de-saldo)
+
+#### Checking Recipient Balance
+
+```ruby
+  balance = PagarMe::Recipient.find(recipient_id).balance
+  balance.waiting_funds.amount # money to be received in his account
+  balance.available.amount     # in his pagarme account
+  balance.transferred.amount   # transferred to his bank account
+```
+
+Just that!
+
+More about [Recipient Balance](https://docs.pagar.me/api/#saldo-de-um-recebedor)
+
+#### Checking Recipient Balance Operations
+
+To access the history of balance operations:
+
+```ruby
+  PagarMe::Recipient.find(recipient_id).balance_operations
+```
+
+Paginating:
+
+```ruby
+  PagarMe::Recipient.find(recipient_id).balance_operations 2, 50 # second page, 50 per page
+```
+
+More about [Recipient Balance Operations](https://docs.pagar.me/api/#operacoes-de-saldo-de-um-recebedor)
+
 ### Undocumented Features
 
 This gem is stable, but in constant development.
@@ -117,15 +227,12 @@ Thanks!
 
 Add support to:
 
-* [Balance](https://docs.pagar.me/api/#saldo)
-* [BalanceOperation](https://docs.pagar.me/api/#operacoes-de-saldo)
 * [BulkAnticipation](https://docs.pagar.me/api/#antecipacoes)
-* [SplitRule](https://docs.pagar.me/api/#regras-do-split)
 
 Add support to [ElasticSearch Query DSL](https://docs.pagar.me/api/#buscas-avancadas),
 so you can search your data optimally.
 
-And document the all the source code
+And document all the source code.
 
 ## License
 
