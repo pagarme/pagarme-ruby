@@ -14,6 +14,10 @@ module PagarMe
       update PagarMe::Request.post(url 'cancel').run
     end
 
+    def transactions
+      PagarMe::Request.get( url 'transactions' ).call
+    end
+
     def charge(amount, installments = 1)
       PagarMe::Request.post(url('transactions'), params: {
         amount:       amount,

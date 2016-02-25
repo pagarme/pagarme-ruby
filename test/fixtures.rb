@@ -69,6 +69,15 @@ class Fixtures
     }
   end
 
+  def no_trial_plan
+    {
+      name:       'Plano Sem Trial',
+      days:       30,
+      amount:     3000,
+      trial_days: 0
+    }
+  end
+
   def bank_account
     {
       bank_code:       '237',

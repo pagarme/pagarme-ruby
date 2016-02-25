@@ -112,6 +112,12 @@ module Assertions
     assert_equal subscription.plan.id, plan.id
   end
 
+  def assert_no_trial_subscription_created(subscription, plan)
+    assert       subscription.id
+    assert_equal subscription.status, 'paid'
+    assert_equal subscription.plan.id, plan.id
+  end
+
   def assert_transaction_errors(params = {})
     PagarMe::Transaction.create transaction_with_card_params(params)
   rescue PagarMe::ValidationError
