@@ -36,6 +36,7 @@ module PagarMe
           count: count
         )).call
       end
+      alias :find_by_hash :find_by
 
       def all(page = 1, count = 10)
         find_by Hash.new, page, count
