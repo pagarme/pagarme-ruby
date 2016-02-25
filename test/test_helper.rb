@@ -36,15 +36,20 @@ class Test::Unit::TestCase
     end
   end
 
+  def fixed_api_key
+    PagarMe.api_key = 'ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo'
+    yield
+    PagarMe.api_key = temporary_api_key
+  end
+
   def temporary_api_key
+    return 'ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo'
+
+    # TODO: Understand why using temporary api keys slows too much
     VCR.use_cassette 'TestCase/tmp_company_api_key' do
       PagarMe.api_key = 'ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo'
       PagarMe::Request.post('/companies/temporary').run['api_key']['test']
     end
-  end
-
-  def temp_api_key_path
-    File.expand_path '../aki_key.txt', __FILE__
   end
 
   # Monkey Patch that adds VCR everywhere
