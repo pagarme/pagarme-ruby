@@ -1,24 +1,21 @@
-require "bundler/gem_tasks"
+require 'bundler/gem_tasks'
+require 'rake/testtask'
 
-task :default => [:all]
-
-task :test, :test_file do |t, args| 
-	ret = true
-	test_file = args[:test_file]
-
-	if args[:test_file]
-		f = "test/pagarme/#{args[:test_file]}.rb"
-		ret = ret && ruby(f, '')
-	else
-		Dir["test/**/*.rb"].each do |f|
-			ret = ret && ruby(f, '')
-		end
-	end
+Rake::TestTask.new :test do |t|
+  t.libs << 'test'
+  t.libs << 'lib'
+  t.test_files = FileList['test/pagarme/**/*_test.rb']
 end
 
-task :all do
-	Rake::Task["test"].invoke
-	require 'active_support/all'
-	Rake::Task["test"].reenable
-	Rake::Task["test"].invoke
+task :default => :test
+
+task :clean_vcr do
+  sh 'rm -rf test/vcr_cassettes'
 end
+
+# task :all do
+#   Rake::Task['test'].invoke
+#   require 'active_support/all'
+#   Rake::Task['test'].reenable
+#   Rake::Task['test'].invoke
+# end

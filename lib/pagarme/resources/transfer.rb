@@ -1,4 +1,4 @@
 module PagarMe
-  class Phone < Model
+  class Transfer < Model
   end
 end
