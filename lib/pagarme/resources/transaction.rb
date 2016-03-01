@@ -18,6 +18,10 @@ module PagarMe
       PagarMe::Request.get( url 'postbacks' ).call
     end
 
+    def collect_payment(params={})
+      PagarMe::Request.post(url('collect_payment'), params: params).run
+    end
+
     def capture(params={})
       update PagarMe::Request.post(url('capture'), params: params).run
     end

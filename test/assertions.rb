@@ -2,8 +2,8 @@ module Assertions
   def assert_customer_response(customer)
     assert       customer.id
     assert_equal customer.name,                'Jose da Silva'
-    assert_equal customer.document_number,     '36433809847'
-    assert_equal customer.email,               'henrique+test@pagar.me'
+    assert_equal customer.document_number,     '84931126235'
+    assert_equal customer.email,               'pagarmetestruby@mailinator.com'
     assert_equal customer.gender,              'M'
     assert_equal Date.parse(customer.born_at), Date.parse('1970-10-11')
   end
@@ -57,8 +57,8 @@ module Assertions
     assert_customer_response transaction.customer
 
     assert_equal transaction.phone.class,  PagarMe::Phone
-    assert_equal transaction.phone.ddd,    '12'
-    assert_equal transaction.phone.number, '981433533'
+    assert_equal transaction.phone.ddd,    '21'
+    assert_equal transaction.phone.number, '922334455'
 
     assert_equal transaction.address.class,         PagarMe::Address
     assert_equal transaction.address.street,        'Av. Brigadeiro Faria Lima'

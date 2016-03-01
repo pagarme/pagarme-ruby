@@ -66,7 +66,7 @@ module PagarMe
 
     def reasonable_amount
       limits = PagarMe::Recipient.default.bulk_anticipations_limits(anticipations_limits_params)
-      { requested_amount: (limits.maximum.amount + 5*limits.minimum.amount)/6 }
+      { requested_amount: (limits.maximum.amount + 9*limits.minimum.amount)/10 + 1 }
     end
 
   end

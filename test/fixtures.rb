@@ -139,11 +139,11 @@ class Fixtures
     {
       customer: {
         name:            'Jose da Silva',
-        document_number: '36433809847',
-        email:           'henrique+test@pagar.me',
+        document_number: '84931126235',
+        email:           'pagarmetestruby@mailinator.com',
         gender:          'M',
         born_at:         '1970-10-11',
-        phone:           { ddd: '12', number: '981433533' },
+        phone:           { ddd: '21', number: '922334455' },
         address: {
           street:        'Av. Brigadeiro Faria Lima',
           neighborhood:  'Itaim bibi',
