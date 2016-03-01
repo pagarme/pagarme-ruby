@@ -23,6 +23,14 @@ module PagarMe
     end
   end
 
+  class NotFound < ResponseError
+    attr_reader :response
+    def initialize(response, request_params, error)
+      @response = response
+      super request_params, error
+    end
+  end
+
   class ValidationError < PagarMeError
     attr_reader :response, :errors
 

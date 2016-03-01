@@ -169,4 +169,27 @@ module Assertions
     assert_equal previous_balance.waiting_funds.amount, balance.waiting_funds.amount
     assert_equal previous_balance.transferred.amount,   balance.transferred.amount
   end
+
+  def assert_anticipation_limits(limits)
+    assert limits.maximum.amount
+    assert limits.minimum.amount
+  end
+
+  def assert_anticipation(anticipation)
+    assert_statusless_anticipation anticipation
+    assert_equal anticipation.status, 'pending'
+  end
+
+  def assert_canceled_anticipation(anticipation)
+    assert_statusless_anticipation anticipation
+    assert_equal anticipation.status, 'canceled'
+  end
+
+  def assert_statusless_anticipation(anticipation)
+    assert       anticipation.amount > 0
+    assert       anticipation.fee
+    assert       anticipation.anticipation_fee
+    assert_equal anticipation.object, 'bulk_anticipation'
+  end
+
 end

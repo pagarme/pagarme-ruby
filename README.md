@@ -208,6 +208,67 @@ Paginating:
 
 More about [Recipient Balance Operations](https://docs.pagar.me/api/#operacoes-de-saldo-de-um-recebedor)
 
+### Request Bulk Anticipation
+
+#### Checking limits
+
+```ruby
+  PagarMe::Recipient.default.bulk_anticipations_limits
+```
+
+More about [Checking Bulk Anticipation Limits](https://docs.pagar.me/api/#obtendo-os-limites-de-antecipacao)
+
+#### Requesting Bulk Anticipation
+
+```ruby
+  PagarMe::Recipient.default.bulk_anticipate(
+    timeframe:        :start,
+    payment_date:     (Date.today + 7),
+    requested_amount: 10000 # in cents
+  )
+```
+
+More about [Requesting Bulk Anticipation](https://docs.pagar.me/api/#criando-uma-antecipacao)
+
+#### Getting Bulk Anticipation
+
+```ruby
+  PagarMe::BulkAnticipation.all page, count
+```
+
+More about [Getting Bulk Anticipation](https://docs.pagar.me/api/#retornando-todas-as-antecipacoes)
+
+### Payables
+
+### Getting Payable
+
+```ruby
+  PagarMe::Payable.find 'payable_id'
+```
+
+More about [Getting Payable](https://docs.pagar.me/api/#retornando-um-recebivel)
+
+#### Querying Payables
+
+```ruby
+  PagarMe::Payable.all page, count
+```
+
+```ruby
+  PagarMe::Payable.find_by status: 'paid'
+```
+
+More about [Querying Payables](https://docs.pagar.me/api/#retornando-recebiveis)
+
+#### Querying Payables by Transaction
+
+```ruby
+  transaction = PagarMe::Transaction.find 'transaction_id'
+  transaction.payables
+```
+
+More about [Payable Transactions](https://docs.pagar.me/api/#retornando-pagamentos-da-transacao)
+
 ### Undocumented Features
 
 This gem is stable, but in constant development.
@@ -224,10 +285,6 @@ Feel free to help us to add support to features sending pull requests.
 Thanks!
 
 ### TODO
-
-Add support to:
-
-* [BulkAnticipation](https://docs.pagar.me/api/#antecipacoes)
 
 Add support to [ElasticSearch Query DSL](https://docs.pagar.me/api/#buscas-avancadas),
 so you can search your data optimally.

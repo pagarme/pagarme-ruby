@@ -123,7 +123,7 @@ class Fixtures
     {
       id:             194330,
       event:          'transaction_status_changed',
-      fingerprint:    '9f4af94fa19e65b2420004a0eaed08fd5a22c74c',
+      fingerprint:    'f8eb5ce941d70473ea691959ea4bfdeb79d48e2c',
       desired_status: 'paid',
       current_status: 'paid',
       object:         'transaction',
@@ -156,6 +156,13 @@ class Fixtures
 
   def invalid_expiration_year
     { card_expiration_year: _invalid_expiration_year }
+  end
+
+  def anticipations_limits
+    {
+      timeframe:    :end,
+      payment_date: (Date.today + 7)
+    }
   end
 
   def respond_to?(method_name)

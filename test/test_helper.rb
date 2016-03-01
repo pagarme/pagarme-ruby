@@ -16,6 +16,8 @@ VCR.configure do |config|
 end
 
 class Test::Unit::TestCase
+  FIXED_API_KEY = 'ak_test_Q2D2qDYGJSyeR1KbI4sLzGACEr73MF'
+
   include Fixtures::Helpers
   include Assertions
 
@@ -36,19 +38,26 @@ class Test::Unit::TestCase
     end
   end
 
+  def ensure_waiting_funds
+    VCR.use_cassette 'TestCase/ensure_waiting_funds' do
+      PagarMe::Transaction.create transaction_with_customer_with_card_params(amount: 10_000_00, installments: 12)
+    end
+  end
+
   def fixed_api_key
-    PagarMe.api_key = 'ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo'
+    PagarMe.api_key = FIXED_API_KEY
     yield
     PagarMe.api_key = temporary_api_key
   end
 
   def temporary_api_key
-    return 'ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo'
+    return FIXED_API_KEY
 
-    # TODO: Understand why using temporary api keys slows too much
+    # TODO: Unfortunately, it's right now impossible to create
+    # temporary companies properly pre-configured to run all tests
     VCR.use_cassette 'TestCase/tmp_company_api_key' do
-      PagarMe.api_key = 'ak_test_Rw4JR98FmYST2ngEHtMvVf5QJW7Eoo'
-      PagarMe::Request.post('/companies/temporary').run['api_key']['test']
+      PagarMe.api_key = FIXED_API_KEY
+      Company.temporary.api_key.test
     end
   end
 

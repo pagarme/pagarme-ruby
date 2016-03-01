@@ -10,13 +10,14 @@ module PagarMe
       assert_subscription_created subscription, plan
     end
 
-    should 'be able to create access subscription transactions' do
+    should 'be able to see subscription transactions' do
       plan         = PagarMe::Plan.create no_trial_plan_params
       subscription = PagarMe::Subscription.create subscription_with_customer_params(plan: plan)
       assert_no_trial_subscription_created subscription, plan
 
-      assert        subscription.transactions.count > 0
-      assert_equal  subscription.transactions.first.status, 'paid'
+      sleep 1
+      assert       subscription.transactions.count > 0
+      assert_equal subscription.transactions.first.status, 'paid'
     end
 
     should 'be able to create subscription with plan and unsaved card' do
