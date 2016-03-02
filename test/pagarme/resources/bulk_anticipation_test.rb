@@ -9,7 +9,6 @@ module PagarMe
     end
 
     should 'be able to calculate anticipations limits' do
-      assert_anticipation_limits PagarMe::Recipient.default.bulk_anticipations_limits
       assert_anticipation_limits PagarMe::Recipient.default.bulk_anticipations_limits(anticipations_limits_params)
     end
 

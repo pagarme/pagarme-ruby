@@ -42,9 +42,11 @@ module PagarMe
       protected
       def normalize_params(params = Hash.new)
         normalized_params = Hash[ params.map{ |key, value| [key.to_sym, value] } ]
-        normalized_params[:timeframe]    = :start         if normalized_params[:timeframe].nil?    || normalized_params[:timeframe]    == ''
-        normalized_params[:payment_date] = (Date.today+3) if normalized_params[:payment_date].nil? || normalized_params[:payment_date] == ''
+        normalized_params[:timeframe] = :start if normalized_params[:timeframe].nil? || normalized_params[:timeframe] == ''
+
+        raise RequestError.new('Missing payment_date param') if normalized_params[:payment_date].nil? || normalized_params[:payment_date] == ''
         normalized_params[:payment_date] = date_to_milliseconds_since_epoch normalized_params[:payment_date]
+
         normalized_params
       end
 
