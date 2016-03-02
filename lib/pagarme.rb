@@ -3,6 +3,7 @@ require 'time'
 require 'digest/sha1'
 
 require_relative 'pagarme/version'
+require_relative 'pagarme/core_ext'
 require_relative 'pagarme/object'
 require_relative 'pagarme/model'
 require_relative 'pagarme/nested_model'

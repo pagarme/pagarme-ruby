@@ -92,7 +92,7 @@ module PagarMe
     def full_api_url
       url = PagarMe.api_endpoint + path
 
-      if !query.nil? && !query.empty?
+      if query.present?
         url += '?' + URI.encode_www_form(query)
       end
 

@@ -17,6 +17,10 @@ module PagarMe
       @unsaved_attributes.add key
     end
 
+    def empty?
+      @attributes.empty?
+    end
+
     def ==(other)
       self.class == other.class && id == other.id
     end

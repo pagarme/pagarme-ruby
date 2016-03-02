@@ -14,7 +14,7 @@ module PagarMe
     end
 
     def url(*params)
-      raise RequestError.new('Invalid ID') if id.nil? || id == ''
+      raise RequestError.new('Invalid ID') unless id.present?
       self.class.url parent_id, CGI.escape(id.to_s), *params
     end
 
@@ -25,8 +25,8 @@ module PagarMe
       end
 
       def find_by_id(parent_id, id)
-        raise RequestError.new('Invalid ID')        if id.nil?        ||        id == ''
-        raise RequestError.new('Invalid parent ID') if parent_id.nil? || parent_id == ''
+        raise RequestError.new('Invalid ID')        unless        id.present?
+        raise RequestError.new('Invalid parent ID') unless parent_id.present?
 
         PagarMe::Request.get(url parent_id, id).call
       end
@@ -47,7 +47,7 @@ module PagarMe
       end
 
       def url(parent_id, *params)
-        raise RequestError.new('Invalid parent ID') if parent_id.nil? || parent_id == ''
+        raise RequestError.new('Invalid parent ID') unless parent_id.present?
         ["/#{parent_resource_name}", parent_id, "#{ CGI.escape underscored_class_name }s", *params].join '/'
       end
 
