@@ -223,7 +223,7 @@ More about [Checking Bulk Anticipation Limits](https://docs.pagar.me/api/#obtend
 ```ruby
   PagarMe::Recipient.default.bulk_anticipate(
     timeframe:        :start,
-    payment_date:     (Date.today + 7),
+    payment_date:     Date.new(2016, 12, 25),
     requested_amount: 10000 # in cents
   )
 ```
