@@ -14,7 +14,7 @@ module PagarMe
     }
 
     def initialize(path, method, options={})
-      raise RequestError, 'You need to configure a API key before performing requests.' unless PagarMe.api_key
+      raise PagarMe::RequestError, 'You need to configure a API key before performing requests.' unless PagarMe.api_key
 
       @path       = path
       @method     = method
@@ -30,20 +30,28 @@ module PagarMe
       begin
         parsed_error = MultiJson.decode error.http_body
 
-        if parsed_error['errors']
-          raise ValidationError.new parsed_error
+        if error.is_a? RestClient::ResourceNotFound
+          if parsed_error['errors']
+            raise PagarMe::NotFound.new(parsed_error, request_params, error)
+          else
+            raise PagarMe::NotFound.new(nil, request_params, error)
+          end
         else
-          raise ResponseError.new(request_params, error)
+          if parsed_error['errors']
+            raise PagarMe::ValidationError.new parsed_error
+          else
+            raise PagarMe::ResponseError.new(request_params, error)
+          end
         end
       rescue MultiJson::ParseError
-        raise ResponseError.new(request_params, error)
+        raise PagarMe::ResponseError.new(request_params, error)
       end
     rescue MultiJson::ParseError
-      raise ResponseError.new(request_params, response)
+      raise PagarMe::ResponseError.new(request_params, response)
     rescue SocketError
-      raise ConnectionError.new $!
+      raise PagarMe::ConnectionError.new $!
     rescue RestClient::ServerBrokeConnection
-      raise ConnectionError.new $!
+      raise PagarMe::ConnectionError.new $!
     end
 
     def call
@@ -60,6 +68,10 @@ module PagarMe
 
     def self.put(url, options={})
       self.new url, 'PUT', options
+    end
+
+    def self.delete(url, options={})
+      self.new url, 'DELETE', options
     end
 
     protected
@@ -80,7 +92,7 @@ module PagarMe
     def full_api_url
       url = PagarMe.api_endpoint + path
 
-      if !query.nil? && !query.empty?
+      if query.present?
         url += '?' + URI.encode_www_form(query)
       end
 

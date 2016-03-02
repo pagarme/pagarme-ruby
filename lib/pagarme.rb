@@ -3,8 +3,10 @@ require 'time'
 require 'digest/sha1'
 
 require_relative 'pagarme/version'
+require_relative 'pagarme/core_ext'
 require_relative 'pagarme/object'
 require_relative 'pagarme/model'
+require_relative 'pagarme/nested_model'
 require_relative 'pagarme/transaction_common'
 require_relative 'pagarme/request'
 require_relative 'pagarme/errors'
@@ -24,6 +26,6 @@ module PagarMe
   self.api_key      = ENV['PAGARME_API_KEY']
 
   def self.validate_fingerprint(id, fingerprint)
-    Digest::SHA1.hexdigest(id.to_s + "#" + api_key) == fingerprint
+    PagarMe::Postback.validate id, fingerprint
   end
 end

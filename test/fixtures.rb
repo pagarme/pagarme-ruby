@@ -69,6 +69,15 @@ class Fixtures
     }
   end
 
+  def no_trial_plan
+    {
+      name:       'Plano Sem Trial',
+      days:       30,
+      amount:     3000,
+      trial_days: 0
+    }
+  end
+
   def bank_account
     {
       bank_code:       '237',
@@ -110,6 +119,18 @@ class Fixtures
     { postback_url: 'http://test.com/postback' }
   end
 
+  def postback_response
+    {
+      id:             194330,
+      event:          'transaction_status_changed',
+      fingerprint:    'f8eb5ce941d70473ea691959ea4bfdeb79d48e2c',
+      desired_status: 'paid',
+      current_status: 'paid',
+      object:         'transaction',
+      old_status:     'processing'
+    }
+  end
+
   def subscription
     card.merge customer: { email: 'customer@pagar.me' }
   end
@@ -118,11 +139,11 @@ class Fixtures
     {
       customer: {
         name:            'Jose da Silva',
-        document_number: '36433809847',
-        email:           'henrique+test@pagar.me',
+        document_number: '84931126235',
+        email:           'pagarmetestruby@mailinator.com',
         gender:          'M',
         born_at:         '1970-10-11',
-        phone:           { ddd: '12', number: '981433533' },
+        phone:           { ddd: '21', number: '922334455' },
         address: {
           street:        'Av. Brigadeiro Faria Lima',
           neighborhood:  'Itaim bibi',
@@ -135,6 +156,13 @@ class Fixtures
 
   def invalid_expiration_year
     { card_expiration_year: _invalid_expiration_year }
+  end
+
+  def anticipations_limits
+    {
+      timeframe:    :end,
+      payment_date: (Date.today + 7)
+    }
   end
 
   def respond_to?(method_name)

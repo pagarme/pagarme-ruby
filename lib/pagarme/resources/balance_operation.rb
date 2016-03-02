@@ -26,7 +26,7 @@ module PagarMe
       end
 
       def find_by_recipient_id(recipient_id, page = 1, count = 10)
-        raise RequestError.new('Invalid ID') if recipient_id.nil? || recipient_id == ''
+        raise RequestError.new('Invalid ID') unless recipient_id.present?
 
         params = { page: page, count: count }
         PagarMe::Request.get(url(recipient_id), params: params).call

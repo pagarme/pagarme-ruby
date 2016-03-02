@@ -6,6 +6,22 @@ module PagarMe
       PagarMe::Request.get( url 'split_rules' ).call
     end
 
+    def antifraud_analyses
+      PagarMe::Request.get( url 'antifraud_analyses' ).call
+    end
+
+    def payables
+      PagarMe::Request.get( url 'payables' ).call
+    end
+
+    def postbacks
+      PagarMe::Request.get( url 'postbacks' ).call
+    end
+
+    def collect_payment(params={})
+      PagarMe::Request.post(url('collect_payment'), params: params).run
+    end
+
     def capture(params={})
       update PagarMe::Request.post(url('capture'), params: params).run
     end

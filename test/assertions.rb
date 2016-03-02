@@ -2,8 +2,8 @@ module Assertions
   def assert_customer_response(customer)
     assert       customer.id
     assert_equal customer.name,                'Jose da Silva'
-    assert_equal customer.document_number,     '36433809847'
-    assert_equal customer.email,               'henrique+test@pagar.me'
+    assert_equal customer.document_number,     '84931126235'
+    assert_equal customer.email,               'pagarmetestruby@mailinator.com'
     assert_equal customer.gender,              'M'
     assert_equal Date.parse(customer.born_at), Date.parse('1970-10-11')
   end
@@ -24,7 +24,7 @@ module Assertions
     assert_equal subscription.current_transaction.card_brand,     'visa'
   end
 
-  def assert_transaction_successfully_paid(transaction)
+  def assert_transaction_successfully(transaction)
     assert       transaction.id
     assert       transaction.date_created
     assert       transaction.card.id
@@ -33,10 +33,21 @@ module Assertions
     assert_equal transaction.installments.to_i, 1
     assert_equal transaction.card_holder_name,  'Jose da Silva'
     assert_equal transaction.payment_method,    'credit_card'
-    assert_equal transaction.status,            'paid'
     assert_equal transaction.card_brand,        'visa'
     assert_equal transaction.card.first_digits, '490172'
     assert_equal transaction.card.last_digits,  '4448'
+  end
+
+  def assert_transaction_successfully_paid(transaction)
+    assert                          !transaction.postback_url
+    assert_equal                    transaction.status, 'paid'
+    assert_transaction_successfully transaction
+  end
+
+  def assert_transaction_successfully_processing(transaction)
+    assert_equal                    transaction.postback_url, 'http://test.com/postback'
+    assert_equal                    transaction.status,       'processing'
+    assert_transaction_successfully transaction
   end
 
   def assert_transaction_with_customer_successfully_paid(transaction)
@@ -46,8 +57,8 @@ module Assertions
     assert_customer_response transaction.customer
 
     assert_equal transaction.phone.class,  PagarMe::Phone
-    assert_equal transaction.phone.ddd,    '12'
-    assert_equal transaction.phone.number, '981433533'
+    assert_equal transaction.phone.ddd,    '21'
+    assert_equal transaction.phone.number, '922334455'
 
     assert_equal transaction.address.class,         PagarMe::Address
     assert_equal transaction.address.street,        'Av. Brigadeiro Faria Lima'
@@ -112,6 +123,12 @@ module Assertions
     assert_equal subscription.plan.id, plan.id
   end
 
+  def assert_no_trial_subscription_created(subscription, plan)
+    assert       subscription.id
+    assert_equal subscription.status, 'paid'
+    assert_equal subscription.plan.id, plan.id
+  end
+
   def assert_transaction_errors(params = {})
     PagarMe::Transaction.create transaction_with_card_params(params)
   rescue PagarMe::ValidationError
@@ -152,4 +169,27 @@ module Assertions
     assert_equal previous_balance.waiting_funds.amount, balance.waiting_funds.amount
     assert_equal previous_balance.transferred.amount,   balance.transferred.amount
   end
+
+  def assert_anticipation_limits(limits)
+    assert limits.maximum.amount
+    assert limits.minimum.amount
+  end
+
+  def assert_anticipation(anticipation)
+    assert_statusless_anticipation anticipation
+    assert_equal anticipation.status, 'pending'
+  end
+
+  def assert_canceled_anticipation(anticipation)
+    assert_statusless_anticipation anticipation
+    assert_equal anticipation.status, 'canceled'
+  end
+
+  def assert_statusless_anticipation(anticipation)
+    assert       anticipation.amount > 0
+    assert       anticipation.fee
+    assert       anticipation.anticipation_fee
+    assert_equal anticipation.object, 'bulk_anticipation'
+  end
+
 end

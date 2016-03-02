@@ -12,7 +12,7 @@ module PagarMe
     end
 
     def url(*params)
-      raise RequestError.new('Invalid ID') if id.nil? || id == ''
+      raise RequestError.new('Invalid ID') unless id.present?
       self.class.url CGI.escape(id.to_s), *params
     end
 
@@ -23,7 +23,7 @@ module PagarMe
       end
 
       def find_by_id(id)
-        raise RequestError.new('Invalid ID') if id.nil? || id == ''
+        raise RequestError.new('Invalid ID') unless id.present?
         PagarMe::Request.get(url id).call
       end
       alias :find :find_by_id
