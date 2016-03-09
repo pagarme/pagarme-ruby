@@ -18,7 +18,7 @@ module PagarMe
       assert_equal transaction.payables.map(&:recipient_id).sort, fixtures.persistent_recipient_ids.sort
     end
 
-    should 'create be found' do
+    should 'be found' do
       payables = PagarMe::Payable.find_by type: 'refund'
 
       assert payables.count > 0

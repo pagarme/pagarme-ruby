@@ -269,6 +269,55 @@ More about [Querying Payables](https://docs.pagar.me/api/#retornando-recebiveis)
 
 More about [Payable Transactions](https://docs.pagar.me/api/#retornando-pagamentos-da-transacao)
 
+### Validating Postback
+
+You need to ensure that all received postback are sent by Pagar.me and not from anyone else,
+to do this, is very important to validate it.
+
+You must do it using the raw payload received on post request, and check it signature provided
+in HTTP header X-Hub-Signature.
+
+You can check it like this:
+
+```ruby
+  PagarMe::Postback.valid_request_signature?(payload, signature)
+```
+
+#### Rails Example
+
+If you are using Rails, you should do it your controller like this:
+
+```ruby
+
+    class PostbackController < ApplicationController
+      skip_before_action :verify_authenticity_token
+      
+      def postback
+        if valid_postback?
+          # Handle your code here
+          # postback payload is in params
+        else
+          render_invalid_postback_response
+        end
+      end
+      
+      protected
+      def valid_postback?
+        raw_post  = request.raw_post
+        signature = request.headers['HTTP_X_HUB_SIGNATURE']
+        PagarMe::Postback.valid_request_signature?(raw_post, signature)
+      end
+      
+      def render_invalid_postback_response
+        render json: {error: 'invalid postback'}, status: 400
+      end
+    end
+
+
+```
+
+request.raw_post
+
 ### Undocumented Features
 
 This gem is stable, but in constant development.
