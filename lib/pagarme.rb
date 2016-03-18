@@ -1,6 +1,7 @@
 require 'set'
 require 'time'
 require 'digest/sha1'
+require 'openssl'
 
 require_relative 'pagarme/version'
 require_relative 'pagarme/core_ext'
@@ -25,7 +26,8 @@ module PagarMe
   self.timeout      = 90
   self.api_key      = ENV['PAGARME_API_KEY']
 
-  def self.validate_fingerprint(id, fingerprint)
-    PagarMe::Postback.validate id, fingerprint
+  # TODO: Remove deprecated PagarMe.validate_fingerprint
+  def self.validate_fingerprint(*args)
+    raise '[Deprecation Error] PagarMe.validate_fingerprint is deprecated, use PagarMe::Postback.valid_request_signature? instead'
   end
 end
