@@ -1,7 +1,7 @@
 module PagarMe
   class Postback < PagarMeObject
     def valid?
-      signature == self.class.signature(payload)
+      self.class.valid_request_signature? payload, signature
     end
 
     class << self
