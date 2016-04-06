@@ -340,6 +340,9 @@ so you can search your data optimally.
 
 And document all the source code.
 
+## Support
+If you have any problem or suggestion please open an issue [here](https://github.com/pagarme/pagarme-ruby/issues).
+
 ## License
 
-Pagar.me Ruby library is released under the [MIT License](http://www.opensource.org/licenses/MIT).
+Check [here](LICENSE).
