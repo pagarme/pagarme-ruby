@@ -1,7 +1,7 @@
 require_relative '../../test_helper'
 
 module PagarMe
-  class PlanTest < Test::Unit::TestCase
+  class PlanTest < PagarMeTestCase
     should 'be able to create a plan' do
       plan = PagarMe::Plan.create plan_params
       assert_plan_created plan
@@ -17,8 +17,7 @@ module PagarMe
     end
 
     should 'be able to search by anything' do
-      plan = PagarMe::Plan.create plan_params
-      assert_plan_created plan
+      assert_plan_created PagarMe::Plan.create(plan_params)
 
       # find_by_hash is possibly consistent, wait to try to ensure!!!
       sleep 1

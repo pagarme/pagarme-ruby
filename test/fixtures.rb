@@ -111,7 +111,7 @@ class Fixtures
     {
       transfer_day:      3,
       transfer_enabled:  true,
-      transfer_interval: 'daily'
+      transfer_interval: 'weekly'
     }
   end
 
@@ -202,7 +202,7 @@ class Fixtures
     end
 
     def method_missing(name, *args, &block)
-      match = name.to_s.match /\_params\Z/
+      match = name.to_s.match(/\_params\Z/)
       if match && fixtures.respond_to?(match.pre_match) && args.count < 2
         if args.empty?
           fixtures.public_send match.pre_match

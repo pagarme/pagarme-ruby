@@ -1,7 +1,7 @@
 require_relative '../../test_helper'
 
 module PagarMe
-  class BalanceTest < Test::Unit::TestCase
+  class BalanceTest < PagarMeTestCase
 
     should 'change amount amount after transaction being paid' do
       transaction      = PagarMe::Transaction.charge transaction_with_boleto_params

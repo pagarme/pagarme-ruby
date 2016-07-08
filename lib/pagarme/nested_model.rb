@@ -1,6 +1,6 @@
 module PagarMe
   class NestedModel < Model
-    attr_reader :parent_id
+    attr_accessor :parent_id
 
     def initialize(hash = Hash.new)
       hash = hash.dup
@@ -28,7 +28,11 @@ module PagarMe
         raise RequestError.new('Invalid ID')        unless        id.present?
         raise RequestError.new('Invalid parent ID') unless parent_id.present?
 
-        PagarMe::Request.get(url parent_id, id).call
+        object = PagarMe::Request.get(url parent_id, id).call
+        if object
+          object.parent_id = parent_id
+        end
+        object
       end
       alias :find :find_by_id
 
@@ -38,7 +42,10 @@ module PagarMe
         PagarMe::Request.get(url(parent_id), params: hash.merge(
           page:  page,
           count: count
-        )).call
+        )).call.map do |object|
+          object.parent_id = parent_id
+          object
+        end
       end
       alias :find_by_hash :find_by
 

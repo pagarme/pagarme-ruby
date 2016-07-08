@@ -1,7 +1,7 @@
 require_relative '../../test_helper'
 
 module PagarMe
-  class PayableTest < Test::Unit::TestCase
+  class PayableTest < PagarMeTestCase
     should 'be created setting default recipient on payable' do
       transaction = PagarMe::Transaction.create transaction_with_customer_with_card_params
       payable     = transaction.payables.first
@@ -12,13 +12,13 @@ module PagarMe
 
     should 'create one per split rule' do
       transaction = PagarMe::Transaction.create transaction_with_customer_with_card_with_split_rules_params
-      payable     = transaction.payables.first
 
       assert_equal transaction.payables.count, 4
       assert_equal transaction.payables.map(&:recipient_id).sort, fixtures.persistent_recipient_ids.sort
     end
 
     should 'be found' do
+      PagarMe::Transaction.create(transaction_with_customer_with_card_params).refund
       payables = PagarMe::Payable.find_by type: 'refund'
 
       assert payables.count > 0

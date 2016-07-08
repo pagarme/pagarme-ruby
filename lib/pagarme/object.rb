@@ -1,6 +1,6 @@
 module PagarMe
   class PagarMeObject
-    attr_reader :attributes, :unsaved_attributes
+    attr_reader :attributes
 
     RESOURCES = Dir[File.expand_path('../resources/*.rb', __FILE__)].map do |path|
       File.basename(path, '.rb').to_sym
