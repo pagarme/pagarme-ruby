@@ -1,7 +1,7 @@
 require_relative '../../test_helper'
 
 module PagarMe
-  class SubscriptionTest < Test::Unit::TestCase
+  class SubscriptionTest < PagarMeTestCase
     should 'be able to create subscription with plan' do
       plan = PagarMe::Plan.create plan_params
       assert_plan_created plan
@@ -39,7 +39,7 @@ module PagarMe
       assert_subscription_successfully_paid subscription, 2000
 
       found_subscription = PagarMe::Subscription.find_by_id subscription.id
-      assert_subscription_successfully_paid subscription, 2000
+      assert_subscription_successfully_paid found_subscription, 2000
     end
 
     should 'be able to create subscription without plan and charge with installments' do
@@ -53,7 +53,7 @@ module PagarMe
       assert_subscription_successfully_paid subscription, 1500, 3
 
       found_subscription = PagarMe::Subscription.find_by_id subscription.id
-      assert_subscription_successfully_paid subscription, 1500, 3
+      assert_subscription_successfully_paid found_subscription, 1500, 3
     end
 
     should 'be able to update subscription' do

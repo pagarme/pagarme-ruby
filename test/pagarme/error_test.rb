@@ -1,7 +1,7 @@
 require_relative '../test_helper'
 
 module PagarMe
-  class ErrorTest < Test::Unit::TestCase
+  class ErrorTest < PagarMeTestCase
     should 'be able to handle single error messages' do
       assert_transaction_errors card_number: nil
     end

@@ -38,7 +38,7 @@ module PagarMe
       @response = response
       @errors   = response['errors'].map do |error|
         params = error.values_at('message', 'parameter_name', 'type', 'url')
-        ParamError.new *params
+        ParamError.new(*params)
       end
       super @errors.map(&:message).join(', ')
     end

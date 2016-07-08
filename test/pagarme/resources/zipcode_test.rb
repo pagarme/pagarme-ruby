@@ -1,7 +1,7 @@
 require_relative '../../test_helper'
 
 module PagarMe
-  class ZipcodeTest < Test::Unit::TestCase
+  class ZipcodeTest < PagarMeTestCase
     should 'be able find a zipcode' do
       zipcode = PagarMe::Zipcode.find '12228-462'
 

@@ -1,7 +1,7 @@
 require_relative '../../test_helper'
 
 module PagarMe
-  class TransactionTest < Test::Unit::TestCase
+  class TransactionTest < PagarMeTestCase
     should 'be valid when has valid signature' do
       fixed_api_key do
         postback = PagarMe::Postback.new postback_response_params
@@ -15,10 +15,12 @@ module PagarMe
     end
 
     should 'validate signature' do
-      params = postback_response_params
-      assert  PagarMe::Postback.valid_request_signature?(params[:payload], params[:signature])
-      assert !PagarMe::Postback.valid_request_signature?(params[:payload], params[:signature][4..-1])
-      assert !PagarMe::Postback.valid_request_signature?(params[:payload], 'invalid signature')
+      fixed_api_key do
+        params = postback_response_params
+        assert  PagarMe::Postback.valid_request_signature?(params[:payload], params[:signature])
+        assert !PagarMe::Postback.valid_request_signature?(params[:payload], params[:signature][4..-1])
+        assert !PagarMe::Postback.valid_request_signature?(params[:payload], 'invalid signature')
+      end
     end
   end
 end

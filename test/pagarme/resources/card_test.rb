@@ -1,7 +1,7 @@
 require_relative '../../test_helper'
 
 module PagarMe
-  class CardTest < Test::Unit::TestCase
+  class CardTest < PagarMeTestCase
     should 'be able to create' do
       card = PagarMe::Card.create card_params
 

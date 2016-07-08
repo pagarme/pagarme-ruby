@@ -1,10 +1,11 @@
 require_relative '../../test_helper'
 
 module PagarMe
-  class BulkAnticipationTest < Test::Unit::TestCase
+  class BulkAnticipationTest < PagarMeTestCase
 
     def setup
       super
+      ensure_anticipable_default_recipient
       ensure_waiting_funds
     end
 

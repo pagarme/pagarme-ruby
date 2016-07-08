@@ -1,7 +1,7 @@
 require_relative '../../test_helper'
 
 module PagarMe
-  class TransferTest < Test::Unit::TestCase
+  class TransferTest < PagarMeTestCase
     def setup
       super
       ensure_positive_balance

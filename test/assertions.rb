@@ -96,7 +96,7 @@ module Assertions
 
   def assert_split_rules(split_rules)
     assert_equal split_rules.size, 4
-    rules = split_rules.sort_by &:percentage
+    rules = split_rules.sort_by(&:percentage)
 
     assert_equal rules[0].recipient_id, Fixtures.persistent_recipient_ids[0]
     assert_equal rules[1].recipient_id, Fixtures.persistent_recipient_ids[1]
@@ -132,11 +132,15 @@ module Assertions
   def assert_transaction_errors(params = {})
     PagarMe::Transaction.create transaction_with_card_params(params)
   rescue PagarMe::ValidationError
-    assert_no_match /\s*\,\s*\Z/, $!.message
+    assert_no_match(/\s*\,\s*\Z/, $!.message)
   end
 
   def assert_has_error_param(exception, parameter_name)
     assert exception.errors.any?{ |error| error.parameter_name == parameter_name }
+  end
+
+  def assert_hasnt_error_param(exception, parameter_name)
+    assert exception.errors.none?{ |error| error.parameter_name == parameter_name }
   end
 
   def assert_transfer(transfer)
