@@ -129,7 +129,7 @@ class Fixtures
   def subscription
     card.merge customer: { email: 'customer@pagar.me' }
   end
-  
+
   def customer
     {
       customer: {
