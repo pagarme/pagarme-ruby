@@ -21,10 +21,11 @@ module PagarMe
     attr_accessor :api_endpoint, :open_timeout, :timeout, :api_key, :encryption_key
   end
 
-  self.api_endpoint = 'https://api.pagar.me/1'
-  self.open_timeout = 30
-  self.timeout      = 90
-  self.api_key      = ENV['PAGARME_API_KEY']
+  self.api_endpoint   = 'https://api.pagar.me/1'
+  self.open_timeout   = 30
+  self.timeout        = 90
+  self.api_key        = ENV['PAGARME_API_KEY']
+  self.encryption_key = ENV['PAGARME_ENCRYPTION_KEY']
 
   # TODO: Remove deprecated PagarMe.validate_fingerprint
   def self.validate_fingerprint(*args)

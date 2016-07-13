@@ -27,10 +27,12 @@ and run `bundle install` from your shell.
 You can set your API key in Ruby:
 
 ```ruby
-PagarMe.api_key = 'YOUR_API_KEY_HERE'
+PagarMe.api_key        = 'YOUR_API_KEY_HERE'
+PagarMe.encryption_key = 'YOUR_ENCRYPTION_KEY_HERE' # If needed
 ```
 
 or set the environment variable _PAGARME\_API\_KEY_ (**recommended**)
+and _PAGARME\_ENCRYPTION\_KEY_ (**recommended if needed**)
 
 ### Using Pagar.me Checkout
 
