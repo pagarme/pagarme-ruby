@@ -129,11 +129,7 @@ class Fixtures
   def subscription
     card.merge customer: { email: 'customer@pagar.me' }
   end
-
-  def card_hash_key
-    "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5iMlHrdyWy7F0MUcudAn\nsF6SG9HoXZVgxm80BAVxH7WT/lpxoS4gkgtK9Ug7RyXcY0TMq5nKbAFrqwlf+iBt\n3lESvOlRTQCvjzWYTcfAJLKmMXw1WLKKJCr6pSd/BZod7PcVVtVAGc7kIZrBo5c2\nVeI64Wi83/8EB5gKu+lUkvFGIjYgt370ypZIdIVVdmF3uN2LUykNmz7mzvT6SUAo\nrKtKref5fhOPkxYiHYxp1dJl3nYFrYehchq/0UVoBb/1ssMmE8oXWMmtYBfQOOfp\n/cKrtaaTQvWPtjBkQ51sg+npGKvBLNf7ND7m8iHh2oPAlS6NBUjZula4Rb0f4rXL\nwwIDAQAB\n-----END PUBLIC KEY-----\n"
-  end
-
+  
   def customer
     {
       customer: {

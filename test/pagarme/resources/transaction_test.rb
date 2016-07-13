@@ -219,18 +219,14 @@ module PagarMe
     end
 
     should 'be able to get public key' do
-      transaction = PagarMe::Transaction.generate_card_hash(PagarMe.encryption_key)
-      raise 'Invalid Public Key' if transaction.public_key.blank?
+      transaction = PagarMe::Transaction.generate_card_hash
+      assert_match(/BEGIN\ PUBLIC\ KEY/, transaction.public_key)
     end
 
-    {
-      encryption_key_null:   nil,
-      encryption_key_empty:  ''
-    }.each do |key, value|
-      should 'validate encryption_key' do
-        exception = assert_raises(PagarMe::RequestError){ PagarMe::Transaction.generate_card_hash(value) }
-        assert_equal exception.message, "Invalid Encryption Key"
-      end
+    should 'validate encryption_key' do
+      PagarMe.encryption_key = nil
+      exception = assert_raises(PagarMe::RequestError){ PagarMe::Transaction.generate_card_hash }
+      assert_equal exception.message, "Invalid Encryption Key"
     end
   end
 end

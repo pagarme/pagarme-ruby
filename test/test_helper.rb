@@ -17,7 +17,7 @@ end
 
 class PagarMeTestCase < Test::Unit::TestCase
   FIXED_API_KEY = 'ak_test_Q2D2qDYGJSyeR1KbI4sLzGACEr73MF'
-  FIXED_ENCRYPTION_KEY = ''
+  FIXED_ENCRYPTION_KEY = 'ek_test_ZsiQ61rmOmB8mh055slzu1nxfVbAFa'
 
   include Fixtures::Helpers
   include Assertions
