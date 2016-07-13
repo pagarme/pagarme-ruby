@@ -17,15 +17,18 @@ end
 
 class PagarMeTestCase < Test::Unit::TestCase
   FIXED_API_KEY = 'ak_test_Q2D2qDYGJSyeR1KbI4sLzGACEr73MF'
+  FIXED_ENCRYPTION_KEY = ''
 
   include Fixtures::Helpers
   include Assertions
 
   def setup
-    PagarMe.api_key = temporary_api_key
+    PagarMe.encryption_key = temporary_company.encryption_key.test
+    PagarMe.api_key = temporary_company.api_key.test
   end
 
   def teardown
+    PagarMe.encryption_key = nil
     PagarMe.api_key = nil
   end
 
@@ -53,15 +56,17 @@ class PagarMeTestCase < Test::Unit::TestCase
   end
 
   def fixed_api_key
+    PagarMe.encryption_key = FIXED_ENCRYPTION_KEY 
     PagarMe.api_key = FIXED_API_KEY
     yield
-    PagarMe.api_key = temporary_api_key
+    PagarMe.encryption_key = temporary_company.encryption_key.test
+    PagarMe.api_key = temporary_company.api_key.test
   end
 
-  def temporary_api_key
-    VCR.use_cassette 'TestCase/tmp_company_api_key' do
+  def temporary_company
+    VCR.use_cassette 'TestCase/tmp_company' do
       PagarMe.api_key = FIXED_API_KEY
-      PagarMe::Company.temporary.api_key.test
+      PagarMe::Company.temporary
     end
   end
 

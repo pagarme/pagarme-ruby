@@ -18,7 +18,7 @@ end
 
 module PagarMe
   class << self
-    attr_accessor :api_endpoint, :open_timeout, :timeout, :api_key
+    attr_accessor :api_endpoint, :open_timeout, :timeout, :api_key, :encryption_key
   end
 
   self.api_endpoint = 'https://api.pagar.me/1'

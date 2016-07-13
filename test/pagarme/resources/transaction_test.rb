@@ -217,5 +217,20 @@ module PagarMe
         assert_equal result['installments'][i.to_s]['installment_amount'], installment
       end
     end
+
+    should 'be able to get public key' do
+      transaction = PagarMe::Transaction.generate_card_hash(PagarMe.encryption_key)
+      raise 'Invalid Public Key' if transaction.public_key.blank?
+    end
+
+    {
+      encryption_key_null:   nil,
+      encryption_key_empty:  ''
+    }.each do |key, value|
+      should 'validate encryption_key' do
+        exception = assert_raises(PagarMe::RequestError){ PagarMe::Transaction.generate_card_hash(value) }
+        assert_equal exception.message, "Invalid Encryption Key"
+      end
+    end
   end
 end
