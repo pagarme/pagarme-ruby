@@ -6,7 +6,7 @@ module PagarMe
 
     protected
     def default_recipient_by_env
-      if ENV['production']
+      if PagarMe.production?
         default_recipient_id.live
       else
         default_recipient_id.test

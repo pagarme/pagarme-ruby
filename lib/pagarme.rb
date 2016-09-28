@@ -31,4 +31,11 @@ module PagarMe
   def self.validate_fingerprint(*args)
     raise '[Deprecation Error] PagarMe.validate_fingerprint is deprecated, use PagarMe::Postback.valid_request_signature? instead'
   end
+
+  def self.production?
+    ENV['RACK_ENV']  == 'production' ||
+    ENV['RAILS_ENV'] == 'production' ||
+    ENV['PRODUCTION'] ||
+    ENV['production']
+  end
 end
