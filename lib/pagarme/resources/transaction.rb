@@ -34,12 +34,11 @@ module PagarMe
       def calculate_installments(params)
         PagarMe::Request.get(url('calculate_installments_amount'), query: params).run
       end
-      
-    def generate_card_hash()
-      raise RequestError.new('Invalid Encryption Key') if PagarMe.encryption_key.blank?
-      
-      PagarMe::Request.get(url('card_hash_key'), params: { encryption_key: PagarMe.encryption_key }).call
-    end
+
+      def generate_card_hash
+        raise RequestError.new('Invalid Encryption Key') if PagarMe.encryption_key.blank?
+        PagarMe::Request.get(url('card_hash_key'), params: { encryption_key: PagarMe.encryption_key }).call
+      end
       alias :charge :create
     end
   end

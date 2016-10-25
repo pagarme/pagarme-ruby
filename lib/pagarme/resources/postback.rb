@@ -4,6 +4,11 @@ module PagarMe
       self.class.valid_request_signature? payload, signature
     end
 
+    def redirect(url = 'http://localhost:3000/pagarme/postback')
+      uri = URI(url)
+      Net::HTTP.new(uri.host, uri.port).post uri.path, payload, JSON.parse(headers)
+    end
+
     class << self
       def valid_request_signature?(payload, signature)
         kind, raw_signature = signature.split '=', 2
