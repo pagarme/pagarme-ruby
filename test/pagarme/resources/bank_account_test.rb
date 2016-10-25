@@ -18,11 +18,11 @@ module PagarMe
     end
 
     {
-      bank_code:       'foo',
-      agencia:         'abcd',
-      agencia_dv:      'Y',
-      conta:           'ABCD',
-      conta_dv:        'X',
+      bank_code:       '123',
+      agencia:         '1234',
+      agencia_dv:      '1',
+      conta:           '4444',
+      conta_dv:        '1',
       legal_name:      'John Doe',
       document_number: '02476585700'
     }.each do |key, value|

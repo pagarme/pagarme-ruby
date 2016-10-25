@@ -26,7 +26,7 @@ module PagarMe
       PagarMe::Recipient.create recipient_with_nested_bank_account_params
 
       bank_account_doc_number = bank_account_params[:document_number]
-      recipients = PagarMe::Recipient.find_by 'bank_account[document_number]' => bank_account_doc_number
+      recipients = PagarMe::Recipient.find_by bank_account: { document_number: bank_account_doc_number }
 
       assert recipients.size > 0
       recipients.each do |recipient|

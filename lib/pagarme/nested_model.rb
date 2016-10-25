@@ -36,21 +36,20 @@ module PagarMe
       end
       alias :find :find_by_id
 
-      def find_by(parent_id, hash, page = 1, count = 10)
-        raise RequestError.new('Invalid page count') if page < 1 or count < 1
+      def find_by(parent_id, params = Hash.new, page = nil, count = nil)
+        params = extract_page_count_or_params(page, count, **params)
+        raise RequestError.new('Invalid page count') if params[:page] < 1 or params[:count] < 1
 
-        PagarMe::Request.get(url(parent_id), params: hash.merge(
-          page:  page,
-          count: count
-        )).call.map do |object|
+        PagarMe::Request.get(url(parent_id), params: params).call.map do |object|
           object.parent_id = parent_id
           object
         end
       end
       alias :find_by_hash :find_by
 
-      def all(parent_id, page = 1, count = 10)
-        find_by parent_id, Hash.new, page, count
+      def all(parent_id, *args, **params)
+        params = extract_page_count_or_params(*args, **params)
+        find_by parent_id, params
       end
 
       def url(parent_id, *params)

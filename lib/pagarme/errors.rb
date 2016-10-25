@@ -42,6 +42,10 @@ module PagarMe
       end
       super @errors.map(&:message).join(', ')
     end
+
+    def to_h
+      @errors.map(&:to_h)
+    end
   end
 
   class ParamError < PagarMeError
@@ -50,6 +54,10 @@ module PagarMe
     def initialize(message, parameter_name, type, url)
       @parameter_name, @type, @url = parameter_name, type, url
       super message
+    end
+
+    def to_h
+      { parameter_name: parameter_name , type: type , message: message }
     end
   end
 end

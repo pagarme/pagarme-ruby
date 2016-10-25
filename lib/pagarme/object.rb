@@ -91,7 +91,7 @@ module PagarMe
         end
 
         if args.size == 0
-          return self[name]
+          return self[name] || self[name.to_sym]
         end
       end
 

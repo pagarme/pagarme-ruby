@@ -18,17 +18,18 @@ module PagarMe
         end
       end
 
-      def balance_operations(page = 1, count = 10)
-        raise RequestError.new('Invalid page count') if page < 1 or count < 1
+      def balance_operations(*args, **params)
+        params = PagarMe::Model.extract_page_count_or_params(*args, **params)
+        raise RequestError.new('Invalid page count') if params[:page] < 1 or params[:count] < 1
 
-        params = { page: page, count: count }
         PagarMe::Request.get(url, params: params).call
       end
 
-      def find_by_recipient_id(recipient_id, page = 1, count = 10)
-        raise RequestError.new('Invalid ID') unless recipient_id.present?
+      def find_by_recipient_id(recipient_id, *args, **params)
+        params = PagarMe::Model.extract_page_count_or_params(*args, **params)
+        raise RequestError.new('Invalid page count') if params[:page] < 1 or params[:count] < 1
+        raise RequestError.new('Invalid ID')         unless recipient_id.present?
 
-        params = { page: page, count: count }
         PagarMe::Request.get(url(recipient_id), params: params).call
       end
     end

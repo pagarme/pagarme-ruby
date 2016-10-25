@@ -4,9 +4,10 @@ module PagarMe
       PagarMe::BulkAnticipation.bulk_anticipations_limits id, params
     end
 
-    def bulk_anticipations(page = 1, count = 10)
-      raise RequestError.new('Invalid page count') if page < 1 or count < 1
-      PagarMe::BulkAnticipation.all id, page, count
+    def bulk_anticipations(*args, **params)
+      params = self.class.extract_page_count_or_params(*args, **params)
+      raise RequestError.new('Invalid page count') if params[:page] < 1 or params[:count] < 1
+      PagarMe::BulkAnticipation.all id, params
     end
 
     def bulk_anticipate(params = Hash.new)

@@ -28,19 +28,19 @@ module PagarMe
       end
       alias :find :find_by_id
 
-      def find_by(hash, page = 1, count = 10)
-        raise RequestError.new('Invalid page count') if page < 1 or count < 1
+      def find_by(params = Hash.new, page = nil, count = nil)
+        params = extract_page_count_or_params(page, count, **params)
+        raise RequestError.new('Invalid page count') if params[:page] < 1 or params[:count] < 1
 
-        PagarMe::Request.get(url, params: hash.merge(
-          page:  page,
-          count: count
-        )).call
+        PagarMe::Request.get(url, params: params).call
       end
       alias :find_by_hash :find_by
 
-      def all(page = 1, count = 10)
-        find_by Hash.new, page, count
+      def all(*args, **params)
+        params = extract_page_count_or_params(*args, **params)
+        find_by params
       end
+      alias :where :all
 
       def url(*params)
         ["/#{ CGI.escape underscored_class_name }s", *params].join '/'
@@ -52,6 +52,12 @@ module PagarMe
 
       def underscored_class_name
         class_name.gsub(/[a-z0-9][A-Z]/){|s| "#{s[0]}_#{s[1]}"}.downcase
+      end
+
+      def extract_page_count_or_params(*args, **params)
+        params[:page]  ||= args[0] || 1
+        params[:count] ||= args[1] || 10
+        params
       end
 
     end
