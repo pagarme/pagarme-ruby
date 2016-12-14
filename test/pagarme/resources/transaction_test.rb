@@ -79,11 +79,11 @@ module PagarMe
     end
 
     should 'raise an error when nil or empty string as ID' do
-      assert_raises RequestError do
+      assert_raises IdMustBeInformedError do
         PagarMe::Transaction.find_by_id nil
       end
 
-      assert_raises RequestError do
+      assert_raises IdMustBeInformedError do
         PagarMe::Transaction.find_by_id ''
       end
     end

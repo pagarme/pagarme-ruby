@@ -14,6 +14,12 @@ module PagarMe
   class RequestError < PagarMeError
   end
 
+  class IdMustBeInformedError < RequestError
+    def initialize
+      super 'ID must be informed'
+    end
+  end
+
   class ResponseError < PagarMeError
     attr_reader :request_params, :error
 

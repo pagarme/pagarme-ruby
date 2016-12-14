@@ -1,5 +1,7 @@
 module PagarMe
   class NestedModel < Model
+    PARENT_ID_MUST_BE_INFORMED = 'Parent ID must be informed'.freeze
+
     attr_accessor :parent_id
 
     def initialize(hash = Hash.new)
@@ -14,7 +16,7 @@ module PagarMe
     end
 
     def url(*params)
-      raise RequestError.new('Invalid ID') unless id.present?
+      raise IdMustBeInformedError.new unless id.present?
       self.class.url parent_id, CGI.escape(id.to_s), *params
     end
 
@@ -25,8 +27,8 @@ module PagarMe
       end
 
       def find_by_id(parent_id, id)
-        raise RequestError.new('Invalid ID')        unless        id.present?
-        raise RequestError.new('Invalid parent ID') unless parent_id.present?
+        raise IdMustBeInformedError.new                    unless        id.present?
+        raise RequestError.new(PARENT_ID_MUST_BE_INFORMED) unless parent_id.present?
 
         object = PagarMe::Request.get(url parent_id, id).call
         if object
@@ -53,7 +55,7 @@ module PagarMe
       end
 
       def url(parent_id, *params)
-        raise RequestError.new('Invalid parent ID') unless parent_id.present?
+        raise RequestError.new(PARENT_ID_MUST_BE_INFORMED) unless parent_id.present?
         ["/#{parent_resource_name}", parent_id, "#{ CGI.escape underscored_class_name }s", *params].join '/'
       end
 
