@@ -41,7 +41,7 @@ module PagarMe
       assert_equal anticipation.id, anticipation.confirm.id
     end
 
-    should 'create a building anticipation an later delete it' do
+    should 'create a building anticipation and later delete it' do
       recipient    = PagarMe::Recipient.default
       anticipation = recipient.bulk_anticipate anticipation_params(build: true)
 
