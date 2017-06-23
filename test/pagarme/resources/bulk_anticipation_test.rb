@@ -46,7 +46,7 @@ module PagarMe
       anticipation = recipient.bulk_anticipate anticipation_params(build: true)
 
       assert_equal anticipation.id, PagarMe::BulkAnticipation.find(recipient.id, anticipation.id).id
-      PagarMe::BulkAnticipation.delete(recipient.id, anticipation.id).id
+      PagarMe::BulkAnticipation.delete(recipient.id, anticipation.id)
       assert_raises PagarMe::NotFound do
         PagarMe::BulkAnticipation.find recipient.id, anticipation.id
       end
