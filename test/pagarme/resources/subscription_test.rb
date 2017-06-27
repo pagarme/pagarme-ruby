@@ -96,5 +96,14 @@ module PagarMe
       subscription.cancel
       assert_equal subscription.status, 'canceled'
     end
+
+    should 'be able to settle_charge a subscription' do
+      plan         = PagarMe::Plan.create no_trial_plan_params
+      subscription = PagarMe::Subscription.create boleto_with_customer_params(plan: plan)
+      assert_equal subscription.status, 'unpaid'
+
+      subscription.settle_charge
+      assert_equal subscription.status, 'paid'
+    end
   end
 end
