@@ -19,6 +19,10 @@ module PagarMe
       super
     end
 
+    def redeliver(id)
+      update PagarMe::Request.post(url "postbacks/#{id}/redeliver").run
+    end
+
     private
     def check_card_object
       if card
