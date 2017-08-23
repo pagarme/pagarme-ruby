@@ -2,11 +2,13 @@ module PagarMe
   class BalanceOperation < PagarMeObject
 
     def method_missing(name, *args, &block)
+      super name, *args, &block
+    rescue NameError
       if @attributes['movement_object'] && @attributes['movement_object'].respond_to?(name)
-        return movement_object.public_send(name, *args, &block)
+        return @attributes['movement_object'].public_send(name, *args, &block)
       end
 
-      super name, *args, &block
+      raise $!
     end
 
     class << self
