@@ -1,3 +1,4 @@
+# coding: utf-8
 class Fixtures
   def transaction
     { amount: 1000 }
@@ -47,6 +48,10 @@ class Fixtures
     }
   end
 
+  def invalid_card_number
+    card.merge card_number: '4043405'
+  end  
+  
   def refused_card
     # In test environment CVV's that starts with digit 6 are refused by acquirer
     card.merge card_cvv: '600'

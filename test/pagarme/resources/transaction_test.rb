@@ -138,10 +138,9 @@ module PagarMe
     end
 
     should 'validate transaction with invalid card_number' do
-      exception = assert_raises PagarMe::ValidationError do
-        PagarMe::Transaction.charge transaction_with_card_params(card_number: '123456')
-      end
-      assert exception.errors.any?{ |error| error.parameter_name == 'card_number' }
+      transaction = PagarMe::Transaction.new transaction_with_customer_with_invalid_card_number_params
+      transaction.charge
+      assert_equal transaction.status, 'refused'
     end
 
     should 'validate transaction missing card_holder_name' do
