@@ -94,6 +94,11 @@ module Assertions
     assert_equal transaction.amount.to_s,    '1000'
   end
 
+  def assert_transaction_refunded(transaction)
+    assert transaction.refunded_amount > 0
+    assert_equal transaction.status, 'refunded'
+  end
+
   def assert_split_rules(split_rules)
     assert_equal split_rules.size, 4
     rules = split_rules.sort_by(&:percentage)
