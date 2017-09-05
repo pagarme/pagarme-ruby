@@ -1,7 +1,7 @@
 require_relative '../../test_helper'
 
 module PagarMe
-  class TransactionTest < PagarMeTestCase
+  class PostbackTest < PagarMeTestCase
     should 'be valid when has valid signature' do
       fixed_api_key do
         postback = PagarMe::Postback.new postback_response_params
