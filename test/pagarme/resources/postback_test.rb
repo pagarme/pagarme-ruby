@@ -9,7 +9,7 @@ module PagarMe
       end
     end
 
-    should 'be valid when has invalid signature' do
+    should 'not be valid when has invalid signature' do
       postback = PagarMe::Postback.new postback_response_params(signature: 'sha1=invalid signature')
       assert !postback.valid?
     end
