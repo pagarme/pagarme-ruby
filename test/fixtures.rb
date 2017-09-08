@@ -83,6 +83,60 @@ class Fixtures
     }
   end
 
+  def address
+    {
+      street:        'Av. Brigadeiro Faria Lima',
+      street_number: '2941',
+      neighborhood:  'Itaim bibi',
+      zipcode:       '01452000',
+      city: 'São Paulo',
+      state: 'sp',
+      country: 'br'
+    }
+  end
+
+  def billing
+    {
+      billing: {
+        name: 'Jon Snow',
+        address: address
+      }
+    }
+  end
+
+  def shipping
+    {
+      shipping: {
+        name: 'Daenerys Targeryen',
+        fee: 100,
+        delivery_date: "2000-12-21",
+        expedited: "true",
+        address: address
+      }
+    }
+  end
+
+  def item
+  {
+     items: [
+      {
+        id: "r123",
+        title: "Red pill",
+        unit_price: 10000,
+        quantity: 1,
+        tangible: true
+      },
+      {
+        id: "b123",
+        title: "Blue pill",
+        unit_price: 10000,
+        quantity: 1,
+        tangible: true
+      }
+    ]
+  }
+  end
+
   def bank_account
     {
       bank_code:       '237',
@@ -144,12 +198,27 @@ class Fixtures
         gender:          'M',
         born_at:         '1970-10-11',
         phone:           { ddd: '21', number: '922334455' },
-        address: {
-          street:        'Av. Brigadeiro Faria Lima',
-          neighborhood:  'Itaim bibi',
-          zipcode:       '01452000',
-          street_number: '2941'
-        }
+        address: address
+      }
+    }
+  end
+
+  def customer_08_28
+    {
+      customer: {
+        external_id: "#3311",
+        name: "Morpheus Fishburne",
+        type: "individual",
+        country: "br",
+        email: "mopheus@nabucodonozor.com",
+        documents: [
+          {
+            type: "cpf",
+            number: "00000000000"
+          }
+        ],
+        phone_numbers: ["+5511999998888", "+5511888889999"],
+        birthday: "1965-01-01"
       }
     }
   end
