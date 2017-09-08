@@ -48,7 +48,7 @@ module PagarMe
       assert_equal transaction.status, 'refunded'
     end
 
-    should 'be able to create transaciton with boleto' do
+    should 'be able to create transaction with boleto' do
       transaction = PagarMe::Transaction.charge transaction_with_boleto_params
       assert_transaction_with_bolelo_on_waiting_payment transaction
     end
@@ -135,6 +135,18 @@ module PagarMe
       assert_equal transaction.amount,          2000
       assert_equal transaction.paid_amount,     1000
       assert_equal transaction.refunded_amount, 0
+    end
+
+    should 'be able to create a transaction with billing shipping and items' do
+      PagarMe.api_key = 'ak_test_rnddQudL8WPzsAIZJ1axDz2HFcsc0P'
+      card        = PagarMe::Card.create card_params
+      transaction = PagarMe::Transaction.create transaction_with_customer_08_28_with_billing_with_shipping_with_item_with_card_params
+
+      found_transaction = PagarMe::Transaction.find_by_id transaction.id
+      assert_equal found_transaction.billing, transaction.billing
+      assert_equal found_transaction.shipping, transaction.shipping
+      assert_equal found_transaction.items, transaction.items
+      assert_transaction_successfully_paid transaction
     end
 
     should 'validate transaction with invalid card_number' do
