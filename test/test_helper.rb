@@ -55,18 +55,28 @@ class PagarMeTestCase < Test::Unit::TestCase
     end
   end
 
-  def fixed_api_key
-    PagarMe.encryption_key = FIXED_ENCRYPTION_KEY 
-    PagarMe.api_key = FIXED_API_KEY
-    yield
-    PagarMe.encryption_key = temporary_company.encryption_key.test
-    PagarMe.api_key = temporary_company.api_key.test
+  def change_company(api_version: nil, &block)
+    company = temporary_company api_version: api_version
+    change_api_and_encryption_keys api_key: company.api_key, encryption_key: company.encryption_key, &block
   end
 
-  def temporary_company
-    VCR.use_cassette 'TestCase/tmp_company' do
+  def change_api_and_encryption_keys(api_key: FIXED_API_KEY, encryption_key: FIXED_ENCRYPTION_KEY)
+    previous_encryption_key = PagarMe.encryption_key
+    previous_api_key        = PagarMe.api_key
+
+    PagarMe.encryption_key = encryption_key
+    PagarMe.api_key        = api_key
+    yield
+
+    PagarMe.encryption_key = previous_encryption_key
+    PagarMe.api_key        = previous_api_key
+  end
+  alias :fixed_api_key :change_api_and_encryption_keys
+
+  def temporary_company(api_version: nil)
+    VCR.use_cassette "TestCase/tmp_company/api_key/#{api_version}" do
       PagarMe.api_key = FIXED_API_KEY
-      PagarMe::Company.temporary
+      PagarMe::Company.temporary api_version: api_version
     end
   end
 
