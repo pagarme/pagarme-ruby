@@ -21,8 +21,8 @@ module PagarMe
       PagarMe::Request.get('/company').call
     end
 
-    def self.temporary
-      PagarMe::Request.post('/companies/temporary').call
+    def self.temporary(params = Hash.new)
+      PagarMe::Request.post('/companies/temporary', params: params).call
     end
   end
 end
