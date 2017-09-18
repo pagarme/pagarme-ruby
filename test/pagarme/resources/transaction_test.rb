@@ -138,15 +138,20 @@ module PagarMe
     end
 
     should 'be able to create a transaction with billing shipping and items' do
-      PagarMe.api_key = 'ak_test_rnddQudL8WPzsAIZJ1axDz2HFcsc0P'
-      card        = PagarMe::Card.create card_params
-      transaction = PagarMe::Transaction.create transaction_with_customer_08_28_with_billing_with_shipping_with_item_with_card_params
+      change_company(api_version: { test:  '2017-08-28', live: '2017-08-28'}) do
+        transaction = PagarMe::Transaction.create transaction_with_external_id_customer_with_billing_with_shipping_with_item_with_card_params
+        found_transaction = PagarMe::Transaction.find_by_id transaction.id
 
-      found_transaction = PagarMe::Transaction.find_by_id transaction.id
-      assert_equal found_transaction.billing, transaction.billing
-      assert_equal found_transaction.shipping, transaction.shipping
-      assert_equal found_transaction.items, transaction.items
-      assert_transaction_successfully_paid transaction
+        assert_equal found_transaction.billing, transaction.billing
+        assert_equal found_transaction.shipping, transaction.shipping
+        assert_equal found_transaction.items, transaction.items
+
+        assert found_transaction.billing
+        assert found_transaction.shipping
+        assert found_transaction.items
+
+        assert_transaction_successfully_paid transaction
+      end
     end
 
     should 'validate transaction with invalid card_number' do

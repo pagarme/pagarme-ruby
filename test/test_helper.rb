@@ -57,7 +57,7 @@ class PagarMeTestCase < Test::Unit::TestCase
 
   def change_company(api_version: nil, &block)
     company = temporary_company api_version: api_version
-    change_api_and_encryption_keys api_key: company.api_key, encryption_key: company.encryption_key, &block
+    change_api_and_encryption_keys api_key: company.api_key.test, encryption_key: company.encryption_key.test, &block
   end
 
   def change_api_and_encryption_keys(api_key: FIXED_API_KEY, encryption_key: FIXED_ENCRYPTION_KEY)
