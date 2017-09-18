@@ -203,7 +203,7 @@ class Fixtures
     }
   end
 
-  def customer_08_28
+  def external_id_customer
     {
       customer: {
         external_id: "#3311",
