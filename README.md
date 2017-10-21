@@ -79,7 +79,7 @@ For example, splitting equally a transaction:
   PagarMe::Transaction.new(
     amount:    1000,      # in cents
     card_hash: card_hash, # how to get a card hash: docs.pagar.me/capturing-card-data
-    split\_rules: [
+    split_rules: [
       { recipient_id: recipient_id_1, percentage: 50 },
       { recipient_id: recipient_id_2, percentage: 50 }
     ]
