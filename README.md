@@ -5,8 +5,8 @@ Pagar.me Ruby library
 
 ## Documentation
 
-* [Documentation](https://pagar.me/docs)
-* [Full API Guide](https://docs.pagar.me/api)
+* [Documentation](https://docs.pagar.me)
+* [Full API Guide](https://docs.pagar.me/reference)
 
 ## Getting Started
 
@@ -38,13 +38,13 @@ and _PAGARME\_ENCRYPTION\_KEY_ (**recommended if needed**)
 
 See our [demo checkout](https://pagar.me/checkout).
 
-More about how to use it [here](https://docs.pagar.me/checkout).
+More about how to use it [here](https://docs.pagar.me/docs/overview-checkout).
 
 ### Transactions
 
 #### Creating a Credit Card Transaction
 
-To create a credit card transaction, you need a [card\_hash](https://docs.pagar.me/capturing-card-data).
+To create a credit card transaction, you need a [card\_hash](https://docs.pagar.me/docs/obtendo-os-dados-do-cartao).
 
 ```ruby
   PagarMe::Transaction.new(
@@ -53,7 +53,7 @@ To create a credit card transaction, you need a [card\_hash](https://docs.pagar.
   ).charge
 ```
 
-More about [Creating a Credit Card Transaction](https://docs.pagar.me/transactions/#realizando-uma-transacao-de-cartao-de-credito).
+More about [Creating a Credit Card Transaction](https://docs.pagar.me/docs/realizando-uma-transacao-de-cartao-de-credito).
 
 #### Creating a Boleto Transaction
 
@@ -68,7 +68,7 @@ More about [Creating a Credit Card Transaction](https://docs.pagar.me/transactio
   transaction.boleto_barcode # => boleto's barcode
 ```
 
-More about [Creating a Boleto Transaction](https://docs.pagar.me/transactions/#realizando-uma-transacao-de-boleto-bancario).
+More about [Creating a Boleto Transaction](https://docs.pagar.me/docs/realizando-uma-transacao-de-boleto-bancario).
 
 #### Split Rules
 
@@ -86,13 +86,13 @@ For example, splitting equally a transaction:
   ).charge
 ```
 
-More about [Split Rules](https://docs.pagar.me/api/#regras-do-split).
+More about [Split Rules](https://docs.pagar.me/reference#retornando-uma-regra-de-divis%C3%A3o-espec%C3%ADfica).
 
 ### Plans & Subscriptions
 
-You can use recurring charges, learn more [here](https://docs.pagar.me/plans-subscriptions).
+You can use recurring charges, learn more [here](https://docs.pagar.me/docs/overview-recorrencia).
 
-It's important to understand the charges flow, learn more [here](https://docs.pagar.me/plans-subscriptions/#fluxo-de-cobranca)
+It's important to understand the charges flow, learn more [here](https://docs.pagar.me/docs/fluxo-de-cobranca)
 
 #### Creating a Plan
 
@@ -104,7 +104,7 @@ It's important to understand the charges flow, learn more [here](https://docs.pa
   ).create
 ```
 
-More about [Creating a Plan](https://docs.pagar.me/plans-subscriptions/#criando-um-plano).
+More about [Creating a Plan](https://docs.pagar.me/docs/criando-um-plano).
 
 #### Creating a Subscription
 
@@ -116,7 +116,7 @@ More about [Creating a Plan](https://docs.pagar.me/plans-subscriptions/#criando-
   ).create
 ```
 
-More about [Creating a Subscription](https://docs.pagar.me/plans-subscriptions/#criando-uma-assinatura).
+More about [Creating a Subscription](https://docs.pagar.me/docs/criando-uma-assinatura).
 
 ### Recipients
 
@@ -139,7 +139,7 @@ To create a recipient, so it can receive payments through split rules or transfe
   )
 ```
 
-More about [Creating a Recipient](https://docs.pagar.me/api/#recebedores).
+More about [Creating a Recipient](https://docs.pagar.me/reference#criando-um-recebedor).
 
 #### Transfer Available Amout to Bank Account Manually
 
@@ -163,7 +163,7 @@ _transfer\_interval_ and _transfer\_day_ will handle it automatically.
 
 Just that!
 
-More about [Balance](https://docs.pagar.me/api/#saldo)
+More about [Balance](https://docs.pagar.me/docs/overview-gerenciamento-de-saldo)
 
 #### Checking Balance Operations
 
@@ -179,7 +179,7 @@ Paginating:
   PagarMe::BalanceOperation.balance_operations 2, 50 # second page, 50 per page
 ```
 
-More about [Balance Operations](https://docs.pagar.me/api/#operacoes-de-saldo)
+More about [Balance Operations](https://docs.pagar.me/docs/composicao-do-saldo)
 
 #### Checking Recipient Balance
 
@@ -208,7 +208,7 @@ Paginating:
   PagarMe::Recipient.find(recipient_id).balance_operations 2, 50 # second page, 50 per page
 ```
 
-More about [Recipient Balance Operations](https://docs.pagar.me/api/#operacoes-de-saldo-de-um-recebedor)
+More about [Recipient Balance Operations](https://docs.pagar.me/reference#opera%C3%A7%C3%B5es-de-saldo-de-um-recebedor)
 
 ### Request Bulk Anticipation
 
@@ -218,7 +218,7 @@ More about [Recipient Balance Operations](https://docs.pagar.me/api/#operacoes-d
   PagarMe::Recipient.default.bulk_anticipations_limits
 ```
 
-More about [Checking Bulk Anticipation Limits](https://docs.pagar.me/api/#obtendo-os-limites-de-antecipacao)
+More about [Checking Bulk Anticipation Limits](https://docs.pagar.me/reference#obtendo-os-limites-de-antecipa%C3%A7%C3%A3o)
 
 #### Requesting Bulk Anticipation
 
@@ -230,7 +230,7 @@ More about [Checking Bulk Anticipation Limits](https://docs.pagar.me/api/#obtend
   )
 ```
 
-More about [Requesting Bulk Anticipation](https://docs.pagar.me/api/#criando-uma-antecipacao)
+More about [Requesting Bulk Anticipation](https://docs.pagar.me/reference#criando-uma-antecipa%C3%A7%C3%A3o)
 
 #### Getting Bulk Anticipation
 
@@ -238,7 +238,7 @@ More about [Requesting Bulk Anticipation](https://docs.pagar.me/api/#criando-uma
   PagarMe::BulkAnticipation.all page, count
 ```
 
-More about [Getting Bulk Anticipation](https://docs.pagar.me/api/#retornando-todas-as-antecipacoes)
+More about [Getting Bulk Anticipation](https://docs.pagar.me/reference#retornando-todas-as-antecipa%C3%A7%C3%B5es)
 
 ### Payables
 
@@ -248,7 +248,7 @@ More about [Getting Bulk Anticipation](https://docs.pagar.me/api/#retornando-tod
   PagarMe::Payable.find 'payable_id'
 ```
 
-More about [Getting Payable](https://docs.pagar.me/api/#retornando-um-recebivel)
+More about [Getting Payable](https://docs.pagar.me/reference#retornando-um-receb%C3%ADvel)
 
 #### Querying Payables
 
@@ -260,7 +260,7 @@ More about [Getting Payable](https://docs.pagar.me/api/#retornando-um-recebivel)
   PagarMe::Payable.find_by status: 'paid'
 ```
 
-More about [Querying Payables](https://docs.pagar.me/api/#retornando-recebiveis)
+More about [Querying Payables](https://docs.pagar.me/reference#retornando-receb%C3%ADveis)
 
 #### Querying Payables by Transaction
 
@@ -269,7 +269,7 @@ More about [Querying Payables](https://docs.pagar.me/api/#retornando-recebiveis)
   transaction.payables
 ```
 
-More about [Payable Transactions](https://docs.pagar.me/api/#retornando-pagamentos-da-transacao)
+More about [Payable Transactions](https://docs.pagar.me/reference#retornando-pagamentos-da-transa%C3%A7%C3%A3o)
 
 ### Validating Postback
 
@@ -329,7 +329,7 @@ This README is just a quick abstract of it's main features.
 You can easily browse it's source code to see all [supported resources](https://github.com/pagarme/pagarme-ruby/tree/master/lib/pagarme/resources).
 
 We will document everything while adding support to all resources listed in
-[Full API Guide](https://docs.pagar.me/api).
+[Full API Guide](https://docs.pagar.me/reference).
 
 Feel free to help us to add support to features sending pull requests.
 
@@ -337,7 +337,7 @@ Thanks!
 
 ### TODO
 
-Add support to [ElasticSearch Query DSL](https://docs.pagar.me/api/#buscas-avancadas),
+Add support to [ElasticSearch Query DSL](https://docs.pagar.me/reference#elasticsearch),
 so you can search your data optimally.
 
 And document all the source code.
