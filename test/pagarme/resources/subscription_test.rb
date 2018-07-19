@@ -15,7 +15,7 @@ module PagarMe
       subscription = PagarMe::Subscription.create subscription_with_customer_params(plan: plan)
       assert_no_trial_subscription_created subscription, plan
 
-      sleep 1
+      sleep 2
       assert       subscription.transactions.count > 0
       assert_equal subscription.transactions.first.status, 'paid'
     end
