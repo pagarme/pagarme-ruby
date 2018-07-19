@@ -85,7 +85,8 @@ module PagarMe
         open_timeout: PagarMe.open_timeout,
         timeout:      PagarMe.timeout,
         ssl_ca_file:  SSL_CA_FILEPATH,
-        headers:      DEFAULT_HEADERS.merge(headers)
+        headers:      DEFAULT_HEADERS.merge(headers),
+        ssl_version:  'TLSv1_2'
       }
     end
 
