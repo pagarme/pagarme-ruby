@@ -214,7 +214,7 @@ class Fixtures
         documents: [
           {
             type: "cpf",
-            number: "00000000000"
+            number: "86870624194"
           }
         ],
         phone_numbers: ["+5511999998888", "+5511888889999"],
