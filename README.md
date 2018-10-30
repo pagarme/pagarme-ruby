@@ -55,6 +55,25 @@ To create a credit card transaction, you need a [card\_hash](https://docs.pagar.
 
 More about [Creating a Credit Card Transaction](https://docs.pagar.me/docs/realizando-uma-transacao-de-cartao-de-credito).
 
+#### Creating a Customer
+
+```ruby
+  customer = PagarMe::Customer.create(
+    name: 'Morpheus Fishburne',
+    email: 'mopheus@nabucodonozor.com',
+    type: 'individual',
+    external_id: "#3311",
+    country: 'br',
+    birthday: "1965-01-01",
+    documents: [
+      {type: "cpf", number: "86870624194"}
+    ],
+    phone_numbers: ["+5511999998888", "+5511888889999"]
+  )
+```
+
+More about [Creating a Customer](https://docs.pagar.me/v2017-08-28/reference#criando-um-cliente).
+
 #### Creating a Boleto Transaction
 
 ```ruby
