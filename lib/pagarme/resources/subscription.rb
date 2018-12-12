@@ -12,7 +12,11 @@ module PagarMe
 
     # TODO: Test it
     def postbacks
-      PagarMe::Request.get( url 'postbacks' ).call
+      PagarMe::Request.get( url 'postbacks' ).call 
+    end
+
+    def postback_find(id)
+      PagarMe::Request.get( url "postbacks/#{id}" ).call
     end
 
     def cancel

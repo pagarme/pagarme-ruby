@@ -18,6 +18,10 @@ module PagarMe
       PagarMe::Request.get( url 'postbacks' ).call
     end
 
+    def postback_find(id)
+      PagarMe::Request.get( url "postbacks/#{id}" ).call
+    end
+
     def operations
       PagarMe::Request.get( url 'operations' ).call
     end
