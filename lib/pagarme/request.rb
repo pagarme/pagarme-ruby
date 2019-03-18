@@ -4,7 +4,7 @@ require 'multi_json'
 
 module PagarMe
   class Request
-    attr_accessor :path, :method, :parameters, :headers, :query
+    attr_accessor :path, :method, :parameters, :headers, :query, :search, :type
 
     SSL_CA_FILEPATH = File.join File.dirname(__FILE__), '..', '..', 'certs', 'cabundle.pem'
     DEFAULT_HEADERS = {
@@ -21,6 +21,8 @@ module PagarMe
       @parameters = options[:params]  || Hash.new
       @query      = options[:query]   || Hash.new
       @headers    = options[:headers] || Hash.new
+      @search     = options[:search]  || Hash.new
+      @type       = options[:type]    || 'transaction'
     end
 
     def run
@@ -74,20 +76,33 @@ module PagarMe
       self.new url, 'DELETE', options
     end
 
+    def self.search(query, options={})
+      self.new '/search', 'GET', {search: query}.merge(options)
+    end
+
     protected
+
     def request_params
       {
         method:       method,
         user:         PagarMe.api_key,
         password:     'x',
         url:          full_api_url,
-        payload:      MultiJson.encode(parameters),
+        payload:      (@search == {} ? MultiJson.encode(parameters) : search_payload),
         open_timeout: PagarMe.open_timeout,
         timeout:      PagarMe.timeout,
         ssl_ca_file:  SSL_CA_FILEPATH,
         headers:      DEFAULT_HEADERS.merge(headers),
         ssl_version:  'TLSv1_2'
       }
+    end
+
+    def search_payload
+      MultiJson.encode({
+        api_key:      PagarMe.api_key,
+        type:         type,
+        query:        {query: search}
+      })
     end
 
     def full_api_url

@@ -34,6 +34,11 @@ module PagarMe
 
         PagarMe::Request.get(url, params: params).call
       end
+
+      def search(query)
+        PagarMe::Request.search(query, {type: underscored_class_name}).call
+      end
+
       alias :find_by_hash :find_by
 
       def all(*args, **params)
