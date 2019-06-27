@@ -20,7 +20,8 @@ module PagarMe
       assert_plan_created PagarMe::Plan.create(plan_params)
 
       # find_by_hash is possibly consistent, wait to try to ensure!!!
-      sleep 1
+      sleep 5
+
       found_plans = PagarMe::Plan.find_by trial_days: 5
 
       assert found_plans.size > 0

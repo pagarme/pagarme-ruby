@@ -49,7 +49,7 @@ module PagarMe
     end
 
     should 'be able to create transaction with boleto' do
-      transaction = PagarMe::Transaction.charge transaction_with_boleto_params
+      transaction = PagarMe::Transaction.charge transaction_with_customer_with_boleto_params
       assert_transaction_with_bolelo_on_waiting_payment transaction
     end
 
@@ -89,7 +89,7 @@ module PagarMe
     end
 
     should 'require parameters on the refund with boleto' do
-      transaction = PagarMe::Transaction.create transaction_with_boleto_params
+      transaction = PagarMe::Transaction.create transaction_with_customer_with_boleto_params
       assert_equal transaction.status, 'waiting_payment'
 
       assert_raises(PagarMe::ValidationError){ transaction.refund }
