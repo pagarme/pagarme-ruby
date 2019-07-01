@@ -4,7 +4,7 @@ module PagarMe
   class BalanceTest < PagarMeTestCase
 
     should 'change amount amount after transaction being paid' do
-      transaction      = PagarMe::Transaction.charge transaction_with_boleto_params
+      transaction      = PagarMe::Transaction.charge transaction_with_customer_with_boleto_params
       previous_balance = PagarMe::Balance.balance
 
       transaction.status = :paid
@@ -17,7 +17,7 @@ module PagarMe
     should 'change recipient amount after transaction being paid' do
       recipient   = PagarMe::Recipient.create recipient_with_nested_bank_account_params
       split_rules = [ { recipient_id: recipient.id, percentage: 100 } ]
-      transaction = PagarMe::Transaction.charge transaction_with_boleto_params(split_rules: split_rules)
+      transaction = PagarMe::Transaction.charge transaction_with_customer_with_boleto_params(split_rules: split_rules)
 
       assert_empty_balance recipient.balance
 
@@ -30,7 +30,7 @@ module PagarMe
     should 'change recipient amount after recipient receive money' do
       recipient   = PagarMe::Recipient.create recipient_with_nested_bank_account_params
       split_rules = [ { recipient_id: recipient.id, percentage: 100 } ]
-      transaction = PagarMe::Transaction.charge transaction_with_boleto_params(split_rules: split_rules)
+      transaction = PagarMe::Transaction.charge transaction_with_customer_with_boleto_params(split_rules: split_rules)
 
       assert_empty_balance recipient.balance
 
