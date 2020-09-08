@@ -1,14 +1,31 @@
-# pagarme-ruby
-[![Build Status](https://travis-ci.org/pagarme/pagarme-ruby.png)](https://travis-ci.org/pagarme/pagarme-ruby)
+# Introduction
 
-Pagar.me Ruby library
+This SDK was built in order to make it flexible, so that everyone can use all the features, from all API versions.
 
-## Documentation
+You can access the official Pagar.me documentation by accessing this [link](https://docs.pagar.me).
 
-* [Documentation](https://docs.pagar.me)
-* [Full API Guide](https://docs.pagar.me/reference)
+Besides, you can also access the reference documentation for all SDKs by accessing this [link](https://docs.pagar.me/reference).
 
-## Getting Started
+
+## Index
+
+- [Install](#install)
+- [Configure your API key](#configure-your-api-key)
+- [Using Pagar.me Checkout](#using-pagarme-checkout)
+- [Transactions](#transactions)
+ - [Capturing a transaction](#capturing-a-transaction)
+ - [Refunding a transaction](#refunding-a-transaction)
+  - [Partially refundig a transaction](#partially-refundig-a-transaction)
+  - [Refunding a transaction with split](#refunding-a-transaction-with-split)
+ - [Getting transactions](#getting-transactions)
+ - [Getting a transaction](#getting-a-transaction)
+ - [Gettting payables from a transation](#getting-payables-from-a-transaction)
+ - [Getting a operation history from a transaction](#getting-a-operation-history-from-a-transaction)
+ - [Notifying a customer about a boleto to be paid](#notifying-a-customer-about-a-boleto-to-be-paid)
+ - [Getting a events from a transaction](#getting-events-from-a-transaction)
+ - [Calculated installment payments](#calculated-installment-payments)
+ - [Testing boleto payments](#testing-boleto-payments)
+ 
 
 ### Install
 
@@ -42,18 +59,186 @@ More about how to use it [here](https://docs.pagar.me/docs/overview-checkout).
 
 ### Transactions
 
-#### Creating a Credit Card Transaction
-
-To create a credit card transaction, you need a [card\_hash](https://docs.pagar.me/docs/obtendo-os-dados-do-cartao).
+#### Creating a Transaction
 
 ```ruby
   PagarMe::Transaction.new(
-    amount:    1000,      # in cents
-    card_hash: card_hash  # how to get a card hash: docs.pagar.me/capturing-card-data
+    amount: 100, #in cents                                              
+    payment_method: "credit_card", #Accepts two types: credit_card and boleto
+    card_number: "4111111111111111",
+    card_holder_name: "Morpheus Fishburne", 
+    card_expiration_date: "1123", #MMYY format. 
+    card_cvv: "123",
+    postback_url: "http://requestb.in/pkt7pgpk", #Your system's endpoint that will receive information with each transaction update. If you set this parameter, the transaction processing becomes async.
+    customer: {
+      external_id: "#3311",
+      name: "Morpheus Fishburne",
+      type: "individual",
+      country: "br",
+      email: "mopheus@nabucodonozor.com",
+      documents: [
+        {
+          type: "cpf",
+          number: "30621143049"
+
+        }
+      ],
+      phone_numbers: ["+5511999998888", "+5511888889999"],
+      birthday: "1965-01-01"
+    },
+    billing: {
+      name: "Trinity Moss",
+      address: {
+        country: "br",
+        state: "sp",
+        city: "Cotia",
+        neighborhood: "Rio Cotia",
+        street: "Rua Matrix",
+        street_number: "9999",
+        zipcode: "06714360"
+      }
+    },
+    shipping: {
+      name: "Neo Reeves",
+      fee: 1000,
+      delivery_date: "2000-12-21",
+      expedited: true,
+      address: {
+        country: "br",
+        state: "sp",
+        city: "Cotia",
+        neighborhood: "Rio Cotia",
+        street: "Rua Matrix",
+        street_number: "9999",
+        zipcode: "06714360"
+      }
+    },
+    items: [
+      {
+        id: "r123",
+        title: "Red pill",
+        unit_price: 10000,
+        quantity: 1,
+        tangible: true
+      },
+      {
+        id: "b123",
+        title: "Blue pill",
+        unit_price: 10000,
+        quantity: 1,
+        tangible: true
+      }
+    ]
   ).charge
 ```
 
-More about [Creating a Credit Card Transaction](https://docs.pagar.me/docs/realizando-uma-transacao-de-cartao-de-credito).
+#### Capturing a transaction
+
+```ruby
+transaction = PagarMe::Transaction.find_by_id("transaction_id")
+transaction.capture({:amount => 3100})
+```
+
+#### Refunding a transaction
+
+```ruby
+transaction = PagarMe::Transaction.find_by_id("transaction_id")
+transaction.refund
+```
+
+This feature also works with partial chargebacks, or split chargebacks. For example:
+
+##### Partially refundig a transaction
+
+```ruby
+transaction = PagarMe::Transaction.find_by_id("transaction_id")
+transaction.refund(amount: partial_amount)
+```
+
+##### Refunding a transaction with split 
+
+```ruby
+transaction = PagarMe::Transaction.find_by_id("transaction_id")
+
+transaction.refund({
+  async: false,
+  amount: 71000,
+  split_rules:[
+    {
+      "id": "sr_cj41w9m4d01ta316d02edaqav",
+      "amount": "60000",
+      "recipient_id": "re_cj2wd5ul500d4946do7qtjrvk"
+    },
+    {
+      "id": "sr_cj41w9m4e01tb316dl2f2veyz",
+      "amount": "11000",
+      "recipient_id": "re_cj2wd5u2600fecw6eytgcbkd0",
+      "charge_processing_fee": "true"
+     }
+  ]
+})
+```
+
+#### Getting transactions
+
+```ruby
+  transactions = PagarMe::Transaction.all(3, 3)
+```
+
+#### Getting a transaction 
+
+```ruby
+  transaction = PagarMe::Transaction.find_by_id("transaction_id")
+```
+
+#### Getting payables from a transaction
+
+```ruby
+  payables = PagarMe::Transaction.find('transaction_id').payables
+```
+
+#### Getting a operation history from a transaction
+
+```ruby
+transaction = PagarMe::Transaction.find_by_id("transaction_id")
+
+transaction.operations
+```
+
+#### Notifying a customer about a boleto to be paid
+
+```ruby
+transaction = PagarMe::Transaction.find_by_id("transaction_id")
+
+transaction.collect_payment
+```
+
+#### Getting a events from a transaction 
+
+```ruby
+transaction = PagarMe::Transaction.find_by_id("transaction_id")
+
+transaction.events
+```
+
+#### Calculated installment payments
+
+```ruby
+installments_result = PagarMe::Transaction.calculate_installments({
+    amount: 10000,
+    interest_rate: 13
+})
+```
+
+#### Testing boleto payments
+
+```ruby
+  transaction = PagarMe::Transaction.find_by_id("transaction_id")
+
+  transaction.status = 'paid'
+
+  transaction.save
+```
 
 #### Creating a Customer
 
