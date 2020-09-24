@@ -1,11 +1,8 @@
 # Introdução
 
-This SDK was built in order to make it flexible, so that everyone can use all the features, from all API versions.
+Essa SDK foi construída com o intuito de torná-la flexível, de forma que todos possam utilizar todas as features, de todas as versões de API.
 
-You can access the official Pagar.me documentation by accessing this [link](https://docs.pagar.me).
-
-Besides, you can also access the reference documentation for all SDKs by accessing this [link](https://docs.pagar.me/reference).
-
+Você pode acessar a documentação oficial do Pagar.me acessando esse [link](https://docs.pagar.me).
 
 ## Index
 
