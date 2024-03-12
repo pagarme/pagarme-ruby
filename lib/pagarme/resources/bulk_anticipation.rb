@@ -1,14 +1,5 @@
 module PagarMe
   class BulkAnticipation < NestedModel
-    def confirm
-      update self.class.confirm(parent_id, id).attributes
-      self
-    end
-
-    def delete
-      self.class.delete parent_id, id
-    end
-
     def cancel
       update self.class.cancel(parent_id, id).attributes
       self
@@ -17,14 +8,6 @@ module PagarMe
     class << self
       def parent_resource_name
         'recipients'
-      end
-
-      def confirm(recipient_id, id)
-        PagarMe::Request.post( url(recipient_id, id, 'confirm') ).call
-      end
-
-      def delete(recipient_id, id)
-        PagarMe::Request.delete( url(recipient_id, id) ).call
       end
 
       def cancel(recipient_id, id)
