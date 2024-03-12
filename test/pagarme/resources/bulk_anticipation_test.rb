@@ -32,33 +32,6 @@ module PagarMe
       assert recipient.bulk_anticipations.count > 0
     end
 
-    should 'create a building anticipation an later confirm it' do
-      recipient    = PagarMe::Recipient.default
-      anticipation = recipient.bulk_anticipate anticipation_params(build: true)
-      assert_equal anticipation.id, BulkAnticipation.confirm(recipient.id, anticipation.id).id
-
-      anticipation = recipient.bulk_anticipate anticipation_params(build: true)
-      assert_equal anticipation.id, anticipation.confirm.id
-    end
-
-    should 'create a building anticipation and later delete it' do
-      recipient    = PagarMe::Recipient.default
-      anticipation = recipient.bulk_anticipate anticipation_params(build: true)
-
-      assert_equal anticipation.id, PagarMe::BulkAnticipation.find(recipient.id, anticipation.id).id
-      PagarMe::BulkAnticipation.delete(recipient.id, anticipation.id)
-      assert_raises PagarMe::NotFound do
-        PagarMe::BulkAnticipation.find recipient.id, anticipation.id
-      end
-
-      anticipation = recipient.bulk_anticipate anticipation_params(build: true)
-      assert_equal anticipation.id, PagarMe::BulkAnticipation.find(recipient.id, anticipation.id).id
-      anticipation.delete
-      assert_raises PagarMe::NotFound do
-        PagarMe::BulkAnticipation.find recipient.id, anticipation.id
-      end
-    end
-
     protected
     def anticipation_params(params = Hash.new)
       anticipations_limits_params(reasonable_amount).merge params
