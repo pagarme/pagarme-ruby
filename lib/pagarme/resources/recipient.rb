@@ -26,6 +26,10 @@ module PagarMe
       PagarMe::Transfer.create recipient_id: id, amount: amount
     end
 
+    def create_kyc_link()
+      PagarMe::Kyc.create_link id
+    end
+
     def self.default
       Company.default_recipient
     end
