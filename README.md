@@ -1,369 +1,816 @@
-# pagarme-ruby
-[![Build Status](https://travis-ci.org/pagarme/pagarme-ruby.png)](https://travis-ci.org/pagarme/pagarme-ruby)
+# Introdução
 
-Pagar.me Ruby library
+Essa SDK foi construída com o intuito de torná-la flexível, de forma que todos possam utilizar todas as features, de todas as versões de API.
 
-## Documentation
+Você pode acessar a documentação oficial do Pagar.me acessando esse [link](https://docs.pagar.me).
 
-* [Documentation](https://docs.pagar.me)
-* [Full API Guide](https://docs.pagar.me/reference)
+## Index
 
-## Getting Started
+- [Instalação](#instalação)
+- [Configuração](#configuração)
+- [Transações](#transações)
+- [Criando uma transação](#criando-uma-transação)
+- [Capturando uma transação](#capturando-uma-transação)
+- [Estornando uma transação](#estornando-uma-transação)
+  - [Estornando uma transação parcialmente](#estornando-uma-transação-parcialmente)
+  - [Estornando uma transação com split](#estornando-uma-transação-com-split)
+- [Retornando transações](#retornando-transações)
+- [Retornando uma transação](#retornando-uma-transação)
+- [Retornando recebíveis de uma transação](#retornando-recebíveis-de-uma-transação)
+- [Retornando o histórico de operações de uma transação](#retornando-o-histórico-de-operações-de-uma-transação)
+- [Notificando cliente sobre boleto a ser pago](#notificando-cliente-sobre-boleto-a-ser-pago)
+- [Retornando eventos de uma transação](#retornando-eventos-de-uma-transação)
+- [Calculando Pagamentos Parcelados](#calculando-pagamentos-parcelados)
+- [Testando pagamento de boletos](#testando-pagamento-de-boletos)
+- [Cartões](#cartões)
+  - [Criando cartões](#criando-cartões)
+  - [Retornando cartões](#retornando-cartões)
+  - [Retornando um cartão](#retornando-um-cartão)
+- [Planos](#planos)
+  - [Criando planos](#criando-planos)
+  - [Retornando planos](#retornando-planos)
+  - [Retornando um plano](#retornando-um-plano)
+  - [Atualizando um plano](#atualizando-um-plano)
+- [Assinaturas](#assinaturas)
+  - [Criando assinaturas](#criando-assinaturas)
+  - [Split com assinatura](#split-com-assinatura)
+  - [Retornando uma assinatura](#retornando-uma-assinatura)
+  - [Retornando assinaturas](#retornando-assinaturas)
+  - [Atualizando uma assinatura](#atualizando-uma-assinatura)
+  - [Cancelando uma assinatura](#cancelando-uma-assinatura)
+  - [Transações de assinatura](#transações-de-assinatura)
+  - [Pulando cobranças](#pulando-cobranças)
+- [Postbacks](#postbacks)
+  - [Retornando postbacks](#retornando-postbacks)
+  - [Validando uma requisição de postback](#validando-uma-requisição-de-postback)
+- [Saldo do recebedor principal](#saldo-do-recebedor-principal)
+- [Operações de saldo](#operações-de-saldo)
+  - [Histórico das operações](#histórico-das-operações)
+- [Recebível](#recebível)
+  - [Retornando recebíveis](#retornando-recebíveis)
+  - [Retornando um recebível](#retornando-um-recebível)
+- [Transferências](#transferências)
+  - [Criando uma transferência](#criando-uma-transferência)
+  - [Retornando transferências](#retornando-transferências)
+  - [Retornando uma transferência](#retornando-uma-transferência)
+- [Antecipações](#antecipações)
+  - [Criando uma antecipação](#criando-uma-antecipação)
+  - [Obtendo os limites de antecipação](#obtendo-os-limites-de-antecipação)
+  - [Confirmando uma antecipação building](#confirmando-uma-antecipação-building)
+  - [Cancelando uma antecipação pending](#cancelando-uma-antecipação-pending)
+  - [Deletando uma antecipação building](#deletando-uma-antecipação-building)
+  - [Retornando antecipações](#retornando-antecipações)
+- [Contas bancárias](#contas-bancárias)
+  - [Criando uma conta bancária](#criando-uma-conta-bancária)
+  - [Retornando uma conta bancária](#retornando-uma-conta-bancária)
+  - [Retornando contas bancárias](#retornando-contas-bancárias)
+- [Recebedores](#recebedores)
+  - [Criando um recebedor](#criando-um-recebedor)
+  - [Retornando recebedores](#retornando-recebedores)
+  - [Retornando um recebedor](#retornando-um-recebedor)
+  - [Atualizando um recebedor](#atualizando-um-recebedor)
+  - [Saldo de um recebedor](#saldo-de-um-recebedor)
+  - [Operações de saldo de um recebedor](#operações-de-saldo-de-um-recebedor)
+- [Clientes](#clientes)
+  - [Criando um cliente](#criando-um-cliente)
+  - [Retornando clientes](#retornando-clientes)
+  - [Retornando um cliente](#retornando-um-cliente)
 
-### Install
+## Instalação
+
+Instale a biblioteca utilizando o comando:
 
 ```shell
 gem install pagarme
 ```
-or add the following line to Gemfile:
+
+ou adicione a linha ao Gemfile:
 
 ```ruby
 gem 'pagarme'
 ```
-and run `bundle install` from your shell.
 
-### Configure your API key
+e execute o comando `bundle install` no seu terminal.
 
-You can set your API key in Ruby:
+## Configuração
+
+Para incluir a biblioteca em seu projeto, basta fazer o seguinte:
 
 ```ruby
-PagarMe.api_key        = 'YOUR_API_KEY_HERE'
-PagarMe.encryption_key = 'YOUR_ENCRYPTION_KEY_HERE' # If needed
+require 'pagarme'
+
+PagarMe.api_key        = 'SUA_CHAVE_DE_API'
+PagarMe.encryption_key = 'SUA_ENCRYPTION_KEY' # Caso necessário
 ```
 
-or set the environment variable _PAGARME\_API\_KEY_ (**recommended**)
-and _PAGARME\_ENCRYPTION\_KEY_ (**recommended if needed**)
+## Transações
 
-### Using Pagar.me Checkout
+Nesta seção será explicado como utilizar transações no Pagar.me com essa biblioteca.
 
-See our [demo checkout](https://pagar.me/checkout).
-
-More about how to use it [here](https://docs.pagar.me/docs/overview-checkout).
-
-### Transactions
-
-#### Creating a Credit Card Transaction
-
-To create a credit card transaction, you need a [card\_hash](https://docs.pagar.me/docs/obtendo-os-dados-do-cartao).
+### Criando uma transação
 
 ```ruby
-  PagarMe::Transaction.new(
-    amount:    1000,      # in cents
-    card_hash: card_hash  # how to get a card hash: docs.pagar.me/capturing-card-data
-  ).charge
-```
-
-More about [Creating a Credit Card Transaction](https://docs.pagar.me/docs/realizando-uma-transacao-de-cartao-de-credito).
-
-#### Creating a Customer
-
-```ruby
-  customer = PagarMe::Customer.create(
-    name: 'Morpheus Fishburne',
-    email: 'mopheus@nabucodonozor.com',
-    type: 'individual',
+PagarMe::Transaction.new(
+  amount: 100,                                               
+  payment_method: "credit_card", 
+  card_number: "4111111111111111",
+  card_holder_name: "Morpheus Fishburne", 
+  card_expiration_date: "1123", 
+  card_cvv: "123",
+  postback_url: "http://requestb.in/pkt7pgpk", 
+  customer: {
     external_id: "#3311",
-    country: 'br',
-    birthday: "1965-01-01",
+    name: "Morpheus Fishburne",
+    type: "individual",
+    country: "br",
+    email: "mopheus@nabucodonozor.com",
     documents: [
-      {type: "cpf", number: "86870624194"}
+      {
+        type: "cpf",
+        number: "30621143049"
+
+      }
     ],
-    phone_numbers: ["+5511999998888", "+5511888889999"]
-  )
-```
-
-More about [Creating a Customer](https://docs.pagar.me/v2017-08-28/reference#criando-um-cliente).
-
-#### Creating a Boleto Transaction
-
-```ruby
-  transaction = PagarMe::Transaction.new(
-    amount:         1000,    # in cents
-    payment_method: 'boleto'
-  )
-  transaction.charge
-
-  transaction.boleto_url     # => boleto's URL
-  transaction.boleto_barcode # => boleto's barcode
-```
-
-More about [Creating a Boleto Transaction](https://docs.pagar.me/docs/realizando-uma-transacao-de-boleto-bancario).
-
-#### Split Rules
-
-With split rules, received amount could be splitted between more than one recipient.
-For example, splitting equally a transaction:
-
-```ruby
-  PagarMe::Transaction.new(
-    amount:    1000,      # in cents
-    card_hash: card_hash, # how to get a card hash: docs.pagar.me/capturing-card-data
-    split_rules: [
-      { recipient_id: recipient_id_1, percentage: 50 },
-      { recipient_id: recipient_id_2, percentage: 50 }
-    ]
-  ).charge
-```
-
-More about [Split Rules](https://docs.pagar.me/reference#retornando-uma-regra-de-divis%C3%A3o-espec%C3%ADfica).
-
-### Plans & Subscriptions
-
-You can use recurring charges, learn more [here](https://docs.pagar.me/docs/overview-recorrencia).
-
-It's important to understand the charges flow, learn more [here](https://docs.pagar.me/docs/fluxo-de-cobranca)
-
-#### Creating a Plan
-
-```ruby
-  PagarMe::Plan.new(
-    amount: 4990,
-    days:   30,
-    name:   'Gold Plan'
-  ).create
-```
-
-More about [Creating a Plan](https://docs.pagar.me/docs/criando-um-plano).
-
-#### Creating a Subscription
-
-```ruby
-  PagarMe::Subscription.new(
-    plan:      PagarMe::Plan.find_by_id('1234'),
-    card_hash: card_hash,
-    customer:  { email: 'customer_email@pagar.me' }
-  ).create
-```
-
-More about [Creating a Subscription](https://docs.pagar.me/docs/criando-uma-assinatura).
-
-### Recipients
-
-#### Creating a Recipient
-
-To create a recipient, so it can receive payments through split rules or transfers:
-
-```ruby
-  PagarMe::Recipient.create(
-    bank_account: {
-      bank_code:       '237',
-      agencia:         '1935',
-      agencia_dv:      '9',
-      conta:           '23398',
-      conta_dv:        '9',
-      legal_name:      'Fulano da Silva',
-      document_number: '00000000000000' # CPF or CNPJ
+    phone_numbers: ["+5511999998888", "+5511888889999"],
+    birthday: "1965-01-01"
+  },
+  billing: {
+    name: "Trinity Moss",
+    address: {
+      country: "br",
+      state: "sp",
+      city: "Cotia",
+      neighborhood: "Rio Cotia",
+      street: "Rua Matrix",
+      street_number: "9999",
+      zipcode: "06714360"
+    }
+  },
+  shipping: {
+    name: "Neo Reeves",
+    fee: 1000,
+    delivery_date: "2000-12-21",
+    expedited: true,
+    address: {
+      country: "br",
+      state: "sp",
+      city: "Cotia",
+      neighborhood: "Rio Cotia",
+      street: "Rua Matrix",
+      street_number: "9999",
+      zipcode: "06714360"
+    }
+  },
+  items: [
+    {
+      id: "r123",
+      title: "Red pill",
+      unit_price: 10000,
+      quantity: 1,
+      tangible: true
     },
-    transfer_enabled: false
-  )
+    {
+      id: "b123",
+      title: "Blue pill",
+      unit_price: 10000,
+      quantity: 1,
+      tangible: true
+    }
+  ]
+).charge
 ```
 
-More about [Creating a Recipient](https://docs.pagar.me/reference#criando-um-recebedor).
-
-#### Transfer Available Amout to Bank Account Manually
-
-This is only needed if _transfer\_enabled_ is set to false. If set to true,
-_transfer\_interval_ and _transfer\_day_ will handle it automatically.
+### Capturando uma transação
 
 ```ruby
-  PagarMe::Recipient.find(recipient_id).receive amount
+transaction = PagarMe::Transaction.find_by_id("ID_TRANSAÇÃO")
+transaction.capture({:amount => 3100})
 ```
 
-### Balance And Balance Operations
-
-#### Checking Balance
+### Estornando uma transação
 
 ```ruby
-  balance = PagarMe::Balance.balance
-  balance.waiting_funds.amount # money to be received in your account
-  balance.available.amount     # in your pagarme account
-  balance.transferred.amount   # transferred to your bank account
+transaction = PagarMe::Transaction.find_by_id("ID_TRANSAÇÃO")
+transaction.refund
 ```
 
-Just that!
+Esta funcionalidade também funciona com estornos parciais, ou estornos com split. Por exemplo:
 
-More about [Balance](https://docs.pagar.me/docs/overview-gerenciamento-de-saldo)
-
-#### Checking Balance Operations
-
-To access the history of balance operations:
+#### Estornando uma transação parcialmente
 
 ```ruby
-  PagarMe::BalanceOperation.balance_operations
+transaction = PagarMe::Transaction.find_by_id("ID_TRANSAÇÃO")
+transaction.refund(amount: partial_amount)
 ```
 
-Paginating:
+#### Estornando uma transação com split
 
 ```ruby
-  PagarMe::BalanceOperation.balance_operations 2, 50 # second page, 50 per page
+transaction = PagarMe::Transaction.find_by_id("ID_TRANSAÇÃO")
+
+transaction.refund({
+  async: false,
+  amount: 71000,
+  split_rules:[
+    {
+      "id": "ID_SPLIT_RULE",
+      "amount": "60000",
+      "recipient_id": "ID_REDEBEDOR"
+    },
+    {
+      "id": "ID_SPLIT_RULE",
+      "amount": "11000",
+      "recipient_id": "ID_REDEBEDOR",
+      "charge_processing_fee": "true"
+     }
+  ]
+})
 ```
 
-More about [Balance Operations](https://docs.pagar.me/docs/composicao-do-saldo)
-
-#### Checking Recipient Balance
+### Retornando Transações
 
 ```ruby
-  balance = PagarMe::Recipient.find(recipient_id).balance
-  balance.waiting_funds.amount # money to be received in his account
-  balance.available.amount     # in his pagarme account
-  balance.transferred.amount   # transferred to his bank account
+page = 1
+count = 10
+
+transactions = PagarMe::Transaction.all(page, count)
 ```
 
-Just that!
-
-More about [Recipient Balance](https://docs.pagar.me/api/#saldo-de-um-recebedor)
-
-#### Checking Recipient Balance Operations
-
-To access the history of balance operations:
+### Retornando uma transação 
 
 ```ruby
-  PagarMe::Recipient.find(recipient_id).balance_operations
+transaction = PagarMe::Transaction.find_by_id("ID_TRANSAÇÃO")
 ```
 
-Paginating:
+### Retornando recebíveis de uma transação
 
 ```ruby
-  PagarMe::Recipient.find(recipient_id).balance_operations 2, 50 # second page, 50 per page
+payables = PagarMe::Transaction.find('ID_TRANSAÇÃO').payables
 ```
 
-More about [Recipient Balance Operations](https://docs.pagar.me/reference#opera%C3%A7%C3%B5es-de-saldo-de-um-recebedor)
-
-### Request Bulk Anticipation
-
-#### Checking limits
+### Retornando o histórico de operações de uma transação
 
 ```ruby
-  PagarMe::Recipient.default.bulk_anticipations_limits
+transaction = PagarMe::Transaction.find_by_id("ID_TRANSAÇÃO")
+
+transaction.operations
 ```
 
-More about [Checking Bulk Anticipation Limits](https://docs.pagar.me/reference#obtendo-os-limites-de-antecipa%C3%A7%C3%A3o)
-
-#### Requesting Bulk Anticipation
+### Notificando cliente sobre boleto a ser pago
 
 ```ruby
-  PagarMe::Recipient.default.bulk_anticipate(
-    timeframe:        :start,
-    payment_date:     Date.new(2016, 12, 25),
-    requested_amount: 10000 # in cents
-  )
+transaction = PagarMe::Transaction.find_by_id("ID_TRANSAÇÃO")
+
+transaction.collect_payment
 ```
 
-More about [Requesting Bulk Anticipation](https://docs.pagar.me/reference#criando-uma-antecipa%C3%A7%C3%A3o)
-
-#### Getting Bulk Anticipation
+### Retornando eventos de uma transação 
 
 ```ruby
-  PagarMe::BulkAnticipation.all page, count
+transaction = PagarMe::Transaction.find_by_id("ID_TRANSAÇÃO")
+
+transaction.events
 ```
 
-More about [Getting Bulk Anticipation](https://docs.pagar.me/reference#retornando-todas-as-antecipa%C3%A7%C3%B5es)
+### Calculando pagamentos parcelados
 
-### Payables
+Essa rota não é obrigatória para uso. É apenas uma forma de calcular pagamentos parcelados com o Pagar.me.
 
-### Getting Payable
+Para fins de explicação, utilizaremos os seguintes valores:
+
+`amount`: 1000, `free_installments`: 4, `max_installments`: 12, `interest_rate`: 3
+
+O parâmetro `free_installments` decide a quantidade de parcelas sem juros. Ou seja, se ele for preenchido com o valor `4`, as quatro primeiras parcelas não terão alteração em seu valor original.
+
+Nessa rota, é calculado juros simples, efetuando o seguinte calculo:
+
+valorTotal = valorDaTransacao * ( 1 + ( taxaDeJuros * numeroDeParcelas ) / 100 )
+
+Então, utilizando os valores acima, na quinta parcela, a conta ficaria dessa maneira:
+
+valorTotal = 1000 * (1 + (3 * 5) / 100)
+
+Então, o valor a ser pago na quinta parcela seria de 15% da compra, totalizando 1150.
+
+Você pode usar o código abaixo caso queira utilizar essa rota:
 
 ```ruby
-  PagarMe::Payable.find 'payable_id'
+installments_result = PagarMe::Transaction.calculate_installments({
+  amount: 10000,
+  interest_rate: 13
+})
 ```
 
-More about [Getting Payable](https://docs.pagar.me/reference#retornando-um-receb%C3%ADvel)
-
-#### Querying Payables
+### Testando pagamento de boletos
 
 ```ruby
-  PagarMe::Payable.all page, count
+transaction = PagarMe::Transaction.find_by_id("ID_TRANSAÇÃO")
+
+transaction.status = 'paid'
+
+transaction.save
 ```
+
+
+## Cartões
+
+Sempre que você faz uma requisição através da nossa API, nós guardamos as informações do portador do cartão, para que, futuramente, você possa utilizá-las em novas cobranças, ou até mesmo implementar features como one-click-buy.
+
+
+### Criando Cartões
 
 ```ruby
-  PagarMe::Payable.find_by status: 'paid'
+card = PagarMe::Card.new({
+  :card_number => '4018720572598048',
+  :card_holder_name => 'Aardvark Silva',
+  :card_expiration_month => '11',
+  :card_expiration_year => '22',
+  :card_cvv => '123'
+})
+
+card.create
 ```
 
-More about [Querying Payables](https://docs.pagar.me/reference#retornando-receb%C3%ADveis)
-
-#### Querying Payables by Transaction
+#### Retornando cartões
 
 ```ruby
-  transaction = PagarMe::Transaction.find 'transaction_id'
-  transaction.payables
+page = 1
+count = 10
+transactions = PagarMe::Card.all(page, count)
 ```
 
-More about [Payable Transactions](https://docs.pagar.me/reference#retornando-pagamentos-da-transa%C3%A7%C3%A3o)
-
-### Validating Postback
-
-You need to ensure that all received postback are sent by Pagar.me and not from anyone else,
-to do this, is very important to validate it.
-
-You must do it using the raw payload received on post request, and check it signature provided
-in HTTP header X-Hub-Signature.
-
-You can check it like this:
+#### Retornando um cartão
 
 ```ruby
-  PagarMe::Postback.valid_request_signature?(payload, signature)
+card = PagarMe::Card.find_by_id("ID_CARTÃO")
 ```
 
-#### Rails Example
+## Planos
 
-If you are using Rails, you should do it your controller like this:
+Representa uma configuração de recorrência a qual um cliente consegue assinar.
+É a entidade que define o preço, nome e periodicidade da recorrência
+
+### Criando planos
 
 ```ruby
+plan = PagarMe::Plan.new({
+    :name => "The Pro Plan - Platinum  - Best Ever",
+    :days => 30,
+    :amount => 15000
+})
 
-    class PostbackController < ApplicationController
-      skip_before_action :verify_authenticity_token
-      
-      def postback
-        if valid_postback?
-          # Handle your code here
-          # postback payload is in params
-        else
-          render_invalid_postback_response
-        end
-      end
-      
-      protected
-      def valid_postback?
-        raw_post  = request.raw_post
-        signature = request.headers['HTTP_X_HUB_SIGNATURE']
-        PagarMe::Postback.valid_request_signature?(raw_post, signature)
-      end
-      
-      def render_invalid_postback_response
-        render json: {error: 'invalid postback'}, status: 400
-      end
-    end
-
-
+plan.create
 ```
 
-request.raw_post
+### Retornando planos
 
-### Undocumented Features
+```ruby
+page = 1
+count = 10
+plans = PagarMe::Plan.all(page, count)
+```
 
-This gem is stable, but in constant development.
+### Retornando um plano
 
-This README is just a quick abstract of it's main features.
+```ruby
+plan = PagarMe::Plan.find_by_id("ID_PLANO")
+```
 
-You can easily browse it's source code to see all [supported resources](https://github.com/pagarme/pagarme-ruby/tree/master/lib/pagarme/resources).
+### Atualizando um plano
 
-We will document everything while adding support to all resources listed in
-[Full API Guide](https://docs.pagar.me/reference).
+```ruby
+plan = PagarMe::Plan.find_by_id("ID_PLANO")
 
-Feel free to help us to add support to features sending pull requests.
+plan.name = "The Pro Plan - Susan"
+plan.trial_days = 7
 
-Thanks!
+plan.save
+```
 
-### TODO
+## Assinaturas
 
-Add support to [ElasticSearch Query DSL](https://docs.pagar.me/reference#elasticsearch),
-so you can search your data optimally.
+### Criando assinaturas
 
-And document all the source code.
+```ruby
+plan = PagarMe::Plan.find_by_id("ID_PLANO")
 
-## Support
-If you have any problem or suggestion please open an issue [here](https://github.com/pagarme/pagarme-ruby/issues).
+subscription = PagarMe::Subscription.new({
+  :payment_method => 'credit_card',
+  :card_hash => "CARD_HASH_GERADO",
+  :postback_url => "http://test.com/postback",
+  :customer => {
+      :name => "John Appleseed",
+      :document_number => "92545278157",
+      :email => "jappleseed@apple.com",
+      :address => {
+          :street => "Rua Dr. Geraldo Campos Moreira",
+          :neighborhood => "Cidade Monções",
+          :zipcode => "04571020",
+          :street_number => "240"
+      },
+      :phone => {
+          :ddd => "11"
+          :number => "15510101"
+      }
+  }
+})
+subscription.plan = plan
 
-## License
+subscription.create
+```
 
-Check [here](LICENSE).
+### Split com assinatura
+
+```ruby
+plan = PagarMe::Plan.find_by_id("ID_PLANO")
+
+subscription = PagarMe::Subscription.new({
+  :payment_method => 'credit_card',
+  :card_number => "4901720080344448",
+  :card_holder_name => "Jose da Silva",
+  :card_expiration_month => "10",
+  :card_expiration_year => "15",
+  :card_cvv => "314",
+  :postback_url => "http://test.com/postback",
+  :customer => {
+      :name => "John Appleseed",
+      :document_number => "92545278157",
+      :email => "jappleseed@apple.com",
+      :address => {
+          :street => "Rua Dr. Geraldo Campos Moreira",
+          :neighborhood => "Cidade Monções",
+          :zipcode => "04571020",
+          :street_number => "240"
+      },
+      :phone => {
+          :ddd => "11"
+          :number => "15510101"
+      }
+  },
+  :split_rules: [
+      {
+        recipient_id: "ID_RECEBEDOR",
+        percentage: 10,
+        liable: true,
+        charge_processing_fee: true
+      } ,
+      {
+        recipient_id: "ID_RECEBEDOR",
+        percentage: 90,
+        liable: true,
+        charge_processing_fee: true
+      } 
+  ])
+subscription.plan = plan
+
+subscription.create
+```
+
+
+### Retornando uma assinatura
+
+```ruby
+subscription = PagarMe::Subscription.find_by_id("ID_ASSINATURA")
+```
+
+
+### Retornando assinaturas
+
+```ruby
+page = 1
+count = 10
+subscriptions = PagarMe::Subscription.all(page, count)
+```
+
+
+### Atualizando uma assinatura
+
+```ruby
+subscription = PagarMe::Subscription.find_by_id(ID_ASSINATURA)
+
+subscription.payment_method = 'credit_card'
+subscription.card_id = 'ID_CARTÃO'
+subscription.plan_id = 'ID_PLANO'
+
+subscription.save
+```
+
+### Cancelando uma assinatura
+
+```ruby
+subscription = PagarMe::Subscription.find_by_id("ID_ASSINATURA")
+
+subscription.cancel
+```
+
+### Transações de assinatura
+
+```ruby
+subscription = PagarMe::Subscription.find_by_id("ID_ASSINATURA");
+
+subscription.transactions
+```
+
+### Pulando cobranças
+
+```ruby
+subscription = PagarMe::Subscription.find_by_id(ID_ASSINATURA)
+
+subscription.settle_charge
+```
+
+## Postbacks
+
+Ao criar uma transação ou uma assinatura você tem a opção de passar o parâmetro postback_url na requisição. Essa é uma URL do seu sistema que irá então receber notificações a cada alteração de status dessas transações/assinaturas.
+
+Para obter informações sobre postbacks, 3 informações serão necessárias, sendo elas: `model`, `model_id` e `postback_id`.
+
+`model`: Se refere ao objeto que gerou aquele POSTback. Pode ser preenchido com o valor `transaction` ou `subscription`.
+
+`model_id`: Se refere ao ID do objeto que gerou ao POSTback, ou seja, é o ID da transação ou assinatura que você quer acessar os POSTbacks.
+
+`postback_id`: Se refere à notificação específica. Para cada mudança de status de uma assinatura ou transação, é gerado um POSTback. Cada POSTback pode ter várias tentativas de entregas, que podem ser identificadas pelo campo `deliveries`, e o ID dessas tentativas possui o prefixo `pd_`. O campo que deve ser enviado neste parâmetro é o ID do POSTback, que deve ser identificado pelo prefixo `po_`. 
+
+### Retornando postbacks
+
+`Transações`
+```ruby
+transactions = PagarMe::Transactions.find_by_id("ID_TRANSAÇÃO")
+transactions.postbacks
+```
+
+`Assinaturas`
+```ruby
+subscription = PagarMe::Subscription.find_by_id("ID_ASSINATURA")
+subscription.postbacks
+```
+
+### Validando uma requisição de postback
+
+```ruby
+if PagarMe::Postback.valid_request_signature?(postback_body, '1213e67a3b34c2848f8317d29bcb8cbc9e0979b8')
+    puts "Valid Signature"
+end
+```
+
+## Saldo do recebedor principal
+
+Para saber o saldo de sua conta, você pode utilizar esse código:
+
+```ruby
+puts PagarMe::Balance.balance 
+```
+
+Observação: o código acima serve somente de exemplo para que o processo de validação funcione. Recomendamos que utilize ferramentas fornecidas por bibliotecas ou frameworks para recuperar estas informações de maneira mais adequada.
+
+## Operações de saldo
+
+Com este objeto você pode acompanhar todas as movimentações financeiras ocorridas em sua conta Pagar.me.
+
+### Histórico das operações
+
+```ruby
+puts PagarMe::BalanceOperation.balance_operations
+```
+
+## Recebível
+
+Objeto contendo os dados de um recebível. O recebível (payable) é gerado automaticamente após uma transação ser paga. Para cada parcela de uma transação é gerado um recebível, que também pode ser dividido por recebedor (no caso de um split ter sido feito).
+
+### Retornando recebíveis
+
+```ruby
+page = 1
+count = 10
+
+puts PagarMe::Payable.all(page, count)
+```
+
+### Retornando um recebível
+
+```ruby
+puts PagarMe::Payable.find_by_id(ID_RECEBÍVEL)
+```
+
+## Transferências
+Transferências representam os saques de sua conta.
+
+### Criando uma transferência
+
+```ruby
+transferencia = PagarMe::Transfer.create({
+	:amount => 13000,
+  :recipient_id => "ID_REDEBEDOR"
+})
+```
+
+### Retornando transferências
+
+```ruby
+page = 1
+count = 10
+
+transferencias = PagarMe::Transfer.all(page, count)
+```
+
+### Retornando uma transferência
+
+```ruby
+transferencia = PagarMe::Transfer.find_by_id("ID_TRANSFERÊNCIA")
+```
+
+## Antecipações
+
+Para entender o que são as antecipações, você deve acessar esse [link](https://docs.pagar.me/docs/overview-antecipacao).
+
+### Criando uma antecipação
+
+```ruby
+recipient = PagarMe::Recipient.find_by_id("ID_REDEBEDOR")
+bulk_anticipation = recipient.bulk_anticipate(
+	:requested_amount => 1000,
+	:payment_date => Date.today + 7,
+	:timeframe => :end
+)
+```
+
+### Obtendo os limites de antecipação
+
+```ruby
+recipient_id = "ID_REDEBEDOR"
+payment_date = Date.today + 7
+timeframe = :end
+PagarMe::Recipient.find_by_id(recipient_id).bulk_anticipations_limits(
+  payment_date: payment_date, 
+  time_frame: timeframe
+)
+```
+
+### Confirmando uma antecipação building
+
+```ruby
+recipient = PagarMe::Recipient.find_by_id("ID_REDEBEDOR")
+bulk_anticipation_id = "ID_ANTECIPAÇÃO"
+bulk_anticipation = recipient.bulk_anticipations({:id => bulk_anticipation_id})[0]
+bulk_anticipation.confirm
+```
+
+### Cancelando uma antecipação pending
+
+```ruby
+recipient = PagarMe::Recipient.find_by_id("ID_REDEBEDOR")
+bulk_anticipation_id = "ID_ANTECIPAÇÃO"
+bulk_anticipation = recipient.bulk_anticipations({:id => bulk_anticipation_id})[0]
+bulk_anticipation.cancel
+```
+
+### Deletando uma antecipação building
+
+```ruby
+recipient = PagarMe::Recipient.find_by_id("ID_REDEBEDOR")
+bulk_anticipation = recipient.bulk_anticipations({:id => "ID_ANTECIPAÇÃO"})[0]
+p bulk_anticipation
+bulk_anticipation.delete
+```
+
+### Retornando antecipações
+
+```ruby
+recipient_id = "ID_REDEBEDOR"
+recipient = PagarMe::Recipient.find_by_id(recipient_id)
+bulk_anticipations = recipient.bulk_anticipations
+```
+
+## Contas bancárias
+
+Contas bancárias identificam para onde será enviado o dinheiro de futuros pagamentos.
+
+### Criando uma conta bancária
+
+```ruby
+bank_account = PagarMe::BankAccount.new({
+    :bank_code => '237',
+    :agencia => '1935',
+    :agencia_dv => '9',
+    :conta => '23398',
+    :conta_dv => '9',
+    :legal_name => 'API BANK ACCOUNT',
+    :document_number => '26268738888'
+})
+
+bank_account.create
+```
+
+### Retornando uma conta bancária
+
+```ruby
+bank_account = PagarMe::BankAccount.find_by_id("ID_BANK_ACCOUNT")
+```
+
+### Retornando contas bancárias
+
+```ruby
+bank_accounts = PagarMe::BankAccount.find_by({ bank_code: '341' })
+```
+
+## Recebedores
+
+Para dividir uma transação entre várias entidades, é necessário ter um recebedor para cada uma dessas entidades. Recebedores contém informações da conta bancária para onde o dinheiro será enviado, e possuem outras informações para saber quanto pode ser antecipado por ele, ou quando o dinheiro de sua conta será sacado automaticamente.
+
+### Criando um recebedor
+
+```ruby
+recipient = PagarMe::Recipient.new({
+    :anticipatable_volume_percentage => 85, 
+    :automatic_anticipation_enabled => true, 
+    :bank_account_id => "17490076", 
+    :transfer_day => "5", 
+    :transfer_enabled => true, 
+    :transfer_interval => "weekly"
+}).create
+```
+
+### Retornando recebedores
+
+```ruby
+page = 1
+count = 10
+
+recipients = PagarMe::Recipient.all(page, count)
+# ou
+recipients = PagarMe::Recipient.all()
+```
+
+### Retornando um recebedor
+
+```ruby
+recipient = PagarMe::Recipient.find_by_id(ID_REDEBEDOR)
+```
+
+### Atualizando um recebedor
+
+```ruby
+recipient = PagarMe::Recipient.find_by_id(ID_REDEBEDOR)
+recipient.transfer_interval = :daily
+recipient.transfer_day = 0
+recipient.anticipatable_volume_percentage = 100
+recipient.bank_account_id = '17490076'
+recipient.save
+```
+
+### Saldo de um recebedor
+
+```ruby
+recipient = PagarMe::Recipient.find_by_id(ID_REDEBEDOR)
+p recipient.balance
+```
+
+### Operações de saldo de um recebedor
+
+```ruby
+recipient = PagarMe::Recipient.find_by_id(ID_REDEBEDOR)
+p recipient.balance_operations
+```
+
+## Clientes
+
+Clientes representam os usuários de sua loja, ou negócio. Este objeto contém informações sobre eles, como nome, e-mail e telefone, além de outros campos.
+
+### Criando um cliente
+
+```ruby
+customer = PagarMe::Customer.create(
+  name: 'Tommy Oliver',
+  email: 'mopheus@nabucodonozor.com',
+  type: 'individual',
+  external_id: "222",
+  country: 'br',
+  birthday: "1965-01-01",
+  documents: [
+    {type: "cpf", number: "86870624194"}
+  ],
+  phone_numbers: ["+5511999998888", "+5511888889999"]
+)
+```
+
+### Retornando clientes
+
+```ruby
+page = 1
+count = 10
+
+customer = PagarMe::Customer.all(page, count)
+```
+
+### Retornando um cliente
+
+```ruby
+customer = PagarMe::Customer.find_by_id(ID_CUSTOMER)
+```
+
+# Support
+Caso você tenha algum problema ou sugestão crie uma issue [aqui](https://github.com/pagarme/pagarme-ruby/issues).
+
+# License
+
+Clique aqui [here](LICENSE).
