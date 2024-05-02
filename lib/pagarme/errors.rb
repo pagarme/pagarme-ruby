@@ -53,6 +53,7 @@ module PagarMe
 
     def initialize(message, parameter_name, type, url)
       @parameter_name, @type, @url = parameter_name, type, url
+      message = message.gsub('value', parameter_name) if parameter_name.present?
       super message
     end
 
