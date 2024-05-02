@@ -1,5 +1,9 @@
 module PagarMe
   class Postback < PagarMeObject
+    def redeliver
+      PagarMe::Request.post("/#{model}/#{model_id}/postbacks/#{id}/redeliver").run
+    end
+
     def valid?
       self.class.valid_request_signature? payload, signature
     end
