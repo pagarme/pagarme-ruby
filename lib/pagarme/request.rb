@@ -10,7 +10,8 @@ module PagarMe
     DEFAULT_HEADERS = {
       'Content-Type' => 'application/json; charset=utf8',
       'Accept'       => 'application/json',
-      'User-Agent'   => "pagarme-ruby/#{PagarMe::VERSION}"
+      'User-Agent'   => "pagarme-ruby/#{PagarMe::VERSION}",
+      'X-PagarMe-User-Agent'   => "pagarme-ruby/#{PagarMe::VERSION}"
     }
 
     def initialize(path, method, options={})

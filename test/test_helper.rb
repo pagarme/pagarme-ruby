@@ -35,7 +35,7 @@ class PagarMeTestCase < Test::Unit::TestCase
   protected
   def ensure_positive_balance
     VCR.use_cassette 'TestCase/ensure_positive_balance' do
-      transaction = PagarMe::Transaction.charge transaction_with_boleto_params(amount: 100_000_00)
+      transaction = PagarMe::Transaction.charge transaction_with_customer_with_boleto_params(amount: 100_000_00)
       transaction.status = :paid
       transaction.save
     end
